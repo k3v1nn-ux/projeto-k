@@ -1,24 +1,43 @@
 // "Semana": Monday–Sunday with what was done and the projected rotation. Tap a day to see it,
 // mark it as rest, or open it to log/edit.
 import * as db from '../db.js';
-import { dayPlan, exercise, weekProjection, slotDef, weeklyTarget } from '../program.js';
+import { dayPlan, exercise, weekProjection, slotDef, weeklyTarget, estimateMinutes } from '../program.js';
 import { markRest, unmarkRest, cardioFor, setsFor } from '../workout.js';
-import { settings, updateSettings } from '../settings.js';
+import { settings, updateSettings, gymCloseFor } from '../settings.js';
 import { sheet, toast } from '../ui.js';
-import { dateKey, addDays, weekStart, parseKey, fmtShortWeekday, fmtDay, esc, fmtKg } from '../util.js';
+import { setsLabel, dateKey, addDays, weekStart, parseKey, fmtShortWeekday, fmtDay, esc, fmtKg } from '../util.js';
 
 let offset = 0;
 const WD = ['seg', 'ter', 'qua', 'qui', 'sex', 'sáb', 'dom'];
 
+function dayNumbers(d) {
+  const sets = db.index('set_logs', 'session_id').get(d) || [];
+  return {
+    sets: sets.length,
+    volume: sets.reduce((a, l) => a + (l.load_kg || 0) * (l.reps || 0), 0),
+    prs: sets.filter((l) => l.is_pr).length,
+    exercises: new Set(sets.map((l) => l.exercise_id)).size,
+    cardio: cardioFor(d).reduce((a, c) => a + (c.duration_min || 0), 0),
+  };
+}
+
 function describe(d, p, today) {
   const s = db.get('sessions', d);
+  const n = dayNumbers(d);
+  const close = gymCloseFor(d) ? `Smart Fit fecha ${gymCloseFor(d).replace(':00', 'h')}` : '';
+  const doneSub = [`${n.exercises} exercícios · ${n.sets} séries`, n.volume ? `${fmtKg(n.volume / 1000)} t` : '', s?.duration_min ? `${s.duration_min} min` : '', n.cardio ? `♥ ${n.cardio} min` : '', n.prs ? `🏆 ${n.prs}` : ''].filter(Boolean).join(' · ');
+  const planName = p.slot === 'friend' ? (db.get('overrides', d)?.session_name || 'Treino do amigo') : slotDef(p.slot)?.session_name;
+  const planSub = () => {
+    const plan = dayPlan(d, p.slot === 'friend' ? undefined : p.slot);
+    return [p.slot === 'friend' ? 'treino recebido' : slotDef(p.slot)?.focus, `${plan.exercises.length} exercícios · ~${estimateMinutes(plan)} min`].filter(Boolean).join(' · ');
+  };
   switch (p.kind) {
-    case 'done': return { title: s?.planned_session || 'Treino', sub: `${(db.index('set_logs', 'session_id').get(d) || []).length} séries${s?.duration_min ? ` · ${s.duration_min} min` : ''}`, pill: s?.status === 'partial' ? ['parcial', 'warn'] : ['feito', 'success'], icon: '🏋️' };
-    case 'today': return { title: p.slot === 'friend' ? (db.get('overrides', d)?.session_name || 'Treino do amigo') : slotDef(p.slot)?.session_name, sub: s?.status === 'in_progress' ? 'em andamento' : 'treino de hoje', pill: ['hoje', 'info'], icon: '🏋️' };
-    case 'planned': return { title: p.slot === 'friend' ? (db.get('overrides', d)?.session_name || 'Treino do amigo') : slotDef(p.slot)?.session_name, sub: p.slot === 'friend' ? 'treino recebido' : slotDef(p.slot)?.focus, pill: ['previsto', ''], icon: '🗓️' };
-    case 'rest': return { title: 'Descanso', sub: 'escolhido por você', pill: ['descanso', ''], icon: '😴' };
-    case 'cardio': return { title: 'Só cardio', sub: `${cardioFor(d).reduce((a, c) => a + (c.duration_min || 0), 0)} min`, pill: ['cardio', 'info'], icon: '🚴' };
-    default: return { title: d < today ? 'Nada registrado' : 'Livre', sub: d < today ? '' : 'sem treino previsto', pill: null, icon: '○' };
+    case 'done': return { title: s?.planned_session || 'Treino', sub: doneSub, pill: s?.status === 'partial' ? ['parcial', 'warn'] : ['feito', 'success'], icon: '🏋️', close };
+    case 'today': return { title: planName, sub: s?.status === 'in_progress' ? `em andamento · ${doneSub}` : planSub(), pill: ['hoje', 'info'], icon: '🏋️', close };
+    case 'planned': return { title: planName, sub: planSub(), pill: ['previsto', ''], icon: '🗓️', close };
+    case 'rest': return { title: 'Descanso', sub: 'escolhido por você', pill: ['descanso', ''], icon: '😴', close };
+    case 'cardio': return { title: 'Só cardio', sub: `${n.cardio} min`, pill: ['cardio', 'info'], icon: '🚴', close };
+    default: return { title: d < today ? 'Nada registrado' : 'Livre', sub: d < today ? '' : 'sem treino previsto', pill: null, icon: '○', close };
   }
 }
 
@@ -36,11 +55,23 @@ export function render(view) {
     rows += `
       <button class="day-row list-item ${d === today ? 'today' : ''}" data-day="${d}">
         <span class="day-date"><small>${fmtShortWeekday(d)}</small><b>${parseKey(d).getDate()}</b></span>
-        <span class="grow"><strong>${info.icon} ${esc(info.title || '')}</strong><br><span class="li-sub">${esc(info.sub || '')}</span></span>
+        <span class="grow"><strong>${info.icon} ${esc(info.title || '')}</strong><br><span class="li-sub">${esc(info.sub || '')}</span>${info.close && d >= today ? `<br><span class="li-sub" style="color:var(--warn)">🕒 ${info.close}</span>` : ''}</span>
         ${info.pill ? `<span class="pill ${info.pill[1]}">${info.pill[0]}</span>` : '<span></span>'}
       </button>`;
   }
   const rest = settings().restDays || [];
+  // Week totals and muscle groups trained
+  const days = Array.from({ length: 7 }, (_, i) => addDays(start, i));
+  const nums = days.map(dayNumbers);
+  const sum = (k) => nums.reduce((a, x) => a + x[k], 0);
+  const minutes = days.reduce((a, d) => a + (db.get('sessions', d)?.duration_min || 0) * ((db.index('set_logs', 'session_id').get(d) || []).length ? 1 : 0), 0);
+  const groups = {};
+  for (const d of days) for (const l of db.index('set_logs', 'session_id').get(d) || []) {
+    const g = exercise(l.exercise_id)?.muscle_group || 'outros';
+    groups[g] = (groups[g] || 0) + 1;
+  }
+  const groupChips = Object.entries(groups).sort((a, b) => b[1] - a[1]).map(([g, n]) => `<span class="pill ${n >= 6 ? 'success' : ''}">${esc(g)} ${n}</span>`).join('');
+  const planned = Object.values(proj).filter((x) => x.kind === 'planned' || x.kind === 'today').length;
   view.innerHTML = `
     <div class="page-head"><h1>Semana</h1><p>Meta: ${weeklyTarget()} treinos. Você escolhe os dias; o rodízio se ajusta sozinho.</p></div>
     <div class="week-nav">
@@ -49,7 +80,20 @@ export function render(view) {
         <span class="muted small">${offset === 0 ? 'Esta semana' : offset === -1 ? 'Semana passada' : offset === 1 ? 'Próxima semana' : ''} · ${done}/${weeklyTarget()} treinos</span></div>
       <button class="icon-btn" data-nav="1" aria-label="Próxima semana">›</button>
     </div>
-    <div class="group">${rows}</div>
+    <div class="card">
+      <div class="row between"><strong>${done}/${weeklyTarget()} treinos</strong><span class="muted small">${planned ? `${planned} previsto${planned > 1 ? 's' : ''}` : done >= weeklyTarget() ? 'meta batida ✓' : ''}</span></div>
+      <div class="meter"><i style="width:${Math.min(100, (done / weeklyTarget()) * 100)}%"></i></div>
+      <div class="kv">
+        <div><b>${sum('sets')}</b><span>séries</span></div>
+        <div><b>${fmtKg(sum('volume') / 1000)}t</b><span>volume</span></div>
+        <div><b>${minutes}</b><span>min treino</span></div>
+        <div><b>${sum('cardio')}</b><span>min cardio</span></div>
+      </div>
+      ${groupChips ? `<div class="section-title" style="margin:14px 0 6px">Séries por grupo</div><div class="chips">${groupChips}</div>` : ''}
+      ${sum('prs') ? `<p class="small" style="margin:10px 0 0">🏆 ${sum('prs')} recorde${sum('prs') > 1 ? 's' : ''} nesta semana</p>` : ''}
+    </div>
+    <div class="group mt">${rows}</div>
+    <p class="tiny muted" style="margin:8px 16px 0">🕒 Smart Fit: sábado fecha 19h, domingo fecha 15h.</p>
     <div class="section"><div class="section-title"><span>Dias de descanso preferidos</span></div>
       <div class="card flat">
         <p class="muted small" style="margin-top:0">O app evita prever treino nesses dias (mas, se faltar treino para a meta, usa-os). Para descansar em outro dia, toque no dia acima.</p>
@@ -87,7 +131,7 @@ function openDay(date, p, rerender) {
     }).join('')}</ul>`;
   } else if (p.kind === 'planned' || p.kind === 'today') {
     const plan = dayPlan(date);
-    body = `<ul class="list">${plan.exercises.map((it) => `<li style="padding:8px 0"><strong>${esc(exercise(it.exercise_id).name_pt)}</strong><br><span class="li-sub">${it.sets} × ${it.rep_min}–${it.rep_max}</span></li>`).join('')}</ul>`;
+    body = `<ul class="list">${plan.exercises.map((it) => `<li style="padding:8px 0"><strong>${esc(exercise(it.exercise_id).name_pt)}</strong><br><span class="li-sub">${setsLabel(it)}</span></li>`).join('')}</ul>`;
   }
   const canRest = p.kind !== 'done' && p.kind !== 'rest' && !(db.index('set_logs', 'session_id').get(date) || []).length;
   const s = sheet(`

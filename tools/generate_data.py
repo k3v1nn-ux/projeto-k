@@ -295,6 +295,7 @@ PROGRAM_RULES = {
     "split_rationale": "Rodízio Superior A → Inferior A → Superior B → Inferior B com meta de 4 treinos por semana: cada grupo é treinado 2x/semana com ~9–12 séries semanais nos grupos grandes, em sessões de ~50–60 min. Você escolhe os dias de descanso; o próximo treino é sempre o que está há mais tempo sem ser feito, então pular ou trocar um dia não desequilibra os grupos musculares.",
     "weekly_target": 4,
     "rotation_rule": "O treino sugerido é o do rodízio feito há mais tempo. Trocar o treino do dia ou descansar não perde nada: o treino pendente passa para o próximo dia de treino.",
+    "sets_reps": "Padrão 3×12 no nível Base e 4×12 no Avançado. A carga sobe quando você faz 12 repetições em todas as séries; se ficar abaixo de 10 em dois treinos seguidos, ela desce ~10%.",
     "rir": {"base": "1–3 repetições em reserva (pare quando sentir que faria mais 1–3 reps com boa técnica).", "intermediate": "0–2 repetições em reserva nos isolados; 1–2 nos compostos."},
     "cardio_pre": CARDIO_PRE,
     "cardio_only": CARDIO_ONLY,
@@ -305,7 +306,7 @@ PROGRAM_RULES = {
         "increment_upper_kg": [1, 2.5], "increment_lower_kg": [2.5, 5],
         "stall_rule": "Se ficar abaixo do mínimo da faixa em 2 treinos seguidos, reduza ~10% e reconstrua."},
     "adherence_rule": "Não existe falta por dia: a aderência é semanal (treinos de musculação feitos ÷ meta de 4). Dias de descanso são escolhidos por você e dia só de cardio não conta como treino.",
-    "intermediate_unlock": {"weeks_required": 8, "min_adherence": 0.75, "description": "8 semanas (não precisam ser seguidas) com pelo menos 3 de 4 treinos (≥ 75%) desbloqueiam o nível Intermediário."},
+    "intermediate_unlock": {"weeks_required": 8, "min_adherence": 0.75, "description": "8 semanas (não precisam ser seguidas) com pelo menos 3 de 4 treinos (≥ 75%) desbloqueiam o nível Avançado (4×12)."},
     "cardio": "Zona 2 / leve-moderado: 8–10 min antes de cada treino; dias só de cardio (25–35 min) são opcionais e não contam como treino.",
     "no_squat_policy": "Nenhuma variação de agachamento no plano (preferência pessoal). Afundo e búlgaro existem apenas como opção marcada com is_squat_variant=true, desligados por padrão (Configurações).",
 }
@@ -364,20 +365,23 @@ def build():
         for a in e["alternatives"]:
             assert a in ids, (e["id"], a)
 
-    def rotation(slots):
+    def rotation(slots, sets):
+        """Every exercise as sets x 12 (double progression inside 10-12: hit 12 on all sets, add load)."""
         out = []
         for i, d in enumerate(slots, 1):
+            exs = []
             for item in d["exercises"]:
                 assert item["exercise_id"] in ids, item
-            out.append({**d, "type": "lift", "order": i})
+                exs.append({**item, "sets": sets, "rep_min": 10, "rep_max": 12})
+            out.append({**d, "exercises": exs, "type": "lift", "order": i})
         return out
 
     program = {
         "version": 2,
         "name": "Antares V3 — rodízio Superior/Inferior",
         "levels": {
-            "base": {"label": "Base", "weekly_target": 4, "rotation": rotation(BASE_ROTATION)},
-            "intermediate": {"label": "Intermediário", "weekly_target": 4, "rotation": rotation(INTERMEDIATE_ROTATION)},
+            "base": {"label": "Base (3×12)", "weekly_target": 4, "rotation": rotation(BASE_ROTATION, 3)},
+            "intermediate": {"label": "Avançado (4×12)", "weekly_target": 4, "rotation": rotation(INTERMEDIATE_ROTATION, 4)},
         },
         "rules": PROGRAM_RULES,
         "exercises": exercises,

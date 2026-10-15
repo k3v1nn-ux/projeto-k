@@ -153,3 +153,8 @@ export function download(filename, content, type = 'text/plain') {
   a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 5000);
 }
+
+/** "3 × 12" for the 10–12 progression band, otherwise "3 × 8–15". */
+export function setsLabel(it) {
+  return it.rep_max - it.rep_min <= 2 ? `${it.sets} × ${it.rep_max}` : `${it.sets} × ${it.rep_min}–${it.rep_max}`;
+}

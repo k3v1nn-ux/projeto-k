@@ -159,6 +159,7 @@ function projectWeek(start, lastDone, simulate) {
     const s = db.get('sessions', d);
     if (d === today && s?.status === 'in_progress') {
       out[d] = { kind: 'today', slot: sessionSlot(s) || 'friend' };
+      if (sessionSlot(s) && simulate) lastDone[sessionSlot(s)] = d; // the next days get the following slots
       done++;
     } else if (isLift(s)) {
       out[d] = { kind: 'done', slot: sessionSlot(s) };

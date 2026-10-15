@@ -7,14 +7,15 @@ import {
   setChoice, estimateMinutes, slotDef, setDaySetCount,
 } from '../program.js';
 import { suggestion, TREND_LABEL, e1rm } from '../progression.js';
-import { settings, updateSettings } from '../settings.js';
+import { settings, updateSettings, gymCloseFor, applyRestore } from '../settings.js';
+import { sync } from '../sync.js';
 import { startRest, stopRest, unlockAudio, requestWakeLock, releaseWakeLock } from '../timer.js';
 import { toast, sheet, confirmSheet } from '../ui.js';
 import {
   ensureSession, finishSession, logSet, updateSet, deleteSet, setsFor, setSwap, logCardio, cardioFor,
   reopenSession, loggedSetCount, plannedSetCount, markRest, unmarkRest, chooseWorkout,
 } from '../workout.js';
-import { dateKey, fmtDay, fmtKg, esc, $, fmtInt, addDays, weekStart, parseKey, fmtShortWeekday, daysBetween, fmtDuration } from '../util.js';
+import { unpackJson, setsLabel, dateKey, fmtDay, fmtKg, esc, $, fmtInt, addDays, weekStart, parseKey, fmtShortWeekday, daysBetween, fmtDuration } from '../util.js';
 import { afterDataChange } from '../achievements.js';
 import { pendingSuggestions } from '../friend.js';
 import { mountSpotify } from '../spotify.js';
@@ -59,10 +60,32 @@ export function render(view, params = {}) {
 function topBanners(date, today) {
   let html = '';
   if (!settings().apiUrl && !db.all('sessions').length) {
-    html += '<a class="banner" href="#/config" style="text-decoration:none"><span>☁️</span><span class="grow"><strong>Reinstalou o app?</strong> Cole seu código de restauração em Ajustes para trazer tudo de volta.</span><span class="btn small">Abrir</span></a>';
+    html += `<div class="card" style="margin-bottom:12px">
+      <h3 style="margin-top:0">Já usava o Antares?</h3>
+      <p class="muted small">Toque no campo abaixo e escolha seu acesso salvo (Face ID). Tudo volta: planilha, Spotify, ajustes e treinos.</p>
+      <form data-form="restore-keychain" autocomplete="on">
+        <input type="text" name="username" autocomplete="username" placeholder="Acesso" style="margin-bottom:8px">
+        <input type="password" name="password" autocomplete="current-password" placeholder="Toque para usar o Face ID">
+        <button class="btn primary block mt" type="submit">Restaurar</button>
+      </form>
+      <a class="link-btn small" href="#/config">É a primeira vez? Configurar a planilha</a>
+    </div>`;
   }
   if (date !== today) {
     html += `<div class="banner warn"><span class="grow">${date < today ? `Editando ${fmtDay(date)}` : `Prévia de ${fmtDay(date)}`}</span><a class="btn small" href="#/hoje">Hoje</a></div>`;
+  }
+  const close = date === today ? gymCloseFor(today) : '';
+  if (close) {
+    const [h, m] = close.split(':').map(Number);
+    const left = (h * 60 + m) - (new Date().getHours() * 60 + new Date().getMinutes());
+    const s = db.get('sessions', today);
+    const trained = s && ['done', 'partial'].includes(s.status);
+    if (!trained) {
+      const need = estimateMinutes(dayPlan(today));
+      const label = close.replace(':00', 'h');
+      if (left <= 0) html += `<div class="banner warn"><span>🕒</span><span class="grow">A Smart Fit já fechou hoje (fecha às ${label}).</span></div>`;
+      else html += `<div class="banner ${left < need + 20 ? 'warn' : ''}"><span>🕒</span><span class="grow">Hoje a Smart Fit fecha às <strong>${label}</strong> · faltam ${Math.floor(left / 60)}h${String(left % 60).padStart(2, '0')}${left < need + 20 ? ` (o treino leva ~${need} min)` : ''}.</span></div>`;
+    }
   }
   const pending = pendingSuggestions();
   if (pending.length) {
@@ -167,7 +190,7 @@ function liftView(date, session, future) {
     <div class="hero">
       <div class="hero-top">
         <div class="grow">
-          <div class="eyebrow">${future ? 'Previsto' : finished ? 'Concluído' : active ? 'Em andamento' : 'Treino de hoje'} · ${plan.level === 'intermediate' ? 'Intermediário' : 'Base'}</div>
+          <div class="eyebrow">${future ? 'Previsto' : finished ? 'Concluído' : active ? 'Em andamento' : 'Treino de hoje'} · ${plan.level === 'intermediate' ? 'Avançado 4×12' : 'Base 3×12'}</div>
           <h1>${esc(plan.session_name)}</h1>
           <div class="sub">${esc(plan.focus || '')}</div>
         </div>
@@ -255,12 +278,13 @@ function exerciseCard(date, plan, it, i, { readonly, skipped, isOpen }) {
     const reps = log ? log.reps : (sugg.reps[n - 1] ?? it.rep_min);
     const isNext = !log && n === logs.length + 1;
     setsHtml += `
+      <div class="set-swipe"><span class="set-del" aria-hidden="true">Apagar</span>
       <div class="set-row ${log ? 'logged' : ''} ${isNext ? 'next' : ''}" data-n="${n}" ${log ? `data-log="${log.id}"` : ''}>
         <span class="set-n">${n}</span>
         <div class="stepper"><button data-step="-${step}" aria-label="Menos carga">−</button><input type="number" inputmode="decimal" step="any" name="load" value="${load ?? 0}" aria-label="Carga em kg"><button data-step="${step}" aria-label="Mais carga">+</button></div>
         <div class="stepper"><button data-step="-1" aria-label="Menos repetições">−</button><input type="number" inputmode="numeric" name="reps" value="${reps}" aria-label="Repetições"><button data-step="1" aria-label="Mais repetições">+</button></div>
         <button class="set-ok" data-action="${log ? 'set-menu' : 'log'}" aria-label="${log ? 'Opções da série' : 'Registrar série'}">${log ? (log.is_pr ? '🏆' : CHECK) : CHECK}</button>
-      </div>`;
+      </div></div>`;
   }
   const status = skipped ? '<span class="pill">não feito</span>'
     : `<div class="small num"><strong>${logs.length}/${it.sets}</strong></div><div class="ex-progress"><i style="width:${Math.min(100, (logs.length / it.sets) * 100)}%"></i></div>`;
@@ -270,7 +294,7 @@ function exerciseCard(date, plan, it, i, { readonly, skipped, isOpen }) {
         ${thumb(ex)}
         <span class="grow">
           <span class="ex-title">${esc(ex.name_pt)}</span>
-          <span class="ex-meta" style="display:block">${it.sets} × ${it.rep_min}–${it.rep_max} · ${fmtKg(sugg.load)} kg · ${it.rest_seconds}s</span>
+          <span class="ex-meta" style="display:block">${setsLabel(it)} · ${fmtKg(sugg.load)} kg · ${it.rest_seconds}s</span>
           ${swapped ? `<span class="ex-meta" style="display:block">no lugar de ${esc(exercise(it.planned_id)?.name_pt)}</span>` : ''}
         </span>
         <span class="ex-status">${status}</span>
@@ -284,10 +308,10 @@ function exerciseCard(date, plan, it, i, { readonly, skipped, isOpen }) {
         </div>
         ${it.notes ? `<p class="muted small" style="margin:8px 0 0">${esc(it.notes)}</p>` : ''}
         <p class="muted tiny" style="margin:6px 0 0">${esc(ex.load_note)}</p>
-        ${readonly || skipped ? '' : `<div class="sets"><div class="set-labels"><span>#</span><span>kg</span><span>reps</span><span></span></div>${setsHtml}</div>`}
+        ${readonly || skipped ? '' : `<div class="sets"><div class="set-labels"><span>#</span><span>kg</span><span>reps</span><span></span></div>${setsHtml}</div><p class="tiny faint center" style="margin:6px 0 0">Arraste uma série para a esquerda para apagar</p>`}
         <div class="ex-actions">
           ${readonly ? '' : '<button class="btn small" data-action="swap">Trocar</button>'}
-          ${readonly || skipped ? '' : `<button class="btn small" data-action="less" ${rows <= Math.max(1, logs.length) ? 'disabled' : ''} aria-label="Remover série">− Série</button><button class="btn small" data-action="extra" aria-label="Adicionar série">+ Série</button>`}
+
           <a class="btn small" href="#/ex/${ex.id}">Info</a>
         </div>
       </div>
@@ -374,19 +398,6 @@ function bind(view, date) {
         s.el.querySelector('[data-del]').onclick = async () => { await deleteSet(log); s.close(); rerender(); };
         break;
       }
-      case 'extra':
-      case 'less': {
-        const logged = setsFor(date, item.exercise_id).length;
-        const current = Math.max(item.sets, logged);
-        const next = btn.dataset.action === 'extra' ? current + 1 : Math.max(1, logged, current - 1);
-        setDaySetCount(date, item.planned_id, next === item.base_sets ? null : next);
-        open.date = date;
-        open.idx = Number(card.dataset.i);
-        const y = window.scrollY;
-        rerender();
-        window.scrollTo(0, y);
-        break;
-      }
       case 'swap': openSwap(date, item, rerender); break;
       case 'pick-workout': openWorkoutPicker(date, rerender); break;
       case 'train-anyway':
@@ -439,17 +450,106 @@ function bind(view, date) {
     }
   };
 
+  bindSwipe(view, async (row) => {
+    const card = row.closest('.ex-card');
+    const item = plan().exercises[Number(card.dataset.i)];
+    const log = row.dataset.log ? db.get('set_logs', row.dataset.log) : null;
+    if (log) {
+      await deleteSet(log);
+      toast(`Série ${log.set_number} apagada`, { ms: 1500 });
+    } else {
+      const logged = setsFor(date, item.exercise_id).length;
+      const next = Math.max(logged, item.sets - 1);
+      if (next === item.sets) return false;
+      setDaySetCount(date, item.planned_id, next === item.base_sets ? null : next);
+    }
+    open.date = date;
+    open.idx = Number(card.dataset.i);
+    const y = window.scrollY;
+    rerender();
+    window.scrollTo(0, y);
+    return true;
+  });
+
   view.onchange = (e) => {
     const row = e.target.closest('.set-row');
     if (row?.dataset.log) saveEdit(row);
   };
 
   view.onsubmit = async (e) => {
+    const rk = e.target.closest('[data-form=restore-keychain]');
+    if (rk) {
+      e.preventDefault();
+      const code = rk.password.value.trim();
+      try {
+        if (!code.startsWith('ANT1.')) throw new Error('formato');
+        applyRestore(await unpackJson(code.slice(5)));
+        toast('Restaurado. Baixando seus dados…', { ms: 4000 });
+        await sync();
+        rerender();
+      } catch {
+        toast('Esse acesso não é um código do Antares. Use Ajustes → código manual.');
+      }
+      return;
+    }
     const form = e.target.closest('[data-form=cardio]');
     if (!form) return;
     e.preventDefault();
     if (await submitCardio(form, date, plan())) rerender();
   };
+}
+
+/**
+ * Swipe a set row to the left to delete it (pointer events: touch and mouse). Vertical moves keep
+ * scrolling the page (touch-action: pan-y on the rows).
+ */
+let swipeBound = null;
+function bindSwipe(view, onDelete) {
+  swipeBound = onDelete;
+  if (view.dataset.swipeBound) return;
+  view.dataset.swipeBound = '1';
+  let st = null;
+  view.addEventListener('pointerdown', (e) => {
+    const row = e.target.closest('.set-swipe .set-row');
+    if (!row || e.button > 0) return;
+    st = { row, x: e.clientX, y: e.clientY, dx: 0, active: false, id: e.pointerId };
+  });
+  view.addEventListener('pointermove', (e) => {
+    if (!st || e.pointerId !== st.id) return;
+    const dx = e.clientX - st.x;
+    const dy = e.clientY - st.y;
+    if (!st.active) {
+      if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy) * 1.5 && dx < 0) {
+        st.active = true;
+        st.row.setPointerCapture?.(e.pointerId);
+        st.row.classList.add('swiping');
+      } else if (Math.abs(dy) > 10) { st = null; return; } else return;
+    }
+    st.dx = Math.min(0, dx);
+    st.row.style.transform = `translateX(${st.dx}px)`;
+    st.row.parentElement.classList.toggle('armed', st.dx < -90);
+  });
+  const end = async () => {
+    if (!st) return;
+    const { row, dx, active } = st;
+    st = null;
+    if (!active) return;
+    row.classList.remove('swiping');
+    // A swipe must not also count as a tap on the buttons/inputs it started on.
+    const block = (ev) => { ev.stopPropagation(); ev.preventDefault(); };
+    window.addEventListener('click', block, { capture: true, once: true });
+    setTimeout(() => window.removeEventListener('click', block, { capture: true }), 350);
+    if (dx < -90) {
+      row.style.transform = 'translateX(-110%)';
+      const ok = await swipeBound?.(row);
+      if (ok === false) { row.style.transform = ''; row.parentElement.classList.remove('armed'); }
+    } else {
+      row.style.transform = '';
+      row.parentElement.classList.remove('armed');
+    }
+  };
+  view.addEventListener('pointerup', end);
+  view.addEventListener('pointercancel', end);
 }
 
 async function submitCardio(form, date, plan) {

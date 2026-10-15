@@ -132,6 +132,40 @@ export function strengthTable() {
   }).sort((a, b) => b.sessions - a.sessions);
 }
 
+/**
+ * Progression events, newest first: every time an exercise got more sets, more load or (at the
+ * same load) more total reps than the previous time it was trained.
+ */
+export function progressionEvents() {
+  return db.cached('progEvents', () => {
+    const out = [];
+    for (const e of exercisesWithHistory()) {
+      const hist = exerciseHistory(e.id);
+      for (let i = 1; i < hist.length; i++) {
+        const prev = hist[i - 1];
+        const cur = hist[i];
+        if (cur.sets.length > prev.sets.length) out.push({ date: cur.date, ex: e, type: 'sets', from: prev.sets.length, to: cur.sets.length });
+        if (cur.topLoad > prev.topLoad) out.push({ date: cur.date, ex: e, type: 'load', from: prev.topLoad, to: cur.topLoad });
+        else if (cur.topLoad === prev.topLoad && cur.reps > prev.reps) out.push({ date: cur.date, ex: e, type: 'reps', from: prev.reps, to: cur.reps });
+      }
+    }
+    return out.sort((a, b) => b.date.localeCompare(a.date) || a.ex.name_pt.localeCompare(b.ex.name_pt));
+  });
+}
+
+/** Counters for the progression view. */
+export function progressionCounts() {
+  const ex = exercisesWithHistory();
+  const events = progressionEvents();
+  return {
+    distinct: ex.length,
+    performed: ex.reduce((a, e) => a + exerciseHistory(e.id).length, 0),
+    sets: db.all('set_logs').length,
+    setDays: new Set(events.filter((x) => x.type === 'sets').map((x) => x.date)).size,
+    loadUps: events.filter((x) => x.type === 'load').length,
+  };
+}
+
 /** How many times each rotation slot was trained in the last `days` days. */
 export function slotBalance(days = 28, today = dateKey()) {
   const from = addDays(today, -days + 1);

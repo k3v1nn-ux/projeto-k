@@ -108,8 +108,9 @@ function renderHeader() {
   const hello = hour < 12 ? 'Bom dia' : hour < 18 ? 'Boa tarde' : 'Boa noite';
   $('#greet-sub').textContent = hello;
   $('#greet-name').textContent = p.name ? p.name.split(' ')[0] : 'Antares';
-  const photo = profilePage.photo();
-  $('#avatar').innerHTML = photo ? `<img src="${photo}" alt="">` : (p.name || 'K')[0].toUpperCase();
+  const av = profilePage.avatarParts();
+  $('#avatar').innerHTML = av.html;
+  $('#avatar').setAttribute('style', av.style);
   const n = pendingSuggestions().length;
   const badge = $('#inbox-badge');
   badge.hidden = !n;

@@ -3,7 +3,7 @@
   "name": "Antares V3 — rodízio Superior/Inferior",
   "levels": {
     "base": {
-      "label": "Base",
+      "label": "Base (3×12)",
       "weekly_target": 4,
       "rotation": [
         {
@@ -14,7 +14,7 @@
             {
               "exercise_id": "db_bench_press",
               "sets": 3,
-              "rep_min": 8,
+              "rep_min": 10,
               "rep_max": 12,
               "rest_seconds": 120,
               "notes": ""
@@ -22,7 +22,7 @@
             {
               "exercise_id": "seated_cable_row",
               "sets": 3,
-              "rep_min": 8,
+              "rep_min": 10,
               "rep_max": 12,
               "rest_seconds": 120,
               "notes": ""
@@ -30,7 +30,7 @@
             {
               "exercise_id": "db_shoulder_press",
               "sets": 3,
-              "rep_min": 8,
+              "rep_min": 10,
               "rep_max": 12,
               "rest_seconds": 90,
               "notes": ""
@@ -38,22 +38,22 @@
             {
               "exercise_id": "lat_pulldown",
               "sets": 3,
-              "rep_min": 8,
+              "rep_min": 10,
               "rep_max": 12,
               "rest_seconds": 90,
               "notes": ""
             },
             {
               "exercise_id": "db_lateral_raise",
-              "sets": 2,
-              "rep_min": 12,
-              "rep_max": 15,
+              "sets": 3,
+              "rep_min": 10,
+              "rep_max": 12,
               "rest_seconds": 60,
               "notes": ""
             },
             {
               "exercise_id": "db_curl",
-              "sets": 2,
+              "sets": 3,
               "rep_min": 10,
               "rep_max": 12,
               "rest_seconds": 60,
@@ -61,7 +61,7 @@
             },
             {
               "exercise_id": "triceps_pushdown",
-              "sets": 2,
+              "sets": 3,
               "rep_min": 10,
               "rep_max": 12,
               "rest_seconds": 60,
@@ -87,7 +87,7 @@
             {
               "exercise_id": "db_rdl",
               "sets": 3,
-              "rep_min": 8,
+              "rep_min": 10,
               "rep_max": 12,
               "rest_seconds": 120,
               "notes": ""
@@ -95,8 +95,8 @@
             {
               "exercise_id": "leg_extension",
               "sets": 3,
-              "rep_min": 12,
-              "rep_max": 15,
+              "rep_min": 10,
+              "rep_max": 12,
               "rest_seconds": 90,
               "notes": ""
             },
@@ -112,15 +112,15 @@
               "exercise_id": "leg_press_calf",
               "sets": 3,
               "rep_min": 10,
-              "rep_max": 15,
+              "rep_max": 12,
               "rest_seconds": 60,
               "notes": ""
             },
             {
               "exercise_id": "machine_crunch",
-              "sets": 2,
-              "rep_min": 12,
-              "rep_max": 15,
+              "sets": 3,
+              "rep_min": 10,
+              "rep_max": 12,
               "rest_seconds": 60,
               "notes": ""
             }
@@ -136,7 +136,7 @@
             {
               "exercise_id": "machine_row",
               "sets": 3,
-              "rep_min": 8,
+              "rep_min": 10,
               "rep_max": 12,
               "rest_seconds": 120,
               "notes": ""
@@ -144,7 +144,7 @@
             {
               "exercise_id": "db_incline_press",
               "sets": 3,
-              "rep_min": 8,
+              "rep_min": 10,
               "rep_max": 12,
               "rest_seconds": 120,
               "notes": ""
@@ -160,22 +160,22 @@
             {
               "exercise_id": "pec_deck",
               "sets": 3,
-              "rep_min": 12,
-              "rep_max": 15,
+              "rep_min": 10,
+              "rep_max": 12,
               "rest_seconds": 60,
               "notes": ""
             },
             {
               "exercise_id": "reverse_pec_deck",
-              "sets": 2,
-              "rep_min": 12,
-              "rep_max": 15,
+              "sets": 3,
+              "rep_min": 10,
+              "rep_max": 12,
               "rest_seconds": 60,
               "notes": ""
             },
             {
               "exercise_id": "hammer_curl",
-              "sets": 2,
+              "sets": 3,
               "rep_min": 10,
               "rep_max": 12,
               "rest_seconds": 60,
@@ -183,7 +183,7 @@
             },
             {
               "exercise_id": "overhead_rope_ext",
-              "sets": 2,
+              "sets": 3,
               "rep_min": 10,
               "rep_max": 12,
               "rest_seconds": 60,
@@ -201,7 +201,7 @@
             {
               "exercise_id": "hip_thrust",
               "sets": 3,
-              "rep_min": 8,
+              "rep_min": 10,
               "rep_max": 12,
               "rest_seconds": 120,
               "notes": ""
@@ -209,8 +209,8 @@
             {
               "exercise_id": "leg_press",
               "sets": 3,
-              "rep_min": 12,
-              "rep_max": 15,
+              "rep_min": 10,
+              "rep_max": 12,
               "rest_seconds": 120,
               "notes": "Pés um pouco mais altos na plataforma."
             },
@@ -224,33 +224,33 @@
             },
             {
               "exercise_id": "abductor",
-              "sets": 2,
-              "rep_min": 12,
-              "rep_max": 15,
+              "sets": 3,
+              "rep_min": 10,
+              "rep_max": 12,
               "rest_seconds": 60,
               "notes": ""
             },
             {
               "exercise_id": "adductor",
-              "sets": 2,
-              "rep_min": 12,
-              "rep_max": 15,
+              "sets": 3,
+              "rep_min": 10,
+              "rep_max": 12,
               "rest_seconds": 60,
               "notes": ""
             },
             {
               "exercise_id": "seated_calf",
               "sets": 3,
-              "rep_min": 12,
-              "rep_max": 15,
+              "rep_min": 10,
+              "rep_max": 12,
               "rest_seconds": 60,
               "notes": ""
             },
             {
               "exercise_id": "leg_raise",
-              "sets": 2,
+              "sets": 3,
               "rep_min": 10,
-              "rep_max": 15,
+              "rep_max": 12,
               "rest_seconds": 60,
               "notes": ""
             }
@@ -261,7 +261,7 @@
       ]
     },
     "intermediate": {
-      "label": "Intermediário",
+      "label": "Avançado (4×12)",
       "weekly_target": 4,
       "rotation": [
         {
@@ -272,54 +272,54 @@
             {
               "exercise_id": "db_bench_press",
               "sets": 4,
-              "rep_min": 6,
-              "rep_max": 10,
+              "rep_min": 10,
+              "rep_max": 12,
               "rest_seconds": 150,
               "notes": ""
             },
             {
               "exercise_id": "seated_cable_row",
               "sets": 4,
-              "rep_min": 8,
+              "rep_min": 10,
               "rep_max": 12,
               "rest_seconds": 120,
               "notes": ""
             },
             {
               "exercise_id": "db_shoulder_press",
-              "sets": 3,
-              "rep_min": 8,
+              "sets": 4,
+              "rep_min": 10,
               "rep_max": 12,
               "rest_seconds": 90,
               "notes": ""
             },
             {
               "exercise_id": "lat_pulldown",
-              "sets": 3,
-              "rep_min": 8,
+              "sets": 4,
+              "rep_min": 10,
               "rep_max": 12,
               "rest_seconds": 90,
               "notes": ""
             },
             {
               "exercise_id": "cable_fly",
-              "sets": 2,
-              "rep_min": 12,
-              "rep_max": 15,
+              "sets": 4,
+              "rep_min": 10,
+              "rep_max": 12,
               "rest_seconds": 60,
               "notes": ""
             },
             {
               "exercise_id": "db_lateral_raise",
-              "sets": 3,
-              "rep_min": 12,
-              "rep_max": 15,
+              "sets": 4,
+              "rep_min": 10,
+              "rep_max": 12,
               "rest_seconds": 60,
               "notes": ""
             },
             {
               "exercise_id": "db_curl",
-              "sets": 3,
+              "sets": 4,
               "rep_min": 10,
               "rep_max": 12,
               "rest_seconds": 60,
@@ -327,7 +327,7 @@
             },
             {
               "exercise_id": "triceps_pushdown",
-              "sets": 3,
+              "sets": 4,
               "rep_min": 10,
               "rep_max": 12,
               "rest_seconds": 60,
@@ -345,7 +345,7 @@
             {
               "exercise_id": "leg_press",
               "sets": 4,
-              "rep_min": 8,
+              "rep_min": 10,
               "rep_max": 12,
               "rest_seconds": 150,
               "notes": ""
@@ -353,22 +353,22 @@
             {
               "exercise_id": "db_rdl",
               "sets": 4,
-              "rep_min": 8,
+              "rep_min": 10,
               "rep_max": 12,
               "rest_seconds": 120,
               "notes": ""
             },
             {
               "exercise_id": "leg_extension",
-              "sets": 3,
-              "rep_min": 12,
-              "rep_max": 15,
+              "sets": 4,
+              "rep_min": 10,
+              "rep_max": 12,
               "rest_seconds": 90,
               "notes": ""
             },
             {
               "exercise_id": "lying_leg_curl",
-              "sets": 3,
+              "sets": 4,
               "rep_min": 10,
               "rep_max": 12,
               "rest_seconds": 90,
@@ -376,7 +376,7 @@
             },
             {
               "exercise_id": "hip_thrust",
-              "sets": 2,
+              "sets": 4,
               "rep_min": 10,
               "rep_max": 12,
               "rest_seconds": 90,
@@ -386,15 +386,15 @@
               "exercise_id": "leg_press_calf",
               "sets": 4,
               "rep_min": 10,
-              "rep_max": 15,
+              "rep_max": 12,
               "rest_seconds": 60,
               "notes": ""
             },
             {
               "exercise_id": "machine_crunch",
-              "sets": 3,
-              "rep_min": 12,
-              "rep_max": 15,
+              "sets": 4,
+              "rep_min": 10,
+              "rep_max": 12,
               "rest_seconds": 60,
               "notes": ""
             }
@@ -410,7 +410,7 @@
             {
               "exercise_id": "machine_row",
               "sets": 4,
-              "rep_min": 8,
+              "rep_min": 10,
               "rep_max": 12,
               "rest_seconds": 120,
               "notes": ""
@@ -418,14 +418,14 @@
             {
               "exercise_id": "db_incline_press",
               "sets": 4,
-              "rep_min": 8,
+              "rep_min": 10,
               "rep_max": 12,
               "rest_seconds": 120,
               "notes": ""
             },
             {
               "exercise_id": "close_grip_pulldown",
-              "sets": 3,
+              "sets": 4,
               "rep_min": 10,
               "rep_max": 12,
               "rest_seconds": 90,
@@ -433,31 +433,31 @@
             },
             {
               "exercise_id": "pec_deck",
-              "sets": 3,
-              "rep_min": 12,
-              "rep_max": 15,
+              "sets": 4,
+              "rep_min": 10,
+              "rep_max": 12,
               "rest_seconds": 60,
               "notes": ""
             },
             {
               "exercise_id": "cable_lateral_raise",
-              "sets": 2,
-              "rep_min": 12,
-              "rep_max": 15,
+              "sets": 4,
+              "rep_min": 10,
+              "rep_max": 12,
               "rest_seconds": 60,
               "notes": ""
             },
             {
               "exercise_id": "reverse_pec_deck",
-              "sets": 3,
-              "rep_min": 12,
-              "rep_max": 15,
+              "sets": 4,
+              "rep_min": 10,
+              "rep_max": 12,
               "rest_seconds": 60,
               "notes": ""
             },
             {
               "exercise_id": "hammer_curl",
-              "sets": 3,
+              "sets": 4,
               "rep_min": 10,
               "rep_max": 12,
               "rest_seconds": 60,
@@ -465,7 +465,7 @@
             },
             {
               "exercise_id": "overhead_rope_ext",
-              "sets": 3,
+              "sets": 4,
               "rep_min": 10,
               "rep_max": 12,
               "rest_seconds": 60,
@@ -483,16 +483,16 @@
             {
               "exercise_id": "hip_thrust",
               "sets": 4,
-              "rep_min": 8,
+              "rep_min": 10,
               "rep_max": 12,
               "rest_seconds": 120,
               "notes": ""
             },
             {
               "exercise_id": "leg_press",
-              "sets": 3,
-              "rep_min": 12,
-              "rep_max": 15,
+              "sets": 4,
+              "rep_min": 10,
+              "rep_max": 12,
               "rest_seconds": 120,
               "notes": "Pés um pouco mais altos na plataforma."
             },
@@ -506,41 +506,41 @@
             },
             {
               "exercise_id": "single_leg_extension",
-              "sets": 2,
-              "rep_min": 12,
-              "rep_max": 15,
+              "sets": 4,
+              "rep_min": 10,
+              "rep_max": 12,
               "rest_seconds": 60,
               "notes": ""
             },
             {
               "exercise_id": "abductor",
-              "sets": 3,
-              "rep_min": 12,
-              "rep_max": 15,
+              "sets": 4,
+              "rep_min": 10,
+              "rep_max": 12,
               "rest_seconds": 60,
               "notes": ""
             },
             {
               "exercise_id": "adductor",
-              "sets": 2,
-              "rep_min": 12,
-              "rep_max": 15,
+              "sets": 4,
+              "rep_min": 10,
+              "rep_max": 12,
               "rest_seconds": 60,
               "notes": ""
             },
             {
               "exercise_id": "seated_calf",
-              "sets": 3,
-              "rep_min": 12,
-              "rep_max": 15,
+              "sets": 4,
+              "rep_min": 10,
+              "rep_max": 12,
               "rest_seconds": 60,
               "notes": ""
             },
             {
               "exercise_id": "leg_raise",
-              "sets": 3,
+              "sets": 4,
               "rep_min": 10,
-              "rep_max": 15,
+              "rep_max": 12,
               "rest_seconds": 60,
               "notes": ""
             }
@@ -555,6 +555,7 @@
     "split_rationale": "Rodízio Superior A → Inferior A → Superior B → Inferior B com meta de 4 treinos por semana: cada grupo é treinado 2x/semana com ~9–12 séries semanais nos grupos grandes, em sessões de ~50–60 min. Você escolhe os dias de descanso; o próximo treino é sempre o que está há mais tempo sem ser feito, então pular ou trocar um dia não desequilibra os grupos musculares.",
     "weekly_target": 4,
     "rotation_rule": "O treino sugerido é o do rodízio feito há mais tempo. Trocar o treino do dia ou descansar não perde nada: o treino pendente passa para o próximo dia de treino.",
+    "sets_reps": "Padrão 3×12 no nível Base e 4×12 no Avançado. A carga sobe quando você faz 12 repetições em todas as séries; se ficar abaixo de 10 em dois treinos seguidos, ela desce ~10%.",
     "rir": {
       "base": "1–3 repetições em reserva (pare quando sentir que faria mais 1–3 reps com boa técnica).",
       "intermediate": "0–2 repetições em reserva nos isolados; 1–2 nos compostos."
@@ -592,7 +593,7 @@
     "intermediate_unlock": {
       "weeks_required": 8,
       "min_adherence": 0.75,
-      "description": "8 semanas (não precisam ser seguidas) com pelo menos 3 de 4 treinos (≥ 75%) desbloqueiam o nível Intermediário."
+      "description": "8 semanas (não precisam ser seguidas) com pelo menos 3 de 4 treinos (≥ 75%) desbloqueiam o nível Avançado (4×12)."
     },
     "cardio": "Zona 2 / leve-moderado: 8–10 min antes de cada treino; dias só de cardio (25–35 min) são opcionais e não contam como treino.",
     "no_squat_policy": "Nenhuma variação de agachamento no plano (preferência pessoal). Afundo e búlgaro existem apenas como opção marcada com is_squat_variant=true, desligados por padrão (Configurações)."

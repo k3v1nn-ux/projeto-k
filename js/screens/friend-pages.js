@@ -75,7 +75,7 @@ export async function renderBuilder(view, query) {
     if (add) {
       const ex = exercise(add.dataset.add);
       const lower = ['quadríceps', 'posteriores', 'glúteos'].includes(ex.muscle_group);
-      day().items.push({ exercise_id: ex.id, sets: 3, rep_min: lower ? 10 : 8, rep_max: lower ? 15 : 12, rest_seconds: lower ? 120 : 90, notes: '' });
+      day().items.push({ exercise_id: ex.id, sets: 3, rep_min: 10, rep_max: 12, rest_seconds: lower ? 120 : 90, notes: '' });
       keep();
       toast(`${esc(ex.name_pt)} adicionado`, { ms: 1200 });
       return;

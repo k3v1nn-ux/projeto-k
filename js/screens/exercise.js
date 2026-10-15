@@ -1,6 +1,7 @@
 // Exercise page: animated media, cues, last result, today's suggestion, history chart, alternatives.
 import { exercise, dayPlan } from '../program.js';
 import { exerciseHistory, suggestion, summarize, TREND_LABEL } from '../progression.js';
+import { progressionEvents } from '../stats.js';
 import { loadChart, chartColors } from '../charts.js';
 import { dateKey, fmtDay, fmtKg, esc, youtubeSearch } from '../util.js';
 
@@ -57,6 +58,12 @@ export function render(view, { id }) {
       </tbody></table>` : ''}
     </div>
 
+    ${(() => {
+      const ev = progressionEvents().filter((x) => x.ex.id === ex.id);
+      if (!ev.length) return '';
+      const txt = (x) => (x.type === 'sets' ? `${x.from} → ${x.to} séries` : x.type === 'load' ? `carga ${fmtKg(x.from)} → ${fmtKg(x.to)} kg` : `${x.from} → ${x.to} repetições`);
+      return `<div class="card" style="margin-top:12px"><h3>Quando você evoluiu</h3><ul class="list">${ev.slice(0, 12).map((x) => `<li class="row between" style="padding:8px 0"><span class="small">${txt(x)}</span><span class="tiny muted">${fmtDay(x.date, { weekday: false })}</span></li>`).join('')}</ul></div>`;
+    })()}
     <div class="card" style="margin-top:12px">
       <h3>Alternativas</h3>
       <ul class="list">${ex.alternatives.map((a) => {

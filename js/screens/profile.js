@@ -1,4 +1,4 @@
-// "Perfil": name, photo (kept on this device), birth date, sex, height, goal, experience and
+// "Perfil": name, avatar (preset or photo), birth date, sex, height, goal, experience and
 // current weight. Used in the greeting, body metrics and the AI analysis.
 import * as db from '../db.js';
 import { profile, currentWeight, bmi, age } from '../stats.js';
@@ -19,15 +19,34 @@ export function photo() {
 
 async function savePhoto(dataUrl) {
   try {
-    if (dataUrl) localStorage.setItem(PHOTO_KEY, dataUrl); else localStorage.removeItem(PHOTO_KEY);
+    if (dataUrl && !dataUrl.startsWith('avatar:')) localStorage.setItem(PHOTO_KEY, dataUrl); else localStorage.removeItem(PHOTO_KEY);
   } catch { /* ignore */ }
   await db.save('profile', { ...profile(), id: 'me', photo: dataUrl || '' });
 }
 
-export function avatarHtml(cls = '') {
-  const p = profile();
+/** Preset avatars: an emoji over a soft gradient. Stored as "avatar:<index>" in profile.photo. */
+export const AVATARS = [
+  ['🦁', '#6b5a3a', '#2a2318'], ['🐺', '#55606e', '#1e232a'], ['🐯', '#7a5530', '#2b1d10'], ['🦅', '#5c4a3c', '#211a14'],
+  ['🐻', '#5e4a3f', '#211915'], ['🦍', '#4a4a52', '#18181c'], ['🐉', '#3d5c4a', '#14211a'], ['🦈', '#3e5468', '#141d26'],
+  ['🔥', '#6e3a2e', '#26130f'], ['⚡️', '#6b6430', '#25220f'], ['🚀', '#3c4a6e', '#131828'], ['🌟', '#5a5a64', '#1b1b20'],
+  ['🏋️', '#4d4d56', '#18181c'], ['🥊', '#6a3434', '#241010'], ['🏃', '#3a5d58', '#12201e'], ['🧘', '#57466b', '#1d1726'],
+];
+
+/** Inner HTML + style of an avatar for the current profile (photo, preset or initial). */
+export function avatarParts() {
   const src = photo();
-  return `<span class="avatar ${cls}">${src ? `<img src="${src}" alt="">` : esc((p.name || 'K')[0].toUpperCase())}</span>`;
+  const m = /^avatar:(\d+)$/.exec(src || '');
+  if (m && AVATARS[m[1]]) {
+    const [emoji, a, b] = AVATARS[m[1]];
+    return { html: `<span class="avatar-emoji">${emoji}</span>`, style: `background:linear-gradient(150deg, ${a}, ${b})` };
+  }
+  if (src) return { html: `<img src="${src}" alt="">`, style: '' };
+  return { html: esc((profile().name || 'A')[0].toUpperCase()), style: '' };
+}
+
+export function avatarHtml(cls = '') {
+  const { html, style } = avatarParts();
+  return `<span class="avatar ${cls}" style="${style}">${html}</span>`;
 }
 
 /** Resizes the picked image to a 256 px square JPEG data URL. */
@@ -56,11 +75,16 @@ export function render(view) {
     <div class="page-head"><h1>Perfil</h1><p>Usado na saudação, nas métricas de corpo e na análise com IA.</p></div>
     <div class="card">
       <div class="profile-head">
-        <label class="photo-pick" aria-label="Trocar foto">${avatarHtml('lg')}<span class="edit"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></span><input type="file" accept="image/*" data-photo></label>
+        ${avatarHtml('lg')}
         <div class="grow"><h2 style="margin:0">${esc(p.name || 'Seu nome')}</h2>
-          <div class="muted small">${[age(p.birth_date) ? `${age(p.birth_date)} anos` : '', p.height_cm ? `${p.height_cm} cm` : '', w ? `${fmtKg(w)} kg` : '', bmi() ? `IMC ${fmtKg(bmi())}` : ''].filter(Boolean).join(' · ') || 'Complete os dados abaixo'}</div>
-          ${photo() ? '<button class="link-btn small" data-rmphoto>remover foto</button>' : ''}</div>
+          <div class="muted small">${[age(p.birth_date) ? `${age(p.birth_date)} anos` : '', p.height_cm ? `${p.height_cm} cm` : '', w ? `${fmtKg(w)} kg` : '', bmi() ? `IMC ${fmtKg(bmi())}` : ''].filter(Boolean).join(' · ') || 'Complete os dados abaixo'}</div></div>
       </div>
+      <div class="section-title" style="margin:16px 0 8px">Escolha seu avatar</div>
+      <div class="avatar-grid">
+        ${AVATARS.map(([e, a, b], i) => `<button type="button" class="avatar-opt" data-avatar="${i}" aria-pressed="${photo() === `avatar:${i}`}" style="background:linear-gradient(150deg, ${a}, ${b})" aria-label="Avatar ${i + 1}">${e}</button>`).join('')}
+        <label class="avatar-opt photo" aria-pressed="${Boolean(photo()) && !photo().startsWith('avatar:')}" aria-label="Usar foto"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><input type="file" accept="image/*" data-photo hidden></label>
+      </div>
+      ${photo() ? '<button class="link-btn small mt" data-rmphoto>usar a inicial do nome</button>' : ''}
     </div>
     <form class="card mt" data-form="profile">
       <label class="field"><span>Nome</span><input type="text" name="name" value="${esc(p.name || '')}" autocomplete="given-name"></label>
@@ -104,7 +128,14 @@ export function render(view) {
       toast('Não foi possível usar essa imagem');
     }
   };
-  view.onclick = (e) => {
+  view.onclick = async (e) => {
+    const av = e.target.closest('[data-avatar]');
+    if (av) {
+      await savePhoto(`avatar:${av.dataset.avatar}`);
+      document.dispatchEvent(new CustomEvent('pk:profile'));
+      render(view);
+      return;
+    }
     if (e.target.closest('[data-rmphoto]')) {
       savePhoto('');
       document.dispatchEvent(new CustomEvent('pk:profile'));

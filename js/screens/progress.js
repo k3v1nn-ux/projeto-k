@@ -5,7 +5,7 @@ import { exercise, rotation, weeklyTarget, weekProjection, slotDef } from '../pr
 import { exerciseHistory, e1rm } from '../progression.js';
 import {
   dayInfo, weekAdherence, weekStreaks, totals, weekVolume, weekCardioMinutes, recentPRs, strengthTable,
-  slotBalance, profile, bodyLogs, currentWeight, bmi, age, liftSessions,
+  slotBalance, profile, bodyLogs, currentWeight, bmi, age, liftSessions, progressionEvents, progressionCounts,
 } from '../stats.js';
 import { recommendations } from '../recommend.js';
 import { loadChart, chartColors } from '../charts.js';
@@ -270,8 +270,22 @@ function forca(el) {
   const table = strengthTable();
   if (!selectedExercise || !table.some((r) => r.ex.id === selectedExercise)) selectedExercise = table[0]?.ex.id || '';
   const prs = recentPRs(6);
+  const pc = progressionCounts();
+  const events = progressionEvents();
+  const evIcon = { sets: ['＋', 'var(--series-1)'], load: ['↑', 'var(--success)'], reps: ['↗', 'var(--series-3)'] };
+  const evText = (x) => (x.type === 'sets' ? `${x.from} → ${x.to} séries` : x.type === 'load' ? `carga ${fmtKg(x.from)} → ${fmtKg(x.to)} kg` : `${x.from} → ${x.to} repetições no total`);
+  const timeline = events.length ? `
+    <div class="section"><div class="section-title"><span>Linha do tempo da evolução</span><span>${events.length}</span></div>
+      <div class="group"><ul class="list">${events.slice(0, 40).map((x) => `<li><a class="list-item" href="#/ex/${x.ex.id}" style="color:inherit"><span class="li-ico" style="background:${evIcon[x.type][1]}">${evIcon[x.type][0]}</span><span class="grow"><strong class="ellipsis">${esc(x.ex.name_pt)}</strong><br><span class="li-sub">${evText(x)}</span></span><span class="tiny muted">${fmtDay(x.date, { weekday: false })}</span></a></li>`).join('')}</ul></div>
+    </div>` : '';
   el.innerHTML = table.length ? `
-    <div class="card">
+    <div class="tiles">
+      <div class="tile"><div class="v">${pc.distinct}</div><div class="l">exercícios diferentes feitos</div></div>
+      <div class="tile"><div class="v">${pc.performed}</div><div class="l">exercícios realizados no total</div></div>
+      <div class="tile"><div class="v">${pc.setDays}</div><div class="l">dias em que você aumentou as séries</div></div>
+      <div class="tile"><div class="v">${pc.loadUps}</div><div class="l">aumentos de carga</div></div>
+    </div>
+    <div class="card mt">
       <select data-ex-select aria-label="Exercício">${table.map((r) => `<option value="${r.ex.id}" ${r.ex.id === selectedExercise ? 'selected' : ''}>${esc(r.ex.name_pt)}</option>`).join('')}</select>
       <div class="chart-box mt"><canvas id="c-ex" aria-label="Carga e 1RM estimado"></canvas></div>
       <p class="tiny muted" style="margin:6px 0 0"><a href="#/ex/${selectedExercise}">Abrir exercício ›</a></p>
@@ -282,6 +296,7 @@ function forca(el) {
       ${table.map((r) => `<tr><td><a href="#/ex/${r.ex.id}">${esc(r.ex.name_pt)}</a><br><span class="tiny muted">${r.sessions} treinos</span></td><td class="num">${fmtKg(r.best)} kg</td><td><span class="trend ${r.trend}">${r.trend === 'new' ? 'novo' : `${r.changePct > 0 ? '+' : ''}${r.changePct}%`}${r.trend === 'stalled' ? ' · parado' : r.trend === 'down' ? ' · caiu' : ''}</span></td></tr>`).join('')}
       </tbody></table>
     </div>
+    ${timeline}
     <div class="card mt"><h3>Recordes recentes</h3>
       ${prs.length ? `<ul class="list">${prs.map((l) => `<li class="row between" style="padding:8px 0"><span>🏆 ${esc(exercise(l.exercise_id)?.name_pt || l.exercise_id)}<br><span class="tiny muted">${lbl(l.session_id)}</span></span><span class="small num"><strong>${fmtKg(l.load_kg)} × ${l.reps}</strong><br><span class="tiny muted">1RM ${fmtKg(e1rm(l.load_kg, l.reps))}</span></span></li>`).join('')}</ul>` : '<p class="muted small">Sem recordes ainda.</p>'}
     </div>` : '<div class="card"><p class="muted" style="margin:0">Registre séries para ver sua evolução de força.</p></div>';

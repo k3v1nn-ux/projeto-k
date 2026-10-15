@@ -1,5 +1,6 @@
 // "Ajustes": cloud sync (+ diagnostics), theme, training options, unavailable equipment,
 // Spotify, Apple Health shortcut and data export.
+import * as db from '../db.js';
 import { settings, updateSettings, restorePayload, applyRestore } from '../settings.js';
 import { api, sync, syncState } from '../sync.js';
 import { allExercises, seedTables } from '../program.js';
@@ -37,12 +38,20 @@ export function render(view) {
 
     <div class="section"><div class="section-title">Reinstalar sem perder nada</div>
       <div class="card">
-        <p class="small" style="margin-top:0">Ao apagar o app da Tela de Início, o iPhone apaga junto os dados dele. Guarde este código (ex.: no app Notas). Numa instalação nova, cole aqui: a planilha, o Spotify, a chave da IA e os ajustes voltam, e os treinos são baixados da planilha.</p>
-        <div class="row gap"><button class="btn grow" data-action="copy-restore">Copiar meu código</button></div>
-        <textarea data-restore-out readonly hidden class="mt"></textarea>
-        <label class="field mt" style="margin-bottom:8px"><span>Colar código de restauração</span><textarea data-restore-in placeholder="ANT1.…"></textarea></label>
-        <button class="btn primary block" data-action="restore">Restaurar</button>
-        <p class="muted tiny" style="margin:8px 0 0">O código contém seu token e chaves: não compartilhe. Para receber versões novas do app não é preciso reinstalar; ele se atualiza sozinho.</p>
+        <p class="small" style="margin-top:0"><strong>Automático com Face ID:</strong> salve seu acesso nas Senhas do iCloud (Keychain). Se um dia reinstalar o app, é só tocar no campo de acesso, confirmar com Face ID e tudo volta: planilha, Spotify, chave da IA, ajustes e todos os treinos.</p>
+        <form data-form="keychain" autocomplete="on">
+          <input type="text" name="username" autocomplete="username" value="${esc(`Antares · ${(db.get('profile', 'me')?.name || 'meu acesso')}`)}" readonly style="margin-bottom:8px">
+          <input type="password" name="password" autocomplete="new-password" data-keychain-code placeholder="gerando…">
+          <button class="btn primary block mt" type="submit">Salvar no iCloud (Keychain)</button>
+        </form>
+        <p class="muted tiny" style="margin:8px 0 0">O iPhone pergunta “Salvar senha?”: toque em <strong>Salvar</strong>. Faça de novo se trocar a planilha, a chave da IA ou reconectar o Spotify.</p>
+        <details class="mt"><summary class="small">Alternativa: código manual</summary>
+          <div class="row gap mt"><button type="button" class="btn grow" data-action="copy-restore">Copiar meu código</button></div>
+          <textarea data-restore-out readonly hidden class="mt"></textarea>
+          <label class="field mt" style="margin-bottom:8px"><span>Colar código de restauração</span><textarea data-restore-in placeholder="ANT1.…"></textarea></label>
+          <button type="button" class="btn block" data-action="restore">Restaurar</button>
+        </details>
+        <p class="muted tiny" style="margin:8px 0 0">Para receber versões novas do app não é preciso reinstalar: ele se atualiza sozinho.</p>
       </div>
     </div>
 
@@ -58,11 +67,11 @@ export function render(view) {
       <div class="card">
         <div class="row between" style="margin-bottom:12px"><span>Nível ativo</span>
           <div class="seg" role="group" aria-label="Nível">
-            <button data-level="base" aria-pressed="${s.level === 'base'}">Base</button>
-            <button data-level="intermediate" aria-pressed="${s.level === 'intermediate'}" ${intermediateOk ? '' : 'disabled title="Bloqueado"'}>${intermediateOk ? '' : '🔒 '}Intermediário</button>
+            <button data-level="base" aria-pressed="${s.level === 'base'}">Base (3×12)</button>
+            <button data-level="intermediate" aria-pressed="${s.level === 'intermediate'}" ${intermediateOk ? '' : 'disabled title="Bloqueado"'}>${intermediateOk ? '' : '🔒 '}Avançado (4×12)</button>
           </div>
         </div>
-        ${intermediateOk ? '' : '<p class="muted small">O Intermediário desbloqueia com 8 semanas com pelo menos 3 de 4 treinos (veja Troféus).</p>'}
+        ${intermediateOk ? '' : '<p class="muted small">O Avançado (4×12) desbloqueia com 8 semanas com pelo menos 3 de 4 treinos (veja Troféus).</p>'}
         <div class="row between" style="margin-bottom:12px"><span>Meta de treinos por semana</span>
           <div class="seg" role="group" aria-label="Meta semanal">${[3, 4, 5].map((n) => `<button data-target="${n}" aria-pressed="${Number(s.weeklyTarget) === n}">${n}</button>`).join('')}</div>
         </div>
@@ -98,7 +107,26 @@ export function render(view) {
     <p class="muted tiny center" style="margin-top:24px">Antares V3 · dados locais em IndexedDB + planilha · imagens: free-exercise-db (domínio público)</p>`;
 
   bind(view);
+  bindKeychain(view);
   bindSpotifySettings(view, () => render(view));
+}
+
+/**
+ * Lets iOS offer "Save password?": a real form submit with username + password, then the form
+ * leaves the page (Safari treats that as a completed sign-in) and comes back.
+ */
+async function bindKeychain(view) {
+  const field = view.querySelector('[data-keychain-code]');
+  if (!field) return;
+  field.value = `ANT1.${await packJson(restorePayload())}`;
+  const form = field.form;
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const holder = document.createElement('div');
+    form.replaceWith(holder);
+    history.pushState(null, '', location.hash);
+    setTimeout(() => { holder.replaceWith(form); toast('Se o iPhone perguntou, toque em “Salvar senha”.', { ms: 4000 }); }, 600);
+  });
 }
 
 function statusText(st) {
@@ -162,7 +190,7 @@ function bind(view) {
     const level = e.target.closest('[data-level]');
     if (level && !level.disabled) {
       updateSettings({ level: level.dataset.level });
-      toast(`Nível ${level.dataset.level === 'base' ? 'Base' : 'Intermediário'} ativo`);
+      toast(`Nível ${level.dataset.level === 'base' ? 'Base (3×12)' : 'Avançado (4×12)'} ativo`);
       render(view);
       return;
     }

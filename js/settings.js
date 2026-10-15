@@ -22,6 +22,7 @@ const DEFAULTS = {
   weeklyTarget: 4, // lifting sessions per week
   restDays: [3, 6, 7], // preferred rest weekdays (1 = Monday), used only to project the week
   anthropicKey: '', // Claude API key for the AI analysis (stays on this device)
+  gymClose: { 6: '19:00', 7: '15:00' }, // Smart Fit closing time by weekday (Saturday 19h, Sunday 15h)
 };
 
 let cache;
@@ -60,7 +61,7 @@ export function applyTheme() {
   if (t === 'auto') root.removeAttribute('data-theme');
   else root.setAttribute('data-theme', t);
   const dark = t === 'dark' || (t === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#000000' : '#f2f2f7');
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#0b0b0d' : '#e9e9ee');
 }
 
 export function isConfigured() {
@@ -70,7 +71,7 @@ export function isConfigured() {
 
 /* ---------- restore code (reinstalling the home-screen app starts with empty storage) ---------- */
 const RESTORE_KEYS = ['apiUrl', 'token', 'suggestToken', 'ownerName', 'theme', 'level', 'startDate', 'unavailable', 'allowSquatVariants',
-  'restSound', 'spotifyClientId', 'playlistUrl', 'shortcutName', 'weeklyTarget', 'restDays', 'anthropicKey'];
+  'restSound', 'spotifyClientId', 'playlistUrl', 'shortcutName', 'weeklyTarget', 'restDays', 'anthropicKey', 'gymClose'];
 
 export function restorePayload() {
   const s = settings();
@@ -84,4 +85,11 @@ export function applyRestore(payload) {
   const patch = Object.fromEntries(Object.entries(payload.settings).filter(([k]) => RESTORE_KEYS.includes(k)));
   updateSettings(patch);
   try { if (payload.spotify) localStorage.setItem('pk.spotify', JSON.stringify(payload.spotify)); } catch { /* ignore */ }
+}
+
+/** Gym closing time for a date ("19:00") or "" when it follows the regular hours. */
+export function gymCloseFor(dateKeyStr) {
+  const [y, m, d] = dateKeyStr.split('-').map(Number);
+  const wd = new Date(y, m - 1, d).getDay() || 7;
+  return (settings().gymClose || {})[wd] || '';
 }

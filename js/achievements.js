@@ -23,7 +23,7 @@ export const ACHIEVEMENTS = [
   { id: 'workouts_50', tier: 'silver', title: '50 treinos', desc: 'Complete 50 treinos.', target: 50, value: (s) => s.totalWorkouts },
   { id: 'adherence_4w', tier: 'gold', title: 'Um mês de constância', desc: '4 semanas com pelo menos 75% da meta (3 de 4 treinos).', target: 4, value: (s) => s.weeks75 },
   { id: 'streak_8', tier: 'gold', title: 'Dois meses na meta', desc: '8 semanas seguidas batendo a meta.', target: 8, value: (s) => s.weekStreakRecord },
-  { id: 'intermediate_unlocked', tier: 'gold', title: 'Nível Intermediário', desc: '8 semanas com ≥ 75% da meta desbloqueiam o treino Intermediário.', target: 8, value: (s) => s.weeks75 },
+  { id: 'intermediate_unlocked', tier: 'gold', title: 'Nível Avançado', desc: '8 semanas com ≥ 75% da meta desbloqueiam o treino Avançado (4×12).', target: 8, value: (s) => s.weeks75 },
   { id: 'workouts_100', tier: 'gold', title: '100 treinos', desc: 'Complete 100 treinos.', target: 100, value: (s) => s.totalWorkouts },
 ];
 

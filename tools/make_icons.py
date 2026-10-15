@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Draws the Antares V3 icon — a four-point star (Antares, the red supergiant) glowing over a
-night-sky gradient — as PNG, anti-aliased by supersampling, no dependencies.
+"""Draws the Antares V3 icon — a silver four-point star with a faint warm core over a graphite
+gradient — as PNG, anti-aliased by supersampling, no dependencies.
 Run: python3 tools/make_icons.py"""
 import math
 import os
@@ -8,12 +8,12 @@ import struct
 import zlib
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SKY_TOP = (23, 15, 51)      # #170f33
-SKY_MID = (53, 18, 63)      # #35123f
-SKY_LOW = (116, 32, 46)     # #74202e
-GLOW = (255, 106, 61)       # #ff6a3d
-CORE = (255, 246, 236)
-EDGE = (255, 120, 74)
+SKY_TOP = (52, 52, 59)      # graphite #34343b
+SKY_MID = (28, 28, 33)      # #1c1c21
+SKY_LOW = (14, 14, 17)      # #0e0e11
+GLOW = (200, 200, 214)      # silver halo
+CORE = (255, 236, 222)      # faint warm core (Antares is a red star)
+EDGE = (214, 216, 226)      # silver tips
 SS = 3
 
 STARS = [(20, 22, .9), (78, 16, .7), (16, 74, .6), (84, 80, .8), (66, 88, .5), (30, 88, .45), (88, 44, .5)]
@@ -27,7 +27,7 @@ def sky(x, y):
     t = min(1, max(0, (y * 0.75 + x * 0.25) / 100))
     col = lerp(SKY_TOP, SKY_MID, t / 0.6) if t < 0.6 else lerp(SKY_MID, SKY_LOW, (t - 0.6) / 0.4)
     d2 = (x - 50) ** 2 + (y - 50) ** 2
-    g = math.exp(-d2 / (2 * 19 ** 2)) * 0.75
+    g = math.exp(-d2 / (2 * 19 ** 2)) * 0.45
     col = lerp(col, GLOW, g)
     for sx, sy, a in STARS:
         dd = (x - sx) ** 2 + (y - sy) ** 2

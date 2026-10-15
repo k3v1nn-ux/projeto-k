@@ -4,7 +4,7 @@ PWA pessoal de treino (mobile-first, offline-first) para a Smart Fit: rodízio S
 
 **App:** https://k3v1nn-ux.github.io/projeto-k/
 
-> Antares é a supergigante vermelha do coração de Escorpião: daí o logo (estrela de quatro pontas) e a paleta laranja-avermelhada sobre um céu noturno. O visual segue os padrões do iOS (fundos agrupados, listas inset, numerais arredondados, barras com blur).
+> Antares é a supergigante vermelha do coração de Escorpião: daí o logo (estrela de quatro pontas prateada com núcleo levemente quente). O visual é **grafite + vidro**: superfícies translúcidas com desfoque (como o Liquid Glass do iOS), destaque branco/prata, verde do sistema para o que foi concluído, e uma versão clara em alumínio.
 
 ---
 
@@ -115,7 +115,9 @@ Para publicar uma mudança:
 
 > **Não precisa reinstalar para atualizar:** o app baixa versões novas sozinho (feche e abra). Só é preciso apagar e adicionar de novo quando o **ícone ou o nome** mudam.
 >
-> **Reinstalou? Nada se perde:** o iPhone apaga os dados de um app da Tela de Início junto com o ícone. Antes de apagar, vá em **Ajustes → Reinstalar sem perder nada → Copiar meu código** e cole no app Notas. Na instalação nova, cole o código no mesmo lugar e toque em **Restaurar**: planilha, token, Spotify, chave da IA e ajustes voltam, e os treinos, o perfil e a foto são baixados da planilha. O código contém seus tokens: não compartilhe.
+> **Reinstalar com Face ID (recomendado):** em **Ajustes → Reinstalar sem perder nada**, toque em **Salvar no iCloud (Keychain)** e aceite "Salvar senha". Numa instalação nova, a tela Hoje mostra "Já usava o Antares?": toque no campo, escolha o acesso salvo (Face ID) e toque em **Restaurar**.
+>
+> **Reinstalou? Nada se perde (alternativa manual):** o iPhone apaga os dados de um app da Tela de Início junto com o ícone. Antes de apagar, vá em **Ajustes → Reinstalar sem perder nada → Copiar meu código** e cole no app Notas. Na instalação nova, cole o código no mesmo lugar e toque em **Restaurar**: planilha, token, Spotify, chave da IA e ajustes voltam, e os treinos, o perfil e a foto são baixados da planilha. O código contém seus tokens: não compartilhe.
 
 - **iPhone:** abra o link no **Safari** → botão Compartilhar → **Adicionar à Tela de Início**. Abra sempre pelo ícone (tela cheia, e o iOS não apaga os dados de apps instalados).
 - **Mac:** Safari → **Arquivo → Adicionar ao Dock** (macOS Sonoma+), ou Chrome → ícone de instalar na barra de endereço.
@@ -200,6 +202,9 @@ Cada exercício tem 1–2 alternativas com equipamento padrão de academia (máq
 
 ### Regras
 
+- **Séries e repetições:** **3×12** no nível Base e **4×12** no Avançado. A carga sobe quando você fecha 12 repetições em todas as séries.
+- **Apagar série:** arraste a série para a esquerda (registrada = apaga o registro; ainda não feita = sai do treino de hoje).
+- **Smart Fit:** sábado fecha às 19h e domingo às 15h; a tela Hoje avisa quanto tempo falta e a Semana mostra o horário.
 - **Descanso:** 120 s nos compostos, 60–90 s nos isolados [8, 9]. O cronômetro inicia sozinho ao registrar a série.
 - **Intensidade:** RIR 1–3 (parar com 1–3 repetições "na reserva"); não é preciso ir à falha [5, 6, 7].
 - **Faixas:** 8–12 repetições na maioria, 12–15 nos isolados e panturrilha [4].
@@ -232,16 +237,16 @@ Cada exercício tem 1–2 alternativas com equipamento padrão de academia (máq
 | Aba | O que tem |
 |---|---|
 | **Hoje** | Treino sugerido com anel de progresso, cronômetro do treino, faixa da semana, etapa 1 (cardio de aquecimento), etapa 2 (exercícios em acordeão, séries pré-preenchidas, 1 toque para registrar, descanso automático), trocar treino/aparelho, descansar hoje, só cardio, minicontrole de música. Dias passados podem ser editados. |
-| **Semana** | Seg–dom com o feito e o previsto pelo rodízio; tocar num dia mostra o treino e permite marcar/tirar descanso; dias de descanso preferidos. |
+| **Semana** | Resumo (treinos/meta, séries, volume, minutos, cardio, séries por grupo, recordes) e seg–dom com detalhes de cada dia (exercícios, séries, volume, duração, cardio, recordes, horário da Smart Fit); tocar num dia mostra o treino e permite marcar/tirar descanso. |
 | **Música** | Player do Spotify, playlists e aparelhos (ou o player embutido da playlist sem login). |
-| **Progresso** | *Visão geral* (semana, sequência, recomendações, mapa de frequência, treinos por semana) · *Treinos* (equilíbrio do rodízio, séries por grupo vs referência, cardio, histórico) · *Força* (gráfico por exercício, tabela com 1RM e tendência: subindo/parado/caiu, recordes) · *Corpo* (peso, IMC, força relativa, medidas) · *Relógio* (dados do Saúde) · *IA* · *Troféus*. |
+| **Progresso** | *Visão geral* (semana, sequência, recomendações, mapa de frequência, treinos por semana) · *Treinos* (equilíbrio do rodízio, séries por grupo vs referência, cardio, histórico) · *Força* (exercícios diferentes e realizados, dias em que as séries aumentaram, aumentos de carga, linha do tempo da evolução, gráfico por exercício, tabela com 1RM e tendência, recordes) · *Corpo* (peso, IMC, força relativa, medidas) · *Relógio* (dados do Saúde) · *IA* · *Troféus*. |
 | **Mais** | Perfil, Treinos recebidos (com selo de pendentes), Troféus, Atalho do Saúde, Programa e fontes, Ajustes. |
 
 **Recomendações (sem IA):** regras locais apontam treinos que faltam na semana, exercícios parados há 3 treinos (com alternativas), grupos com pouco volume, rodízio desequilibrado, muitos dias sem treinar, hora de deload, peso sem registro ou caindo demais para o objetivo, pouco cardio e sono curto.
 
 **Análise com IA (Progresso → IA):** usa o modelo **Claude Opus 5.5** (`claude-opus-5-5`) pelo SDK oficial `@anthropic-ai/sdk` (carregado do jsDelivr só quando você pede a análise), com raciocínio adaptativo, resposta em streaming e fallback do servidor se a requisição for recusada. O app envia um **resumo numérico** (perfil, semanas, força por exercício, séries por grupo, peso, médias do relógio, exercícios indisponíveis), nunca a planilha inteira. Para usar, crie uma chave em https://console.anthropic.com → API Keys e cole na aba IA; ela fica só no aparelho. Cada análise custa poucos centavos de dólar. As análises ficam salvas na aba `ai_reports`.
 
-**Perfil:** nome, foto (só no aparelho), nascimento, sexo, altura, objetivo, experiência e observações (aba `profile`); o peso é registrado com data (aba `body_logs`) para mostrar a evolução e alimentar a IA.
+**Perfil:** nome, avatar (16 opções) ou foto, nascimento, sexo, altura, objetivo, experiência e observações (aba `profile`); o peso é registrado com data (aba `body_logs`) para mostrar a evolução e alimentar a IA.
 
 **Ícone e nome:** "Antares" com a estrela de quatro pontas. Para o iOS pegar o ícone novo, copie o código de restauração, apague o app da Tela de Início, adicione de novo e restaure.
 
