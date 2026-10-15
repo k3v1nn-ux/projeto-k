@@ -140,7 +140,10 @@ async function main() {
   renderSyncBadge(syncState());
 
   window.addEventListener('hashchange', route);
-  db.onChange((info) => { if (info.remote) { refresh(); afterDataChange(); } });
+  db.onChange((info) => {
+    if (info.remote || info.table === 'achievements') refresh();
+    if (info.table !== 'achievements') afterDataChange();
+  });
   route();
 
   setInterval(tickSessionClock, 1000);
