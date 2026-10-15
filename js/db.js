@@ -9,6 +9,8 @@ const DB_VERSION = 1;
 let dbPromise;
 const mem = {}; // table -> Map(id -> row)
 const listeners = new Set();
+let version = 0; // bumps on every change; invalidates memoized indexes
+const memo = new Map();
 
 function openDb() {
   if (dbPromise) return dbPromise;
@@ -46,6 +48,7 @@ export async function loadAll() {
     const rows = await reqP(tx.objectStore(t).getAll());
     mem[t] = new Map(rows.map((r) => [r.id, r]));
   }));
+  memo.clear();
   if (navigator.storage?.persist) navigator.storage.persist().catch(() => {});
 }
 
@@ -55,12 +58,40 @@ export function onChange(fn) {
 }
 
 function emit(info) {
+  version++;
+  memo.clear();
   listeners.forEach((fn) => fn(info));
+}
+
+/** Memoized derived data, recomputed only after the data changes. */
+export function cached(key, compute) {
+  if (!memo.has(key)) memo.set(key, compute());
+  return memo.get(key);
+}
+
+/** Live rows grouped by a field, e.g. index('set_logs', 'session_id').get('2026-10-14'). */
+export function index(table, field) {
+  return cached(`idx:${table}:${field}`, () => {
+    const m = new Map();
+    for (const r of all(table)) {
+      const k = r[field];
+      if (!m.has(k)) m.set(k, []);
+      m.get(k).push(r);
+    }
+    return m;
+  });
+}
+
+export const dataVersion = () => version;
+
+/** Drops memoized data after a change that does not go through save() (e.g. localStorage). */
+export function invalidate() {
+  memo.clear();
 }
 
 /** Live rows (not soft-deleted). */
 export function all(table) {
-  return Array.from(mem[table]?.values() || []).filter((r) => !r.deleted);
+  return cached(`all:${table}`, () => Array.from(mem[table]?.values() || []).filter((r) => !r.deleted));
 }
 
 export function get(table, id) {

@@ -1,13 +1,15 @@
 {
-  "version": 1,
+  "version": 2,
   "name": "Projeto K — Superior/Inferior",
   "levels": {
     "base": {
       "label": "Base",
-      "days": [
+      "weekly_target": 4,
+      "rotation": [
         {
-          "type": "lift",
+          "slot": "upper_a",
           "session_name": "Superior A",
+          "focus": "Peito, costas, ombros e braços",
           "exercises": [
             {
               "exercise_id": "db_bench_press",
@@ -66,13 +68,13 @@
               "notes": ""
             }
           ],
-          "weekday": 1,
-          "weekday_pt": "Segunda",
-          "post_cardio": "Opcional: 10–20 min de cardio leve (zona 2) depois da musculação, nunca antes."
+          "type": "lift",
+          "order": 1
         },
         {
-          "type": "lift",
+          "slot": "lower_a",
           "session_name": "Inferior A",
+          "focus": "Quadríceps, posteriores e panturrilhas",
           "exercises": [
             {
               "exercise_id": "leg_press",
@@ -123,24 +125,13 @@
               "notes": ""
             }
           ],
-          "weekday": 2,
-          "weekday_pt": "Terça",
-          "post_cardio": "Opcional: 10–20 min de cardio leve (zona 2) depois da musculação, nunca antes."
-        },
-        {
-          "type": "cardio",
-          "session_name": "Cardio Z2 + mobilidade",
-          "cardio": {
-            "minutes_min": 25,
-            "minutes_max": 35,
-            "note": "Zona 2: ritmo em que você consegue conversar em frases completas (esforço 3–4 de 10). Esteira inclinada, bike ou elíptico. Termine com 5–10 min de mobilidade de quadril, tornozelo e ombros."
-          },
-          "weekday": 3,
-          "weekday_pt": "Quarta"
-        },
-        {
           "type": "lift",
+          "order": 2
+        },
+        {
+          "slot": "upper_b",
           "session_name": "Superior B",
+          "focus": "Costas, peito inclinado, ombros e braços",
           "exercises": [
             {
               "exercise_id": "machine_row",
@@ -199,13 +190,13 @@
               "notes": ""
             }
           ],
-          "weekday": 4,
-          "weekday_pt": "Quinta",
-          "post_cardio": "Opcional: 10–20 min de cardio leve (zona 2) depois da musculação, nunca antes."
+          "type": "lift",
+          "order": 3
         },
         {
-          "type": "lift",
+          "slot": "lower_b",
           "session_name": "Inferior B",
+          "focus": "Glúteos, posteriores e quadríceps",
           "exercises": [
             {
               "exercise_id": "hip_thrust",
@@ -264,35 +255,19 @@
               "notes": ""
             }
           ],
-          "weekday": 5,
-          "weekday_pt": "Sexta",
-          "post_cardio": "Opcional: 10–20 min de cardio leve (zona 2) depois da musculação, nunca antes."
-        },
-        {
-          "type": "cardio",
-          "session_name": "Cardio Z2 + mobilidade",
-          "cardio": {
-            "minutes_min": 25,
-            "minutes_max": 35,
-            "note": "Zona 2: ritmo em que você consegue conversar em frases completas (esforço 3–4 de 10). Esteira inclinada, bike ou elíptico. Termine com 5–10 min de mobilidade de quadril, tornozelo e ombros."
-          },
-          "weekday": 6,
-          "weekday_pt": "Sábado"
-        },
-        {
-          "type": "rest",
-          "session_name": "Descanso",
-          "weekday": 7,
-          "weekday_pt": "Domingo"
+          "type": "lift",
+          "order": 4
         }
       ]
     },
     "intermediate": {
       "label": "Intermediário",
-      "days": [
+      "weekly_target": 4,
+      "rotation": [
         {
-          "type": "lift",
+          "slot": "upper_a",
           "session_name": "Superior A+",
+          "focus": "Peito, costas, ombros e braços",
           "exercises": [
             {
               "exercise_id": "db_bench_press",
@@ -359,13 +334,13 @@
               "notes": ""
             }
           ],
-          "weekday": 1,
-          "weekday_pt": "Segunda",
-          "post_cardio": "Opcional: 10–20 min de cardio leve (zona 2) depois da musculação, nunca antes."
+          "type": "lift",
+          "order": 1
         },
         {
-          "type": "lift",
+          "slot": "lower_a",
           "session_name": "Inferior A+",
+          "focus": "Quadríceps, posteriores e panturrilhas",
           "exercises": [
             {
               "exercise_id": "leg_press",
@@ -424,24 +399,13 @@
               "notes": ""
             }
           ],
-          "weekday": 2,
-          "weekday_pt": "Terça",
-          "post_cardio": "Opcional: 10–20 min de cardio leve (zona 2) depois da musculação, nunca antes."
-        },
-        {
-          "type": "cardio",
-          "session_name": "Cardio Z2 + mobilidade",
-          "cardio": {
-            "minutes_min": 25,
-            "minutes_max": 35,
-            "note": "Zona 2: ritmo em que você consegue conversar em frases completas (esforço 3–4 de 10). Esteira inclinada, bike ou elíptico. Termine com 5–10 min de mobilidade de quadril, tornozelo e ombros."
-          },
-          "weekday": 3,
-          "weekday_pt": "Quarta"
-        },
-        {
           "type": "lift",
+          "order": 2
+        },
+        {
+          "slot": "upper_b",
           "session_name": "Superior B+",
+          "focus": "Costas, peito inclinado, ombros e braços",
           "exercises": [
             {
               "exercise_id": "machine_row",
@@ -508,13 +472,13 @@
               "notes": ""
             }
           ],
-          "weekday": 4,
-          "weekday_pt": "Quinta",
-          "post_cardio": "Opcional: 10–20 min de cardio leve (zona 2) depois da musculação, nunca antes."
+          "type": "lift",
+          "order": 3
         },
         {
-          "type": "lift",
+          "slot": "lower_b",
           "session_name": "Inferior B+",
+          "focus": "Glúteos, posteriores e quadríceps",
           "exercises": [
             {
               "exercise_id": "hip_thrust",
@@ -581,38 +545,27 @@
               "notes": ""
             }
           ],
-          "weekday": 5,
-          "weekday_pt": "Sexta",
-          "post_cardio": "Opcional: 10–20 min de cardio leve (zona 2) depois da musculação, nunca antes."
-        },
-        {
-          "type": "cardio",
-          "session_name": "Cardio Z2 + mobilidade",
-          "cardio": {
-            "minutes_min": 25,
-            "minutes_max": 35,
-            "note": "Zona 2: ritmo em que você consegue conversar em frases completas (esforço 3–4 de 10). Esteira inclinada, bike ou elíptico. Termine com 5–10 min de mobilidade de quadril, tornozelo e ombros."
-          },
-          "weekday": 6,
-          "weekday_pt": "Sábado"
-        },
-        {
-          "type": "rest",
-          "session_name": "Descanso",
-          "weekday": 7,
-          "weekday_pt": "Domingo"
+          "type": "lift",
+          "order": 4
         }
       ]
     }
   },
   "rules": {
-    "split_rationale": "Superior/Inferior 4x por semana treina cada grupo 2x/semana com ~9–12 séries semanais nos grupos grandes, cabendo em sessões de ~50–60 min. Quarta e sábado ficam para cardio zona 2 e mobilidade (recuperação ativa e saúde cardiovascular), domingo é descanso total. Nunca há dois dias seguidos treinando os mesmos músculos.",
+    "split_rationale": "Rodízio Superior A → Inferior A → Superior B → Inferior B com meta de 4 treinos por semana: cada grupo é treinado 2x/semana com ~9–12 séries semanais nos grupos grandes, em sessões de ~50–60 min. Você escolhe os dias de descanso; o próximo treino é sempre o que está há mais tempo sem ser feito, então pular ou trocar um dia não desequilibra os grupos musculares.",
+    "weekly_target": 4,
+    "rotation_rule": "O treino sugerido é o do rodízio feito há mais tempo. Trocar o treino do dia ou descansar não perde nada: o treino pendente passa para o próximo dia de treino.",
     "rir": {
       "base": "1–3 repetições em reserva (pare quando sentir que faria mais 1–3 reps com boa técnica).",
       "intermediate": "0–2 repetições em reserva nos isolados; 1–2 nos compostos."
     },
+    "cardio_pre": {
+      "minutes": 10,
+      "note": "Antes de todo treino: 8–10 min de esteira inclinada, bike ou elíptico em ritmo leve (zona 2: dá para conversar). Conta como cardio do dia."
+    },
+    "cardio_only": "Dia só de cardio é permitido: registre o cardio e o treino do rodízio continua pendente para o próximo dia (os exercícios ficam como não feitos).",
     "warmup": [
-      "5 min de esteira ou bike leve.",
+      "Cardio leve de 8–10 min (já registrado como cardio do dia).",
       "1 min de mobilidade: círculos de ombro, abertura de quadril.",
       "No 1º exercício: 1 série com ~50% da carga × 10 e 1 série com ~75% × 5 (não registrar)."
     ],
@@ -635,13 +588,13 @@
       ],
       "stall_rule": "Se ficar abaixo do mínimo da faixa em 2 treinos seguidos, reduza ~10% e reconstrua."
     },
-    "missed_rule": "Dia planejado de musculação ou cardio sem sessão registrada até 23h59 vira falta. Domingo (descanso) não conta e não quebra a sequência.",
+    "adherence_rule": "Não existe falta por dia: a aderência é semanal (treinos de musculação feitos ÷ meta de 4). Dias de descanso são escolhidos por você e dia só de cardio não conta como treino.",
     "intermediate_unlock": {
       "weeks_required": 8,
-      "min_adherence": 0.8,
-      "description": "8 semanas (não precisam ser seguidas) com aderência ≥ 80% desbloqueiam o nível Intermediário."
+      "min_adherence": 0.75,
+      "description": "8 semanas (não precisam ser seguidas) com pelo menos 3 de 4 treinos (≥ 75%) desbloqueiam o nível Intermediário."
     },
-    "cardio": "Zona 2 / leve-moderado: 25–35 min nos dias de cardio; opcional 10–20 min após a musculação.",
+    "cardio": "Zona 2 / leve-moderado: 8–10 min antes de cada treino; dias só de cardio (25–35 min) são opcionais e não contam como treino.",
     "no_squat_policy": "Nenhuma variação de agachamento no plano (preferência pessoal). Afundo e búlgaro existem apenas como opção marcada com is_squat_variant=true, desligados por padrão (Configurações)."
   },
   "exercises": [
@@ -2308,7 +2261,7 @@
       "key": "wilson2012concurrent",
       "ref": "Wilson JM, Marin PJ, Rhea MR, et al. Concurrent training: a meta-analysis examining interference of aerobic and resistance exercises. J Strength Cond Res. 2012;26(8):2293-2307.",
       "doi": "10.1519/JSC.0b013e31823a3e2d",
-      "used_for": "Cardio moderado e curto (bike/caminhada) interfere pouco na hipertrofia; feito depois da musculação."
+      "used_for": "Cardio curto e leve (bike/caminhada) interfere pouco na hipertrofia: por isso o cardio fica como aquecimento de 8–10 min."
     },
     {
       "key": "who2020",

@@ -1,4 +1,4 @@
-// "Ajustes": cloud sync, theme, training options, unavailable equipment, friend link,
+// "Ajustes": cloud sync (+ diagnostics), theme, training options, unavailable equipment,
 // Spotify, Apple Health shortcut and data export.
 import { settings, updateSettings } from '../settings.js';
 import { api, sync, syncState } from '../sync.js';
@@ -8,7 +8,6 @@ import { exportCsv, exportAllCsvZip, exportJson, importJson } from '../export.js
 import { toast, confirmSheet } from '../ui.js';
 import { esc } from '../util.js';
 import { isUnlocked } from '../achievements.js';
-import { friendSettingsHtml, bindFriendSettings } from '../friend.js';
 import { spotifySettingsHtml, bindSpotifySettings } from '../spotify.js';
 
 const GROUP_ORDER = ['peito', 'costas', 'ombros', 'bíceps', 'tríceps', 'quadríceps', 'posteriores', 'glúteos', 'adutores', 'panturrilhas', 'abdômen'];
@@ -20,7 +19,7 @@ export function render(view) {
   const byGroup = GROUP_ORDER.map((g) => [g, allExercises().filter((e) => e.muscle_group === g)]);
 
   view.innerHTML = `
-    <h1>Ajustes</h1>
+    <div class="page-head"><h1>Ajustes</h1></div>
 
     <div class="section"><div class="section-title">Planilha (Google Sheets)</div>
       <div class="card">
@@ -30,8 +29,9 @@ export function render(view) {
           <div class="row gap"><button class="btn primary grow" type="submit">Salvar e testar</button><button class="btn grow" type="button" data-action="sync">Sincronizar</button></div>
         </form>
         <p class="muted small" style="margin-top:10px">Status: <strong>${statusText(st)}</strong>${st.pending ? ` · ${st.pending} registro(s) na fila` : ''}${st.lastSync ? ` · última: ${st.lastSync.toLocaleTimeString('pt-BR')}` : ''}${st.error ? `<br>Erro: ${esc(st.error)}` : ''}</p>
-        <button class="btn small ghost" data-action="seed">Enviar exercícios e plano para a planilha</button>
-        <p class="muted tiny" style="margin-top:6px">A URL e o token ficam só neste aparelho. Repita a configuração no Mac.</p>
+        <div class="row gap wrap"><button class="btn small" data-action="diagnose">Diagnóstico da planilha</button><button class="btn small ghost" data-action="seed">Enviar programa para a planilha</button></div>
+        <div data-diag></div>
+        <p class="muted tiny" style="margin-top:8px">A URL e o token ficam só neste aparelho. Repita a configuração no Mac.</p>
       </div>
     </div>
 
@@ -51,7 +51,10 @@ export function render(view) {
             <button data-level="intermediate" aria-pressed="${s.level === 'intermediate'}" ${intermediateOk ? '' : 'disabled title="Bloqueado"'}>${intermediateOk ? '' : '🔒 '}Intermediário</button>
           </div>
         </div>
-        ${intermediateOk ? '' : '<p class="muted small">O Intermediário desbloqueia com 8 semanas de aderência ≥ 80% (veja Troféus).</p>'}
+        ${intermediateOk ? '' : '<p class="muted small">O Intermediário desbloqueia com 8 semanas com pelo menos 3 de 4 treinos (veja Troféus).</p>'}
+        <div class="row between" style="margin-bottom:12px"><span>Meta de treinos por semana</span>
+          <div class="seg" role="group" aria-label="Meta semanal">${[3, 4, 5].map((n) => `<button data-target="${n}" aria-pressed="${Number(s.weeklyTarget) === n}">${n}</button>`).join('')}</div>
+        </div>
         <label class="field"><span>Início do programa (a 1ª semana é de reentrada)</span><input type="date" name="startDate" value="${esc(s.startDate)}"></label>
         <label class="check"><input type="checkbox" name="restSound" ${s.restSound ? 'checked' : ''}> <span>Som ao fim do descanso</span></label>
         <label class="check"><input type="checkbox" name="allowSquatVariants" ${s.allowSquatVariants ? 'checked' : ''}> <span>Permitir afundo/búlgaro como alternativa</span></label>
@@ -63,15 +66,13 @@ export function render(view) {
       </details>
     </div>
 
-    <div class="section"><div class="section-title">Treino de um amigo</div>${friendSettingsHtml()}</div>
-
     <div class="section"><div class="section-title">Spotify</div>${spotifySettingsHtml()}</div>
 
     <div class="section"><div class="section-title">Apple Saúde (Zepp)</div>
       <div class="card">
         <label class="field"><span>Nome do Atalho do iOS</span><input type="text" name="shortcutName" value="${esc(s.shortcutName)}"></label>
-        <a class="btn primary block" href="https://github.com/k3v1nn-ux/projeto-k/releases/download/shortcut-v1/ProjetoK-Saude.shortcut">Baixar o Atalho “Projeto K Saúde”</a>
-        <p class="muted small" style="margin-top:8px">Abra no iPhone (Safari), toque em Adicionar Atalho e cole a URL e o token quando ele pedir. O Atalho envia passos, kcal ativas, FC média e FC de repouso do dia para a planilha.</p>
+        <a class="btn primary block" href="shortcuts/">Instalar o Atalho “Projeto K Saúde”</a>
+        <p class="muted small" style="margin-top:8px">O Atalho envia passos, kcal ativas, FC média e FC de repouso do dia para a planilha e mostra a resposta. Se nada chegar, use o Diagnóstico acima: ele lista as últimas chamadas recebidas pela planilha.</p>
       </div>
     </div>
 
@@ -86,7 +87,6 @@ export function render(view) {
     <p class="muted tiny center" style="margin-top:24px">Projeto K · dados locais em IndexedDB + planilha · imagens: free-exercise-db (domínio público)</p>`;
 
   bind(view);
-  bindFriendSettings(view, () => render(view));
   bindSpotifySettings(view, () => render(view));
 }
 
@@ -142,6 +142,12 @@ function bind(view) {
       render(view);
       return;
     }
+    const target = e.target.closest('[data-target]');
+    if (target) {
+      updateSettings({ weeklyTarget: Number(target.dataset.target) });
+      render(view);
+      return;
+    }
     const level = e.target.closest('[data-level]');
     if (level && !level.disabled) {
       updateSettings({ level: level.dataset.level });
@@ -170,6 +176,21 @@ function bind(view) {
           toast('Abas exercises e plans atualizadas ✓');
         } catch (err) {
           toast(`Erro: ${esc(err.message)}`);
+        }
+        break;
+      }
+      case 'diagnose': {
+        const out = view.querySelector('[data-diag]');
+        out.innerHTML = '<p class="muted small">Consultando a planilha…</p>';
+        try {
+          const r = await api('status');
+          const counts = Object.entries(r.counts || {}).map(([t, n]) => `${t}: ${n}`).join(' · ');
+          out.innerHTML = `<div class="card flat mt small"><strong>Apps Script v${esc(r.version)}</strong> ✓<br><span class="muted">${esc(counts)}</span>
+            <div class="section-title" style="margin:10px 0 4px">Últimas chamadas recebidas</div>
+            ${(r.logs || []).map((l) => `<div class="tiny">${esc(new Date(l.time).toLocaleString('pt-BR'))} · <strong>${esc(l.action)}</strong> · ${l.ok ? '✓' : `✗ ${esc(l.error)}`}${l.detail ? `<br><span class="muted">${esc(l.detail)}</span>` : ''}</div>`).join('') || '<div class="tiny muted">Nenhuma ainda.</div>'}
+            ${(r.logs || []).some((l) => l.action === 'health') ? '' : '<p class="tiny muted" style="margin-top:6px">Nenhuma chamada do Atalho (health) chegou. Confira a URL e o token dentro do Atalho.</p>'}</div>`;
+        } catch (err) {
+          out.innerHTML = `<div class="banner warn mt"><span class="grow small">${/desconhecida/.test(err.message) ? 'O Apps Script publicado é a versão antiga. Cole o Code.gs novo e publique uma nova versão (veja o README).' : `Falhou: ${esc(err.message)}`}</span></div>`;
         }
         break;
       }

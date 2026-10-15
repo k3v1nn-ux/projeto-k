@@ -4,13 +4,13 @@ import { esc, fmtDay, dateKey } from '../util.js';
 
 const ORDER = ['platinum', 'gold', 'silver', 'bronze'];
 
-export function render(view) {
+export function render(view, { embedded = false } = {}) {
   const list = trophyList();
   const unlocked = list.filter((a) => a.unlocked);
   const count = (tier) => `${list.filter((a) => a.tier === tier && a.unlocked).length}/${list.filter((a) => a.tier === tier).length}`;
   const sorted = [...list].sort((a, b) => (b.unlocked - a.unlocked) || ORDER.indexOf(a.tier) - ORDER.indexOf(b.tier));
   view.innerHTML = `
-    <h1>Troféus</h1>
+    ${embedded ? '' : '<h1>Troféus</h1>'}
     <p class="muted">${unlocked.length} de ${list.length} desbloqueados</p>
     <div class="row gap wrap" style="margin-bottom:14px">
       ${ORDER.map((t) => `<span class="pill"><span class="tier-${t}">●</span> ${TIERS[t]} ${count(t)}</span>`).join('')}

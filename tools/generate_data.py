@@ -218,64 +218,56 @@ def ex(eid, sets, rmin, rmax, rest, notes=""):
     return {"exercise_id": eid, "sets": sets, "rep_min": rmin, "rep_max": rmax, "rest_seconds": rest, "notes": notes}
 
 
-CARDIO_DAY = {"type": "cardio", "session_name": "Cardio Z2 + mobilidade", "cardio": {
-    "minutes_min": 25, "minutes_max": 35,
-    "note": "Zona 2: ritmo em que você consegue conversar em frases completas (esforço 3–4 de 10). Esteira inclinada, bike ou elíptico. Termine com 5–10 min de mobilidade de quadril, tornozelo e ombros."}}
-REST_DAY = {"type": "rest", "session_name": "Descanso"}
-POST_LIFT_CARDIO = "Opcional: 10–20 min de cardio leve (zona 2) depois da musculação, nunca antes."
+CARDIO_PRE = {
+    "minutes": 10,
+    "note": "Antes de todo treino: 8–10 min de esteira inclinada, bike ou elíptico em ritmo leve (zona 2: dá para conversar). Conta como cardio do dia.",
+}
+CARDIO_ONLY = "Dia só de cardio é permitido: registre o cardio e o treino do rodízio continua pendente para o próximo dia (os exercícios ficam como não feitos)."
 
-BASE_DAYS = {
-    1: {"type": "lift", "session_name": "Superior A", "exercises": [
+BASE_ROTATION = [
+    {"slot": "upper_a", "session_name": "Superior A", "focus": "Peito, costas, ombros e braços", "exercises": [
         ex("db_bench_press", 3, 8, 12, 120), ex("seated_cable_row", 3, 8, 12, 120),
         ex("db_shoulder_press", 3, 8, 12, 90), ex("lat_pulldown", 3, 8, 12, 90),
         ex("db_lateral_raise", 2, 12, 15, 60), ex("db_curl", 2, 10, 12, 60),
         ex("triceps_pushdown", 2, 10, 12, 60)]},
-    2: {"type": "lift", "session_name": "Inferior A", "exercises": [
+    {"slot": "lower_a", "session_name": "Inferior A", "focus": "Quadríceps, posteriores e panturrilhas", "exercises": [
         ex("leg_press", 3, 10, 12, 120), ex("db_rdl", 3, 8, 12, 120),
         ex("leg_extension", 3, 12, 15, 90), ex("lying_leg_curl", 3, 10, 12, 90),
         ex("standing_calf", 3, 10, 15, 60), ex("cable_crunch", 2, 12, 15, 60)]},
-    3: CARDIO_DAY,
-    4: {"type": "lift", "session_name": "Superior B", "exercises": [
+    {"slot": "upper_b", "session_name": "Superior B", "focus": "Costas, peito inclinado, ombros e braços", "exercises": [
         ex("machine_row", 3, 8, 12, 120), ex("db_incline_press", 3, 8, 12, 120),
         ex("close_grip_pulldown", 3, 10, 12, 90), ex("pec_deck", 3, 12, 15, 60),
         ex("reverse_pec_deck", 2, 12, 15, 60), ex("hammer_curl", 2, 10, 12, 60),
         ex("overhead_rope_ext", 2, 10, 12, 60)]},
-    5: {"type": "lift", "session_name": "Inferior B", "exercises": [
+    {"slot": "lower_b", "session_name": "Inferior B", "focus": "Glúteos, posteriores e quadríceps", "exercises": [
         ex("hip_thrust", 3, 8, 12, 120), ex("leg_press", 3, 12, 15, 120, "Pés um pouco mais altos na plataforma."),
         ex("seated_leg_curl", 3, 10, 12, 90), ex("abductor", 2, 12, 15, 60),
         ex("adductor", 2, 12, 15, 60), ex("seated_calf", 3, 12, 15, 60),
         ex("leg_raise", 2, 10, 15, 60)]},
-    6: CARDIO_DAY,
-    7: REST_DAY,
-}
+]
 
-INTERMEDIATE_DAYS = {
-    1: {"type": "lift", "session_name": "Superior A+", "exercises": [
+INTERMEDIATE_ROTATION = [
+    {"slot": "upper_a", "session_name": "Superior A+", "focus": "Peito, costas, ombros e braços", "exercises": [
         ex("db_bench_press", 4, 6, 10, 150), ex("seated_cable_row", 4, 8, 12, 120),
         ex("db_shoulder_press", 3, 8, 12, 90), ex("lat_pulldown", 3, 8, 12, 90),
         ex("cable_fly", 2, 12, 15, 60), ex("db_lateral_raise", 3, 12, 15, 60),
         ex("db_curl", 3, 10, 12, 60), ex("triceps_pushdown", 3, 10, 12, 60)]},
-    2: {"type": "lift", "session_name": "Inferior A+", "exercises": [
+    {"slot": "lower_a", "session_name": "Inferior A+", "focus": "Quadríceps, posteriores e panturrilhas", "exercises": [
         ex("leg_press", 4, 8, 12, 150), ex("db_rdl", 4, 8, 12, 120),
         ex("leg_extension", 3, 12, 15, 90), ex("lying_leg_curl", 3, 10, 12, 90),
         ex("hip_thrust", 2, 10, 12, 90), ex("standing_calf", 4, 10, 15, 60),
         ex("cable_crunch", 3, 12, 15, 60)]},
-    3: CARDIO_DAY,
-    4: {"type": "lift", "session_name": "Superior B+", "exercises": [
+    {"slot": "upper_b", "session_name": "Superior B+", "focus": "Costas, peito inclinado, ombros e braços", "exercises": [
         ex("machine_row", 4, 8, 12, 120), ex("db_incline_press", 4, 8, 12, 120),
         ex("close_grip_pulldown", 3, 10, 12, 90), ex("pec_deck", 3, 12, 15, 60),
         ex("cable_lateral_raise", 2, 12, 15, 60), ex("reverse_pec_deck", 3, 12, 15, 60),
         ex("hammer_curl", 3, 10, 12, 60), ex("overhead_rope_ext", 3, 10, 12, 60)]},
-    5: {"type": "lift", "session_name": "Inferior B+", "exercises": [
+    {"slot": "lower_b", "session_name": "Inferior B+", "focus": "Glúteos, posteriores e quadríceps", "exercises": [
         ex("hip_thrust", 4, 8, 12, 120), ex("leg_press", 3, 12, 15, 120, "Pés um pouco mais altos na plataforma."),
         ex("seated_leg_curl", 4, 10, 12, 90), ex("single_leg_extension", 2, 12, 15, 60),
         ex("abductor", 3, 12, 15, 60), ex("adductor", 2, 12, 15, 60),
         ex("seated_calf", 3, 12, 15, 60), ex("leg_raise", 3, 10, 15, 60)]},
-    6: CARDIO_DAY,
-    7: REST_DAY,
-}
-
-WEEKDAY_PT = {1: "Segunda", 2: "Terça", 3: "Quarta", 4: "Quinta", 5: "Sexta", 6: "Sábado", 7: "Domingo"}
+]
 
 SOURCES = [
     {"key": "schoenfeld2016freq", "ref": "Schoenfeld BJ, Ogborn D, Krieger JW. Effects of Resistance Training Frequency on Measures of Muscle Hypertrophy: A Systematic Review and Meta-Analysis. Sports Med. 2016;46(11):1689-1697.", "doi": "10.1007/s40279-016-0543-8", "used_for": "Treinar cada grupo muscular 2x por semana (divisão Superior/Inferior)."},
@@ -288,24 +280,28 @@ SOURCES = [
     {"key": "schoenfeld2016rest", "ref": "Schoenfeld BJ, Pope ZK, Benik FM, et al. Longer Interset Rest Periods Enhance Muscle Strength and Hypertrophy in Resistance-Trained Men. J Strength Cond Res. 2016;30(7):1805-1812.", "doi": "10.1519/JSC.0000000000001272", "used_for": "Descanso de 2 min nos compostos; 60–90 s nos isolados."},
     {"key": "singer2024rest", "ref": "Singer A, Wolf M, Generoso L, et al. Give it a rest: a systematic review with Bayesian meta-analysis on the effect of inter-set rest interval duration on muscle hypertrophy. Front Sports Act Living. 2024;6:1429789.", "doi": "10.3389/fspor.2024.1429789", "used_for": "Descansos acima de 60 s trazem leve vantagem para hipertrofia."},
     {"key": "acsm2009", "ref": "American College of Sports Medicine. Position stand: Progression models in resistance training for healthy adults. Med Sci Sports Exerc. 2009;41(3):687-708.", "doi": "10.1249/MSS.0b013e3181915670", "used_for": "Dupla progressão: aumentar carga (~2–10%) ao passar do topo da faixa."},
-    {"key": "wilson2012concurrent", "ref": "Wilson JM, Marin PJ, Rhea MR, et al. Concurrent training: a meta-analysis examining interference of aerobic and resistance exercises. J Strength Cond Res. 2012;26(8):2293-2307.", "doi": "10.1519/JSC.0b013e31823a3e2d", "used_for": "Cardio moderado e curto (bike/caminhada) interfere pouco na hipertrofia; feito depois da musculação."},
+    {"key": "wilson2012concurrent", "ref": "Wilson JM, Marin PJ, Rhea MR, et al. Concurrent training: a meta-analysis examining interference of aerobic and resistance exercises. J Strength Cond Res. 2012;26(8):2293-2307.", "doi": "10.1519/JSC.0b013e31823a3e2d", "used_for": "Cardio curto e leve (bike/caminhada) interfere pouco na hipertrofia: por isso o cardio fica como aquecimento de 8–10 min."},
     {"key": "who2020", "ref": "Bull FC, Al-Ansari SS, Biddle S, et al. World Health Organization 2020 guidelines on physical activity and sedentary behaviour. Br J Sports Med. 2020;54(24):1451-1462.", "doi": "10.1136/bjsports-2020-102955", "used_for": "Meta semanal de 150–300 min de atividade aeróbica moderada + 2 dias de força."},
     {"key": "ogasawara2013", "ref": "Ogasawara R, Yasuda T, Ishii N, Abe T. Comparison of muscle hypertrophy following 6-month of continuous and periodic strength training. Eur J Appl Physiol. 2013;113(4):975-985.", "doi": "10.1007/s00421-012-2511-9", "used_for": "Músculo recupera rápido após pausas: justifica a semana de reentrada curta com cargas conservadoras."},
     {"key": "epley1985", "ref": "Epley B. Poundage Chart. Boyd Epley Workout. Lincoln, NE: Body Enterprises; 1985.", "doi": None, "used_for": "1RM estimado = carga × (1 + reps/30)."},
 ]
 
 PROGRAM_RULES = {
-    "split_rationale": "Superior/Inferior 4x por semana treina cada grupo 2x/semana com ~9–12 séries semanais nos grupos grandes, cabendo em sessões de ~50–60 min. Quarta e sábado ficam para cardio zona 2 e mobilidade (recuperação ativa e saúde cardiovascular), domingo é descanso total. Nunca há dois dias seguidos treinando os mesmos músculos.",
+    "split_rationale": "Rodízio Superior A → Inferior A → Superior B → Inferior B com meta de 4 treinos por semana: cada grupo é treinado 2x/semana com ~9–12 séries semanais nos grupos grandes, em sessões de ~50–60 min. Você escolhe os dias de descanso; o próximo treino é sempre o que está há mais tempo sem ser feito, então pular ou trocar um dia não desequilibra os grupos musculares.",
+    "weekly_target": 4,
+    "rotation_rule": "O treino sugerido é o do rodízio feito há mais tempo. Trocar o treino do dia ou descansar não perde nada: o treino pendente passa para o próximo dia de treino.",
     "rir": {"base": "1–3 repetições em reserva (pare quando sentir que faria mais 1–3 reps com boa técnica).", "intermediate": "0–2 repetições em reserva nos isolados; 1–2 nos compostos."},
-    "warmup": ["5 min de esteira ou bike leve.", "1 min de mobilidade: círculos de ombro, abertura de quadril.", "No 1º exercício: 1 série com ~50% da carga × 10 e 1 série com ~75% × 5 (não registrar)."],
+    "cardio_pre": CARDIO_PRE,
+    "cardio_only": CARDIO_ONLY,
+    "warmup": ["Cardio leve de 8–10 min (já registrado como cardio do dia).", "1 min de mobilidade: círculos de ombro, abertura de quadril.", "No 1º exercício: 1 série com ~50% da carga × 10 e 1 série com ~75% × 5 (não registrar)."],
     "reentry_week": {"weeks": 1, "set_delta": -1, "min_sets": 2, "rir": "3–4", "note": "Semana de reentrada: 1 série a menos em cada exercício e cargas conservadoras (RIR 3–4). Use para achar as cargas e reaprender a técnica."},
     "double_progression": {
         "rule": "Quando completar todas as séries no topo da faixa (ex.: 3×12) com boa execução, aumente a carga no próximo treino e volte para o início da faixa.",
         "increment_upper_kg": [1, 2.5], "increment_lower_kg": [2.5, 5],
         "stall_rule": "Se ficar abaixo do mínimo da faixa em 2 treinos seguidos, reduza ~10% e reconstrua."},
-    "missed_rule": "Dia planejado de musculação ou cardio sem sessão registrada até 23h59 vira falta. Domingo (descanso) não conta e não quebra a sequência.",
-    "intermediate_unlock": {"weeks_required": 8, "min_adherence": 0.8, "description": "8 semanas (não precisam ser seguidas) com aderência ≥ 80% desbloqueiam o nível Intermediário."},
-    "cardio": "Zona 2 / leve-moderado: 25–35 min nos dias de cardio; opcional 10–20 min após a musculação.",
+    "adherence_rule": "Não existe falta por dia: a aderência é semanal (treinos de musculação feitos ÷ meta de 4). Dias de descanso são escolhidos por você e dia só de cardio não conta como treino.",
+    "intermediate_unlock": {"weeks_required": 8, "min_adherence": 0.75, "description": "8 semanas (não precisam ser seguidas) com pelo menos 3 de 4 treinos (≥ 75%) desbloqueiam o nível Intermediário."},
+    "cardio": "Zona 2 / leve-moderado: 8–10 min antes de cada treino; dias só de cardio (25–35 min) são opcionais e não contam como treino.",
     "no_squat_policy": "Nenhuma variação de agachamento no plano (preferência pessoal). Afundo e búlgaro existem apenas como opção marcada com is_squat_variant=true, desligados por padrão (Configurações).",
 }
 
@@ -339,25 +335,20 @@ def build():
         for a in e["alternatives"]:
             assert a in ids, (e["id"], a)
 
-    def days(dct):
+    def rotation(slots):
         out = []
-        for wd in range(1, 8):
-            d = dict(dct[wd])
-            d["weekday"] = wd
-            d["weekday_pt"] = WEEKDAY_PT[wd]
-            if d["type"] == "lift":
-                d["post_cardio"] = POST_LIFT_CARDIO
-                for item in d["exercises"]:
-                    assert item["exercise_id"] in ids, item
-            out.append(d)
+        for i, d in enumerate(slots, 1):
+            for item in d["exercises"]:
+                assert item["exercise_id"] in ids, item
+            out.append({**d, "type": "lift", "order": i})
         return out
 
     program = {
-        "version": 1,
+        "version": 2,
         "name": "Projeto K — Superior/Inferior",
         "levels": {
-            "base": {"label": "Base", "days": days(BASE_DAYS)},
-            "intermediate": {"label": "Intermediário", "days": days(INTERMEDIATE_DAYS)},
+            "base": {"label": "Base", "weekly_target": 4, "rotation": rotation(BASE_ROTATION)},
+            "intermediate": {"label": "Intermediário", "weekly_target": 4, "rotation": rotation(INTERMEDIATE_ROTATION)},
         },
         "rules": PROGRAM_RULES,
         "exercises": exercises,
@@ -382,14 +373,11 @@ def build():
                         str(e["is_squat_variant"]).upper(), str(e["active"]).upper()])
     with open(os.path.join(seed, "plans.csv"), "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
-        w.writerow(["id", "level", "weekday", "session_name", "exercise_id", "order", "sets", "rep_min", "rep_max", "rest_seconds", "notes"])
+        w.writerow(["id", "level", "slot", "rotation_order", "session_name", "exercise_id", "order", "sets", "rep_min", "rep_max", "rest_seconds", "notes"])
         for level, lv in program["levels"].items():
-            for d in lv["days"]:
-                if d["type"] != "lift":
-                    w.writerow([f"{level}-{d['weekday']}-0", level, d["weekday"], d["session_name"], "", 0, "", "", "", "", d.get("cardio", {}).get("note", "")])
-                    continue
+            for d in lv["rotation"]:
                 for i, it in enumerate(d["exercises"], 1):
-                    w.writerow([f"{level}-{d['weekday']}-{i}", level, d["weekday"], d["session_name"], it["exercise_id"], i,
+                    w.writerow([f"{level}-{d['slot']}-{i}", level, d["slot"], d["order"], d["session_name"], it["exercise_id"], i,
                                 it["sets"], it["rep_min"], it["rep_max"], it["rest_seconds"], it["notes"]])
     print(f"{len(exercises)} exercises written")
     return exercises, {row[0]: row[4] for row in EXERCISES}

@@ -4,7 +4,7 @@ import { loadProgram } from './program.js';
 import { settings, updateSettings, applyTheme } from './settings.js';
 import { startSyncLoop, onSync, syncState, sync } from './sync.js';
 import { initTimer } from './timer.js';
-import { markMissedDays } from './workout.js';
+import { closeStaleSessions } from './workout.js';
 import { toast } from './ui.js';
 import { $, $$, dateKey, fmtDuration } from './util.js';
 import { afterDataChange } from './achievements.js';
@@ -14,18 +14,29 @@ import * as today from './screens/today.js';
 import * as week from './screens/week.js';
 import * as exercisePage from './screens/exercise.js';
 import * as settingsPage from './screens/settings.js';
-import * as analytics from './screens/analytics.js';
-import * as trophies from './screens/trophies.js';
+import * as progress from './screens/progress.js';
+import * as music from './screens/music.js';
+import * as more from './screens/more.js';
+import * as profilePage from './screens/profile.js';
+import * as inbox from './screens/inbox.js';
 import * as friendPages from './screens/friend-pages.js';
+import { profile } from './stats.js';
+import { pendingSuggestions } from './friend.js';
 
 const ROUTES = {
   hoje: { tab: 'hoje', render: (v) => today.render(v), live: true },
   dia: { tab: 'semana', render: (v, [date]) => today.render(v, { date }), live: true },
   semana: { tab: 'semana', render: (v) => week.render(v), live: true },
+  musica: { tab: 'musica', render: (v) => music.render(v) },
+  progresso: { tab: 'progresso', render: (v, _a, q) => progress.render(v, q), live: true },
+  analytics: { tab: 'progresso', render: (v, _a, q) => progress.render(v, q), live: true },
+  conquistas: { tab: 'progresso', render: (v) => progress.render(v, new URLSearchParams('s=trofeus')), live: true },
   ex: { tab: 'hoje', render: (v, [id]) => exercisePage.render(v, { id }) },
-  analytics: { tab: 'analytics', render: (v) => analytics.render(v), live: true },
-  conquistas: { tab: 'conquistas', render: (v) => trophies.render(v), live: true },
-  config: { tab: 'config', render: (v) => settingsPage.render(v) },
+  mais: { tab: 'mais', render: (v) => more.render(v), live: true },
+  perfil: { tab: 'mais', render: (v) => profilePage.render(v) },
+  recebidos: { tab: 'mais', render: (v) => inbox.render(v), live: true },
+  programa: { tab: 'mais', render: (v) => more.renderProgram(v) },
+  config: { tab: 'mais', render: (v) => settingsPage.render(v) },
   amigo: { tab: null, bare: true, render: (v, _a, q) => friendPages.renderBuilder(v, q) },
   importar: { tab: null, render: (v, _a, q) => friendPages.renderImport(v, q) },
 };
@@ -91,6 +102,20 @@ function renderThemeButton() {
   btn.setAttribute('aria-label', `Tema: ${{ auto: 'sistema', light: 'claro', dark: 'escuro' }[t]}. Toque para trocar.`);
 }
 
+function renderHeader() {
+  const p = profile();
+  const hour = new Date().getHours();
+  const hello = hour < 12 ? 'Bom dia' : hour < 18 ? 'Boa tarde' : 'Boa noite';
+  $('#greet-sub').textContent = hello;
+  $('#greet-name').textContent = p.name ? p.name.split(' ')[0] : 'Projeto K';
+  const photo = profilePage.photo();
+  $('#avatar').innerHTML = photo ? `<img src="${photo}" alt="">` : (p.name || 'K')[0].toUpperCase();
+  const n = pendingSuggestions().length;
+  const badge = $('#inbox-badge');
+  badge.hidden = !n;
+  badge.textContent = String(n);
+}
+
 function tickSessionClock() {
   const el = $('#session-clock');
   const s = db.get('sessions', dateKey());
@@ -142,25 +167,28 @@ async function main() {
   renderSyncBadge(syncState());
 
   window.addEventListener('hashchange', route);
+  document.addEventListener('pk:profile', renderHeader);
   db.onChange((info) => {
+    renderHeader();
     if (info.remote || info.table === 'achievements') refresh();
     if (info.table !== 'achievements') afterDataChange();
   });
+  renderHeader();
   route();
 
   setInterval(tickSessionClock, 1000);
   tickSessionClock();
 
-  // Mark missed days after the first sync attempt (so another device's sessions arrive first).
+  // Close sessions left open on past days after the first sync attempt (another device may have closed them).
   let lastDay = dateKey();
   startSyncLoop().finally(async () => {
-    if (await markMissedDays()) refresh();
+    if (await closeStaleSessions()) refresh();
     afterDataChange();
   });
   setInterval(async () => {
     if (dateKey() !== lastDay) {
       lastDay = dateKey();
-      await markMissedDays();
+      await closeStaleSessions();
       refresh();
     }
   }, 60000);

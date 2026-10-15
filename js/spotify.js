@@ -105,7 +105,7 @@ async function accessToken() {
   return data.access_token;
 }
 
-async function call(method, path, body) {
+export async function call(method, path, body) {
   const res = await fetch(`${API}${path}`, {
     method,
     headers: { Authorization: `Bearer ${await accessToken()}`, ...(body ? { 'Content-Type': 'application/json' } : {}) },
@@ -124,7 +124,7 @@ async function call(method, path, body) {
 }
 
 /** Runs a player command; with no active device, wakes the first available one. */
-async function command(method, path, body) {
+export async function command(method, path, body) {
   try {
     return await call(method, path, body);
   } catch (err) {
@@ -142,12 +142,12 @@ async function command(method, path, body) {
   }
 }
 
-function playlistId(url) {
+export function playlistId(url) {
   const m = String(url || '').match(/playlist[/:]([A-Za-z0-9]+)/);
   return m ? m[1] : '';
 }
 
-const ICONS = {
+export const ICONS = {
   prev: '<svg viewBox="0 0 24 24"><path d="M6 5v14M18 6l-9 6 9 6z"/></svg>',
   next: '<svg viewBox="0 0 24 24"><path d="M18 5v14M6 6l9 6-9 6z"/></svg>',
   play: '<svg viewBox="0 0 24 24"><path d="M7 5l12 7-12 7z" fill="currentColor"/></svg>',
@@ -163,15 +163,15 @@ export function mountSpotify(slot) {
   const pid = playlistId(s.playlistUrl);
   if (!isConnected()) {
     if (!pid) return;
-    slot.innerHTML = `<details class="card" style="margin-bottom:12px"><summary>🎵 Playlist do treino</summary>
-      <iframe class="embed" style="margin-top:10px" src="https://open.spotify.com/embed/playlist/${pid}?theme=0" loading="lazy" allow="encrypted-media; clipboard-write" title="Playlist no Spotify"></iframe>
+    slot.innerHTML = `<details class="card"><summary>🎵 Playlist do treino</summary>
+      <iframe class="embed compact" style="margin-top:10px" src="https://open.spotify.com/embed/playlist/${pid}?theme=0" loading="lazy" allow="encrypted-media; clipboard-write" title="Playlist no Spotify"></iframe>
       <a class="btn small block" href="${esc(s.playlistUrl)}" target="_blank" rel="noopener" style="margin-top:8px">Abrir no Spotify</a></details>`;
     return;
   }
-  slot.innerHTML = `<div class="card spotify" style="margin-bottom:12px">
+  slot.innerHTML = `<div class="card spotify-mini">
       <img data-sp="cover" alt="">
       <div class="t"><div data-sp="title"><strong>Spotify</strong></div><div class="small muted" data-sp="artist">carregando…</div></div>
-      <div class="ctrl">
+      <div class="row gap">
         <button class="icon-btn" data-sp-cmd="prev" aria-label="Anterior">${ICONS.prev}</button>
         <button class="icon-btn" data-sp-cmd="toggle" aria-label="Tocar ou pausar">${ICONS.play}</button>
         <button class="icon-btn" data-sp-cmd="next" aria-label="Próxima">${ICONS.next}</button>
@@ -215,7 +215,7 @@ export function mountSpotify(slot) {
   pollTimer = setInterval(refresh, 5000);
 }
 
-async function choosePlaylist() {
+export async function choosePlaylist() {
   const data = await call('GET', '/me/playlists?limit=50');
   const items = (data?.items || []).filter(Boolean);
   const s = sheet(`<h3>Escolher playlist</h3><ul class="list">${items.map((p) => `<li><button class="list-item" data-uri="${esc(p.uri)}"><img class="ex-thumb" src="${esc(p.images?.[p.images.length - 1]?.url || '')}" alt=""><span class="grow"><strong>${esc(p.name)}</strong><br><span class="muted small">${p.tracks?.total ?? ''} faixas</span></span></button></li>`).join('') || '<li class="muted">Nenhuma playlist.</li>'}</ul><button class="btn ghost block" data-close>Fechar</button>`);

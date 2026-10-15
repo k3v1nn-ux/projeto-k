@@ -1,24 +1,24 @@
-// Session lifecycle: start, log sets, swaps, finish, cardio and automatic "missed" days.
+// Session lifecycle: start, log sets, swaps, finish, cardio (warm-up or cardio-only days),
+// rest days chosen by the user, and closing sessions left open on past days.
 import * as db from './db.js';
-import { daySwaps, setLocalSwaps, baseDayPlan } from './program.js';
+import { daySwaps, setLocalSwaps, setChoice, dayPlan } from './program.js';
 import { checkPR } from './progression.js';
-import { settings } from './settings.js';
-import { uuid, nowIso, dateKey, addDays } from './util.js';
+import { uuid, nowIso, dateKey } from './util.js';
 
 export function sessionFor(date) {
   return db.get('sessions', date);
 }
 
-export function isActive(session) {
-  return session && session.status === 'in_progress';
-}
-
+/** Starts (or resumes) the lifting session of a day. */
 export async function ensureSession(date, plan) {
   const s = db.get('sessions', date);
-  if (s && s.status !== 'missed') return s;
+  if (s && !['rest', 'missed'].includes(s.status) && (s.status !== 'cardio' || s.slot)) {
+    if (s.status === 'cardio') return db.save('sessions', { ...s, status: 'in_progress', slot: plan.slot, planned_session: plan.session_name });
+    return s;
+  }
   return db.save('sessions', {
-    id: date, date, planned_session: plan.session_name, level: plan.level,
-    start_time: nowIso(), end_time: '', duration_min: null, status: 'in_progress', notes: '',
+    id: date, date, planned_session: plan.session_name, level: plan.level, slot: plan.slot,
+    start_time: s?.start_time || nowIso(), end_time: '', duration_min: null, status: 'in_progress', notes: '',
     swaps_json: JSON.stringify(daySwaps(date)),
   });
 }
@@ -28,25 +28,50 @@ export async function reopenSession(date) {
   if (s) await db.save('sessions', { ...s, status: 'in_progress', end_time: '' });
 }
 
+/** Chooses another workout for the day; an in-progress session without sets switches too. */
+export async function chooseWorkout(date, slot, plan) {
+  setChoice(date, slot);
+  const s = db.get('sessions', date);
+  if (s && s.status === 'in_progress' && !setsForSession(date).length) {
+    await db.save('sessions', { ...s, slot, planned_session: plan.session_name, swaps_json: '' });
+  }
+}
+
+export async function markRest(date) {
+  const s = db.get('sessions', date);
+  if (s && setsForSession(date).length) return false; // a day with logged sets is never a rest day
+  await db.save('sessions', {
+    id: date, date, planned_session: 'Descanso', level: s?.level || '', slot: '', start_time: '', end_time: '',
+    duration_min: null, status: 'rest', notes: s?.notes || '', swaps_json: '',
+  });
+  return true;
+}
+
+export async function unmarkRest(date) {
+  const s = db.get('sessions', date);
+  if (s?.status === 'rest') await db.remove('sessions', date);
+}
+
 export async function setSwap(date, plannedId, newId) {
   const swaps = { ...daySwaps(date), [plannedId]: newId };
   const s = db.get('sessions', date);
-  if (s && s.status !== 'missed') await db.save('sessions', { ...s, swaps_json: JSON.stringify(swaps) });
+  if (s && s.status === 'in_progress') await db.save('sessions', { ...s, swaps_json: JSON.stringify(swaps) });
   else setLocalSwaps(date, swaps);
 }
 
+export function setsForSession(date) {
+  return db.index('set_logs', 'session_id').get(date) || [];
+}
+
 export function setsFor(date, exId) {
-  return db.all('set_logs')
-    .filter((l) => l.session_id === date && l.exercise_id === exId)
-    .sort((a, b) => a.set_number - b.set_number);
+  return setsForSession(date).filter((l) => l.exercise_id === exId).sort((a, b) => a.set_number - b.set_number);
 }
 
 export async function logSet(date, plan, exId, setNumber, load, reps) {
   await ensureSession(date, plan);
-  const id = uuid();
   const pr = checkPR(exId, load, reps, date);
   const log = await db.save('set_logs', {
-    id, session_id: date, exercise_id: exId, set_number: setNumber,
+    id: uuid(), session_id: date, exercise_id: exId, set_number: setNumber,
     load_kg: load, reps, rpe: null, timestamp: nowIso(), is_pr: pr.load || pr.e1rm,
   });
   return { log, pr };
@@ -67,69 +92,63 @@ export function plannedSetCount(plan) {
 }
 
 export function loggedSetCount(date) {
-  return db.all('set_logs').filter((l) => l.session_id === date).length;
+  return setsForSession(date).length;
 }
 
-/** Ends the session: done with >= 75% of the planned sets, otherwise partial. */
+export function cardioFor(date) {
+  return db.index('cardio_logs', 'session_id').get(date) || [];
+}
+
+/** done (>= 75% of the planned sets), partial, cardio (only cardio) or removed if empty. */
+function statusFor(date, plan) {
+  const logged = loggedSetCount(date);
+  if (logged) return !plan || logged >= plannedSetCount(plan) * 0.75 ? 'done' : 'partial';
+  return cardioFor(date).length ? 'cardio' : '';
+}
+
 export async function finishSession(date, plan) {
   const s = db.get('sessions', date);
   if (!s) return null;
-  const planned = plannedSetCount(plan);
-  const logged = loggedSetCount(date);
-  const hasCardio = db.all('cardio_logs').some((c) => c.session_id === date);
-  if (!logged && !hasCardio) {
+  const status = statusFor(date, plan);
+  if (!status) {
     await db.remove('sessions', date);
     return null;
   }
   const end = new Date();
   const sameDay = date === dateKey();
-  const duration = sameDay && s.start_time ? Math.round((end - new Date(s.start_time)) / 60000) : s.duration_min;
-  const status = !planned || logged >= planned * 0.75 ? 'done' : 'partial';
+  const duration = sameDay && s.start_time ? Math.max(1, Math.round((end - new Date(s.start_time)) / 60000)) : s.duration_min;
   return db.save('sessions', { ...s, status, end_time: end.toISOString(), duration_min: duration });
 }
 
-export async function logCardio(date, plan, { type, duration_min, avg_hr, notes }) {
-  const existing = db.get('sessions', date);
-  if (!existing || existing.status === 'missed') {
-    const cardioDay = plan.type !== 'lift';
-    await db.save('sessions', {
-      id: date, date, planned_session: plan.session_name, level: plan.level,
-      start_time: nowIso(), end_time: cardioDay ? nowIso() : '', duration_min: cardioDay ? duration_min : null,
-      status: cardioDay ? 'done' : 'in_progress', notes: '', swaps_json: '',
-    });
-  }
-  return db.save('cardio_logs', { id: uuid(), session_id: date, type, duration_min, avg_hr: avg_hr || null, notes: notes || '' });
-}
-
-export function cardioFor(date) {
-  return db.all('cardio_logs').filter((c) => c.session_id === date);
-}
-
 /**
- * Planned lift/cardio days without a session by the end of the day become "missed".
- * Stale in-progress sessions from past days are closed as partial (or missed if empty).
+ * Logs cardio. phase "pre" = warm-up before lifting (the session stays a lifting session);
+ * phase "only" = the day was just cardio: the workout stays pending in the rotation.
  */
-export async function markMissedDays() {
-  const start = settings().startDate;
-  const today = dateKey();
-  if (!start || start >= today) return 0;
-  const rows = [];
-  for (let d = start; d < today; d = addDays(d, 1)) {
-    const raw = db.getRaw('sessions', d);
-    const session = raw && !raw.deleted ? raw : null;
-    if (session?.status === 'in_progress') {
-      const hasLogs = loggedSetCount(d) > 0 || cardioFor(d).length > 0;
-      rows.push({ ...session, status: hasLogs ? 'partial' : 'missed', end_time: session.end_time || '' });
-      continue;
-    }
-    if (session) continue;
-    const plan = db.get('overrides', d) ? { type: 'lift' } : baseDayPlan(d, settings().level);
-    if (plan.type === 'rest') continue;
-    rows.push({
-      id: d, date: d, planned_session: plan.session_name || 'Treino do amigo', level: settings().level,
-      start_time: '', end_time: '', duration_min: null, status: 'missed', notes: '', swaps_json: '',
+export async function logCardio(date, plan, { type, duration_min, avg_hr, notes, phase = 'pre' }) {
+  const existing = db.get('sessions', date);
+  if (!existing || ['rest', 'missed'].includes(existing.status)) {
+    await db.save('sessions', {
+      id: date, date, planned_session: phase === 'only' ? 'Só cardio' : plan.session_name, level: plan.level,
+      slot: phase === 'only' ? '' : plan.slot, start_time: nowIso(), end_time: phase === 'only' ? nowIso() : '',
+      duration_min: phase === 'only' ? duration_min : null, status: phase === 'only' ? 'cardio' : 'in_progress',
+      notes: '', swaps_json: JSON.stringify(daySwaps(date)),
     });
+  } else if (phase === 'only' && !loggedSetCount(date)) {
+    await db.save('sessions', { ...existing, status: 'cardio', planned_session: 'Só cardio', slot: '', end_time: nowIso(), duration_min: duration_min });
   }
-  if (rows.length) await db.save('sessions', rows);
-  return rows.length;
+  return db.save('cardio_logs', { id: uuid(), session_id: date, type, duration_min, avg_hr: avg_hr || null, notes: notes || '', phase });
+}
+
+/** Sessions left "in progress" on past days are closed (done/partial/cardio) or dropped if empty. */
+export async function closeStaleSessions() {
+  const today = dateKey();
+  let n = 0;
+  for (const s of db.all('sessions')) {
+    if (s.status !== 'in_progress' || s.date >= today) continue;
+    const status = statusFor(s.date, s.slot ? dayPlan(s.date) : null);
+    if (status) await db.save('sessions', { ...s, status });
+    else await db.remove('sessions', s.id);
+    n++;
+  }
+  return n;
 }

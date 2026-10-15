@@ -6,8 +6,10 @@ import http from 'node:http';
 
 const TOKEN = process.env.TOKEN || 'test-token';
 let suggestToken = '';
-const tables = { sessions: [], set_logs: [], cardio_logs: [], achievements: [], suggestions: [], health_imports: [], overrides: [], exercises: [], plans: [] };
-const RANK = { missed: 0, in_progress: 1, partial: 2, done: 3 };
+const SYNCED = ['sessions', 'set_logs', 'cardio_logs', 'achievements', 'suggestions', 'health_imports', 'overrides', 'profile', 'body_logs', 'ai_reports'];
+const tables = { exercises: [], plans: [] };
+SYNCED.forEach((t) => { tables[t] = []; });
+const logs = [];
 
 function upsert(table, rows, now) {
   for (const row of rows) {
@@ -16,8 +18,8 @@ function upsert(table, rows, now) {
     if (i < 0) { tables[table].push(r); continue; }
     const ex = tables[table][i];
     if (table === 'sessions') {
-      if (r.status === 'missed' && (RANK[ex.status] || 0) > 0) continue;
-      const beats = ex.status === 'missed' && (RANK[r.status] || 0) > 0;
+        if (r.status === 'missed' && ex.status !== 'missed') continue;
+      const beats = ex.status === 'missed' && r.status !== 'missed';
       if (!beats && String(ex.updated_at) > String(r.updated_at || '')) continue;
     } else if (String(ex.updated_at) > String(r.updated_at || '')) continue;
     tables[table][i] = r;
@@ -39,7 +41,7 @@ function handle(body) {
     case 'push': for (const [t, rows] of Object.entries(body.changes || {})) if (tables[t]) upsert(t, rows, now); return { ok: true, server_time: now };
     case 'pull': {
       const out = {};
-      for (const t of ['sessions', 'set_logs', 'cardio_logs', 'achievements', 'suggestions', 'health_imports', 'overrides']) out[t] = tables[t].filter((r) => !body.since || r.synced_at > body.since);
+      for (const t of SYNCED) out[t] = tables[t].filter((r) => !body.since || r.synced_at > body.since);
       return { ok: true, server_time: now, tables: out };
     }
     case 'health': {
@@ -54,6 +56,7 @@ function handle(body) {
     case 'seed': Object.assign(tables, { exercises: body.tables.exercises || [], plans: body.tables.plans || [] }); return { ok: true };
     case 'set_suggest_token': suggestToken = String(body.suggest_token || ''); return { ok: true };
     case 'debug_dump': return { ok: true, tables };
+    case 'status': return { ok: true, version: 'mock', counts: Object.fromEntries(SYNCED.map((t) => [t, tables[t].length])), logs: logs.slice(-10).reverse() };
     default: return { ok: false, error: 'unknown_action' };
   }
 }
@@ -64,7 +67,9 @@ http.createServer((req, res) => {
   req.on('data', (c) => { data += c; });
   req.on('end', () => {
     let out;
-    try { out = req.method === 'POST' ? handle(JSON.parse(data || '{}')) : { ok: true, app: 'projeto-k-mock' }; } catch (e) { out = { ok: false, error: String(e) }; }
+    let body = {};
+    try { body = JSON.parse(data || '{}'); out = req.method === 'POST' ? handle(body) : { ok: true, app: 'projeto-k-mock' }; } catch (e) { out = { ok: false, error: String(e) }; }
+    if (req.method === 'POST' && body.action !== 'pull') logs.push({ time: new Date().toISOString(), action: body.action, ok: out.ok, error: out.error || '', detail: out.saved ? JSON.stringify(out.saved) : '' });
     res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
     res.end(JSON.stringify(out));
   });

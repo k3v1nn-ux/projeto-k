@@ -1,6 +1,7 @@
 // Per-device settings in localStorage. Secrets (Apps Script URL, token) live only here,
 // never in the repository.
 import { dateKey } from './util.js';
+import { invalidate } from './db.js';
 
 const KEY = 'pk.settings';
 
@@ -18,6 +19,9 @@ const DEFAULTS = {
   spotifyClientId: '',
   playlistUrl: '',
   shortcutName: 'Projeto K Saúde',
+  weeklyTarget: 4, // lifting sessions per week
+  restDays: [3, 6, 7], // preferred rest weekdays (1 = Monday), used only to project the week
+  anthropicKey: '', // Claude API key for the AI analysis (stays on this device)
 };
 
 let cache;
@@ -46,6 +50,7 @@ function persist() {
 export function updateSettings(patch) {
   Object.assign(settings(), patch);
   persist();
+  invalidate();
   if ('theme' in patch) applyTheme();
 }
 
@@ -55,7 +60,7 @@ export function applyTheme() {
   if (t === 'auto') root.removeAttribute('data-theme');
   else root.setAttribute('data-theme', t);
   const dark = t === 'dark' || (t === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#0f1412' : '#f6f7f5');
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#090d0b' : '#f3f4f1');
 }
 
 export function isConfigured() {

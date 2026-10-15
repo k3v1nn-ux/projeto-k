@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Projeto K</title>
   <meta name="description" content="Treino pessoal: plano semanal, registro de séries, progressão e analytics.">
-  <meta name="theme-color" content="#f6f7f5">
+  <meta name="theme-color" content="#f3f4f1">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -24,7 +24,10 @@
 </head>
 <body>
   <header class="topbar">
-    <a href="#/hoje" class="brand" aria-label="Projeto K, início">Projeto K</a>
+    <a href="#/perfil" class="brand" id="brand" aria-label="Perfil">
+      <span class="avatar" id="avatar">K</span>
+      <span class="greet"><small id="greet-sub">Projeto K</small><b id="greet-name">Bom treino</b></span>
+    </a>
     <div class="topbar-right">
       <span id="session-clock" class="pill" hidden></span>
       <button id="sync-badge" class="sync-badge" title="Sincronização" aria-label="Sincronização"></button>
@@ -38,11 +41,11 @@
   <div id="toasts" class="toasts" aria-live="polite"></div>
 
   <nav class="tabbar" id="tabbar">
-    <a href="#/hoje" data-tab="hoje"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9v6M18 9v6M3 11v2M21 11v2M6 12h12"/></svg><span>Hoje</span></a>
-    <a href="#/semana" data-tab="semana"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Semana</span></a>
-    <a href="#/analytics" data-tab="analytics"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V5M19 20v-6"/></svg><span>Analytics</span></a>
-    <a href="#/conquistas" data-tab="conquistas"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0V4zM8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8.5 20h7"/></svg><span>Troféus</span></a>
-    <a href="#/config" data-tab="config"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg><span>Ajustes</span></a>
+    <a href="#/hoje" data-tab="hoje"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8v8M18 8v8M3 10.5v3M21 10.5v3M6 12h12"/></svg><span>Hoje</span></a>
+    <a href="#/semana" data-tab="semana"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Semana</span></a>
+    <a href="#/musica" data-tab="musica"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V6l11-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg><span>Música</span></a>
+    <a href="#/progresso" data-tab="progresso"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16M7 15l3.5-4 3 2.5L18 8"/><path d="M15 8h3v3"/></svg><span>Progresso</span></a>
+    <a href="#/mais" data-tab="mais"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="18.5" cy="12" r="1.5"/></svg><span>Mais</span><span class="badge" id="inbox-badge" hidden></span></a>
   </nav>
 
   <script type="module" src="js/app.js"></script>

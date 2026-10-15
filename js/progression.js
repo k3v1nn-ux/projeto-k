@@ -10,25 +10,27 @@ export function e1rm(load, reps) {
 
 /** [{ date, session_id, session_name, sets:[log...], topLoad, bestE1rm, volume }] oldest first. */
 export function exerciseHistory(exId) {
-  const groups = new Map();
-  for (const l of db.all('set_logs')) {
-    if (l.exercise_id !== exId) continue;
-    if (!groups.has(l.session_id)) groups.set(l.session_id, []);
-    groups.get(l.session_id).push(l);
-  }
-  return Array.from(groups.entries()).map(([sid, sets]) => {
-    sets.sort((a, b) => a.set_number - b.set_number || String(a.timestamp).localeCompare(b.timestamp));
-    const session = db.get('sessions', sid);
-    return {
-      session_id: sid,
-      date: session?.date || sid,
-      session_name: session?.planned_session || '',
-      sets,
-      topLoad: Math.max(...sets.map((s) => s.load_kg || 0)),
-      bestE1rm: Math.max(...sets.map((s) => e1rm(s.load_kg, s.reps))),
-      volume: sets.reduce((acc, s) => acc + (s.load_kg || 0) * (s.reps || 0), 0),
-    };
-  }).sort((a, b) => a.date.localeCompare(b.date));
+  return db.cached(`hist:${exId}`, () => {
+    const groups = new Map();
+    for (const l of db.index('set_logs', 'exercise_id').get(exId) || []) {
+      if (!groups.has(l.session_id)) groups.set(l.session_id, []);
+      groups.get(l.session_id).push(l);
+    }
+    return Array.from(groups.entries()).map(([sid, sets]) => {
+      sets.sort((a, b) => a.set_number - b.set_number || String(a.timestamp).localeCompare(b.timestamp));
+      const session = db.get('sessions', sid);
+      return {
+        session_id: sid,
+        date: session?.date || sid,
+        session_name: session?.planned_session || '',
+        sets,
+        topLoad: Math.max(...sets.map((s) => s.load_kg || 0)),
+        bestE1rm: Math.max(...sets.map((s) => e1rm(s.load_kg, s.reps))),
+        volume: sets.reduce((acc, s) => acc + (s.load_kg || 0) * (s.reps || 0), 0),
+        reps: sets.reduce((acc, s) => acc + (s.reps || 0), 0),
+      };
+    }).sort((a, b) => a.date.localeCompare(b.date));
+  });
 }
 
 export function summarize(entry) {
@@ -46,7 +48,7 @@ export function suggestion(item, date, sessionName) {
   const ex = exercise(item.exercise_id);
   const sets = item.sets;
   const hist = exerciseHistory(item.exercise_id).filter((h) => h.date < date);
-  const same = hist.filter((h) => h.session_name === sessionName);
+  const same = hist.filter((h) => h.session_name.replace(/\+$/, '') === String(sessionName).replace(/\+$/, ''));
   const pool = same.length ? same : hist;
   const fill = (n) => Array.from({ length: sets }, () => n);
   if (!pool.length) {
@@ -78,7 +80,7 @@ export function suggestion(item, date, sessionName) {
 
 /** Compares a set against the same exercise in earlier sessions (not earlier sets today). */
 export function checkPR(exId, load, reps, sessionId) {
-  const prev = db.all('set_logs').filter((l) => l.exercise_id === exId && l.session_id < sessionId);
+  const prev = (db.index('set_logs', 'exercise_id').get(exId) || []).filter((l) => l.session_id < sessionId);
   if (!prev.length || !(load > 0)) return { load: false, e1rm: false };
   const maxLoad = Math.max(...prev.map((l) => l.load_kg || 0));
   const maxE = Math.max(...prev.map((l) => e1rm(l.load_kg, l.reps)));
@@ -92,3 +94,19 @@ export const TREND_LABEL = {
   down: '↓ reduzir 10% e reconstruir',
   max: 'topo da faixa — dificulte',
 };
+
+/**
+ * Trend of an exercise over its last sessions: up | stalled | down | new.
+ * Stalled = 3 sessions without a better top load or more total reps at that load.
+ */
+export function exerciseTrend(exId) {
+  const hist = exerciseHistory(exId);
+  if (hist.length < 3) return { trend: 'new', hist };
+  const last3 = hist.slice(-3);
+  const first = hist[0];
+  const last = hist[hist.length - 1];
+  const changePct = first.bestE1rm > 0 ? Math.round(((last.bestE1rm - first.bestE1rm) / first.bestE1rm) * 100) : 0;
+  const improved = last3[2].topLoad > last3[0].topLoad || (last3[2].topLoad === last3[0].topLoad && last3[2].reps > last3[0].reps);
+  const worse = last3[2].bestE1rm < last3[0].bestE1rm * 0.95;
+  return { trend: worse ? 'down' : improved ? 'up' : 'stalled', changePct, hist };
+}

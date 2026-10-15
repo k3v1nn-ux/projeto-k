@@ -1,91 +1,86 @@
-// Derived numbers for Analytics and trophies: day statuses, adherence, streaks, volume.
+// Derived numbers for Progress and trophies. Adherence is weekly: lifting workouts done ÷ the
+// weekly target. There are no per-day "misses": rest days are the user's choice and a
+// cardio-only day is activity, not a workout.
 import * as db from './db.js';
-import { baseDayPlan, exercise, getProgram } from './program.js';
-import { exerciseHistory } from './progression.js';
+import { exercise, getProgram, isLift, sessionSlot, weeklyTarget, rotation } from './program.js';
+import { exerciseHistory, exerciseTrend } from './progression.js';
 import { settings } from './settings.js';
-import { dateKey, addDays, weekStart } from './util.js';
+import { dateKey, addDays, weekStart, daysBetween } from './util.js';
 
-const ATTENDED = new Set(['done', 'partial']);
-
-export function isAttended(session) {
-  return Boolean(session && ATTENDED.has(session.status));
+export function liftSessions() {
+  return db.cached('liftSessions', () => db.all('sessions').filter(isLift).sort((a, b) => a.date.localeCompare(b.date)));
 }
 
-/** Planned type for a day: lift | cardio | rest (friend overrides are lift days). */
-export function plannedType(date) {
-  if (db.get('overrides', date)) return 'lift';
-  const s = db.get('sessions', date);
-  return baseDayPlan(date, s?.level || settings().level).type;
-}
-
-/** { date, type, session, state } where state: attended | missed | rest | today | future | before */
+/** { date, state: lift | partial | cardio | rest | none | future, session } */
 export function dayInfo(date, today = dateKey()) {
   const session = db.get('sessions', date);
-  const type = plannedType(date);
-  let state;
-  if (isAttended(session)) state = 'attended';
-  else if (date < settings().startDate) state = 'before';
-  else if (date > today) state = 'future';
-  else if (type === 'rest') state = 'rest';
-  else if (date === today) state = 'today';
-  else state = 'missed';
-  return { date, type, session, state };
+  let state = 'none';
+  if (date > today) state = session?.status === 'rest' ? 'rest' : 'future';
+  else if (isLift(session)) state = session.status === 'partial' ? 'partial' : 'lift';
+  else if (session?.status === 'in_progress' && db.index('set_logs', 'session_id').get(date)) state = 'lift';
+  else if (session?.status === 'cardio' || (db.index('cardio_logs', 'session_id').get(date) || []).length) state = 'cardio';
+  else if (session?.status === 'rest') state = 'rest';
+  return { date, state, session };
 }
 
-/** Adherence of one Monday-based week, counting only days that already counted. */
+/** Workouts in a Monday-based week vs the target. */
 export function weekAdherence(start, today = dateKey()) {
-  let planned = 0;
-  let attended = 0;
+  const target = weeklyTarget();
+  let lifts = 0;
+  let cardio = 0;
   for (let i = 0; i < 7; i++) {
     const d = dayInfo(addDays(start, i), today);
-    if (d.state === 'before' || d.state === 'future') continue;
-    if (d.type === 'rest') continue;
-    if (d.state === 'today') continue; // today only counts once done
-    planned++;
-    if (d.state === 'attended') attended++;
+    if (d.state === 'lift' || d.state === 'partial') lifts++;
+    else if (d.state === 'cardio') cardio++;
   }
-  return { planned, attended, pct: planned ? attended / planned : null };
+  return { start, lifts, cardio, target, pct: Math.min(1, lifts / target), over: addDays(start, 6) < today };
 }
 
-/** Full weeks (Mon–Sun, already over) since the program start. */
-export function pastWeeks(today = dateKey()) {
+/** Weeks from the program start (or first record) until now. */
+export function allWeeks(today = dateKey()) {
+  const first = [settings().startDate, liftSessions()[0]?.date].filter(Boolean).sort()[0] || today;
   const out = [];
-  const first = weekStart(settings().startDate || today);
-  for (let w = first; addDays(w, 6) < today; w = addDays(w, 7)) out.push({ start: w, ...weekAdherence(w, today) });
+  for (let w = weekStart(first); w <= weekStart(today); w = addDays(w, 7)) out.push(weekAdherence(w, today));
   return out;
 }
 
-export function streaks(today = dateKey()) {
+/** Consecutive weeks meeting the target (the current week counts once it is met). */
+export function weekStreaks(today = dateKey()) {
+  const weeks = allWeeks(today);
   let current = 0;
   let record = 0;
-  const start = settings().startDate || today;
-  for (let d = start; d <= today; d = addDays(d, 1)) {
-    const info = dayInfo(d, today);
-    if (info.state === 'attended') {
-      current++;
-      record = Math.max(record, current);
-    } else if (info.state === 'missed') {
-      current = 0;
+  let run = 0;
+  for (const w of weeks) {
+    if (w.lifts >= w.target) {
+      run++;
+      record = Math.max(record, run);
+    } else if (w.over) {
+      run = 0;
     }
   }
+  current = run;
   return { current, record };
 }
 
 export function totals() {
-  const sessions = db.all('sessions').filter(isAttended);
-  const liftDurations = sessions.filter((s) => s.duration_min > 0 && db.all('set_logs').some((l) => l.session_id === s.id)).map((s) => s.duration_min);
+  const lifts = liftSessions();
+  const durations = lifts.map((s) => s.duration_min).filter((m) => m > 0 && m < 300);
+  const cardio = db.all('cardio_logs');
   return {
-    workouts: sessions.length,
-    avgDuration: liftDurations.length ? Math.round(liftDurations.reduce((a, b) => a + b, 0) / liftDurations.length) : null,
+    workouts: lifts.length,
+    cardioDays: db.all('sessions').filter((s) => s.status === 'cardio').length,
+    cardioMinutes: cardio.reduce((a, c) => a + (c.duration_min || 0), 0),
+    avgDuration: durations.length ? Math.round(durations.reduce((a, b) => a + b, 0) / durations.length) : null,
+    sets: db.all('set_logs').length,
+    tonnage: db.all('set_logs').reduce((a, l) => a + (l.load_kg || 0) * (l.reps || 0), 0),
   };
 }
 
-/** Per muscle group: sets and tonnage (sets × reps × load) in a week. */
-export function weekVolume(start) {
-  const end = addDays(start, 6);
+/** Per muscle group: sets and tonnage (sets × reps × load) between two dates. */
+export function volumeByGroup(from, to) {
   const out = {};
   for (const l of db.all('set_logs')) {
-    if (l.session_id < start || l.session_id > end) continue;
+    if (l.session_id < from || l.session_id > to) continue;
     const g = exercise(l.exercise_id)?.muscle_group || 'outros';
     out[g] ||= { sets: 0, tonnage: 0 };
     out[g].sets++;
@@ -94,10 +89,13 @@ export function weekVolume(start) {
   return out;
 }
 
-export function weekCardioMinutes(start) {
-  const end = addDays(start, 6);
-  return db.all('cardio_logs').filter((c) => c.session_id >= start && c.session_id <= end).reduce((a, c) => a + (c.duration_min || 0), 0);
+export const weekVolume = (start) => volumeByGroup(start, addDays(start, 6));
+
+export function cardioMinutes(from, to) {
+  return db.all('cardio_logs').filter((c) => c.session_id >= from && c.session_id <= to).reduce((a, c) => a + (c.duration_min || 0), 0);
 }
+
+export const weekCardioMinutes = (start) => cardioMinutes(start, addDays(start, 6));
 
 export function bestCardioMonth() {
   const byMonth = {};
@@ -121,23 +119,82 @@ export function loadGainPct(exId) {
 }
 
 export function exercisesWithHistory() {
-  const ids = new Set(db.all('set_logs').map((l) => l.exercise_id));
-  return getProgram().exercises.filter((e) => ids.has(e.id));
+  const idx = db.index('set_logs', 'exercise_id');
+  return getProgram().exercises.filter((e) => idx.has(e.id));
 }
 
-/** Everything the trophies need, computed once. */
+/** All trained exercises with best e1RM, change since the first session and trend. */
+export function strengthTable() {
+  return exercisesWithHistory().map((e) => {
+    const t = exerciseTrend(e.id);
+    const last = t.hist[t.hist.length - 1];
+    return { ex: e, sessions: t.hist.length, best: Math.max(...t.hist.map((h) => h.bestE1rm)), top: Math.max(...t.hist.map((h) => h.topLoad)), last: last.date, trend: t.trend, changePct: t.changePct || 0 };
+  }).sort((a, b) => b.sessions - a.sessions);
+}
+
+/** How many times each rotation slot was trained in the last `days` days. */
+export function slotBalance(days = 28, today = dateKey()) {
+  const from = addDays(today, -days + 1);
+  const out = Object.fromEntries(rotation().map((d) => [d.slot, 0]));
+  for (const s of liftSessions()) {
+    if (s.date < from) continue;
+    const slot = sessionSlot(s);
+    if (slot in out) out[slot]++;
+  }
+  return out;
+}
+
+export function daysSinceLastLift(today = dateKey()) {
+  const last = liftSessions().filter((s) => s.date <= today).pop();
+  return last ? daysBetween(last.date, today) : null;
+}
+
+/* ---------- profile & body ---------- */
+
+export function profile() {
+  return db.get('profile', 'me') || {};
+}
+
+export function bodyLogs() {
+  return db.all('body_logs').filter((b) => b.weight_kg > 0).sort((a, b) => a.date.localeCompare(b.date));
+}
+
+export function currentWeight() {
+  return bodyLogs().pop()?.weight_kg || null;
+}
+
+export function age(birthDate, today = dateKey()) {
+  if (!birthDate) return null;
+  const [y, m, d] = birthDate.split('-').map(Number);
+  const [ty, tm, td] = today.split('-').map(Number);
+  return ty - y - (tm < m || (tm === m && td < d) ? 1 : 0);
+}
+
+export function bmi() {
+  const h = Number(profile().height_cm);
+  const w = currentWeight();
+  return h > 0 && w ? Math.round((w / ((h / 100) ** 2)) * 10) / 10 : null;
+}
+
+/** Everything the trophies need, computed once per data version. */
 export function snapshot(today = dateKey()) {
-  const weeks = pastWeeks(today);
-  const rules = getProgram().rules.intermediate_unlock;
-  return {
-    totalWorkouts: totals().workouts,
-    streakRecord: streaks(today).record,
-    prCount: db.all('set_logs').filter((l) => l.is_pr).length,
-    perfectWeeks: weeks.filter((w) => w.planned && w.pct === 1).length,
-    weeks80: weeks.filter((w) => w.planned && w.pct >= rules.min_adherence).length,
-    bestCardioMonth: bestCardioMonth(),
-    legPressGainPct: loadGainPct('leg_press'),
-    healthDays: db.all('health_imports').length,
-    acceptedSuggestions: db.all('suggestions').filter((s) => s.status === 'accepted').length,
-  };
+  return db.cached(`snapshot:${today}`, () => {
+    const weeks = allWeeks(today);
+    const rules = getProgram().rules.intermediate_unlock;
+    const p = profile();
+    return {
+      totalWorkouts: totals().workouts,
+      weekStreakRecord: weekStreaks(today).record,
+      prCount: db.all('set_logs').filter((l) => l.is_pr).length,
+      perfectWeeks: weeks.filter((w) => w.lifts >= w.target).length,
+      weeks75: weeks.filter((w) => w.pct >= rules.min_adherence).length,
+      bestCardioMonth: bestCardioMonth(),
+      legPressGainPct: loadGainPct('leg_press'),
+      healthDays: db.all('health_imports').length,
+      acceptedSuggestions: db.all('suggestions').filter((s) => s.status === 'accepted' || s.status === 'partial').length,
+      profileDone: p.name && p.height_cm && currentWeight() ? 1 : 0,
+      aiReports: db.all('ai_reports').length,
+      weighIns: bodyLogs().length,
+    };
+  });
 }

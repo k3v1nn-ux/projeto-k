@@ -1,6 +1,6 @@
 # Projeto K — Gym Dashboard
 
-PWA pessoal de treino (mobile-first, offline-first) para a Smart Fit: plano semanal, registro de séries em até 2 toques, cronômetro de descanso, progressão de carga, analytics, troféus, treino montado por amigo, controle do Spotify e dados do relógio (Zepp → Apple Saúde).
+PWA pessoal de treino (mobile-first, offline-first) para a Smart Fit: rodízio Superior/Inferior com meta semanal, registro de séries em 1 toque, cronômetro de descanso, progressão de carga, progresso com recomendações e análise por IA (Claude), perfil e medidas, troféus, treinos montados por amigos, aba de música (Spotify) e dados do relógio (Zepp → Apple Saúde).
 
 **App:** https://k3v1nn-ux.github.io/projeto-k/
 
@@ -16,6 +16,7 @@ PWA pessoal de treino (mobile-first, offline-first) para a Smart Fit: plano sema
 7. [Atalho do iOS: Zepp → Saúde → planilha](#7-atalho-do-ios-zepp--saúde--planilha)
 8. [Treino montado por um amigo](#8-treino-montado-por-um-amigo)
 9. [Programa de treino e fontes](#9-programa-de-treino-e-fontes)
+9b. [Telas e análise com IA](#9b-telas-e-análise-com-ia)
 10. [Modelo de dados](#10-modelo-de-dados)
 11. [Desenvolvimento](#11-desenvolvimento)
 12. [Licenças](#12-licenças)
@@ -51,14 +52,16 @@ css/app.css
 js/app.js          roteador, cabeçalho, inicialização
 js/db.js           IndexedDB + outbox
 js/sync.js         sincronização com o Apps Script
-js/program.js      plano do dia, trocas, semana de reentrada
-js/progression.js  dupla progressão, histórico, recordes (Epley)
-js/workout.js      sessão: iniciar, registrar, finalizar, faltas
+js/program.js      rodízio (próximo treino, projeção da semana), trocas, reentrada
+js/progression.js  dupla progressão, histórico, tendência, recordes (Epley)
+js/workout.js      sessão: iniciar, registrar, cardio, descanso, finalizar
 js/timer.js        descanso, som, wake lock
-js/stats.js        aderência, sequência, volume
+js/stats.js        aderência semanal, sequência, volume, corpo
+js/recommend.js    recomendações por regras
+js/ai.js           análise com Claude (SDK oficial carregado sob demanda)
 js/achievements.js troféus
 js/friend.js, js/spotify.js, js/export.js
-js/screens/*.js    telas
+js/screens/*.js    telas (hoje, semana, música, progresso, mais, perfil, recebidos…)
 data/program.json  programa, exercícios, fontes, equipamentos
 data/seed/*.csv    seed das abas exercises e plans
 apps-script/Code.gs
@@ -88,7 +91,11 @@ tools/             geração de dados, imagens, ícones, servidor de dev e mock 
 7. No app: **Ajustes → Planilha** → cole URL e token → **Salvar e testar**. Depois toque em **Enviar exercícios e plano para a planilha** para preencher as abas `exercises` e `plans` (ou importe `data/seed/*.csv` manualmente).
 8. Repita o passo 7 no Mac.
 
-> **Atualizou o `Code.gs`?** Use *Implantar → Gerenciar implantações → editar (lápis) → Versão: Nova versão*. Assim a URL continua a mesma.
+> **Atualizou o `Code.gs`?** (a v2 é obrigatória para perfil, peso, IA, diagnóstico e abas legíveis) Cole o arquivo novo, salve e use *Implantar → Gerenciar implantações → editar (lápis) → Versão: Nova versão → Implantar*. Assim a URL e o token continuam os mesmos.
+>
+> **Abas legíveis:** a v2 mantém as abas técnicas (o banco do app) e gera, a cada sincronização, **📊 Resumo** (um treino por linha, em português) e **📋 Séries** (cada série com o nome do exercício). Use essas duas para ler no Numbers/Sheets.
+>
+> **Diagnóstico:** Ajustes → **Diagnóstico da planilha** mostra a versão do script, quantas linhas há em cada aba e as últimas chamadas recebidas (aba `_log`). Se o Atalho do Saúde "não manda nada", é aqui que se vê se a chamada chegou e qual erro voltou.
 >
 > **Vazou o token?** Rode `rotateToken` no editor e cole o novo token no app.
 >
@@ -111,12 +118,12 @@ Na primeira abertura, o service worker baixa o app, o programa e todas as imagen
 
 ## 6. Spotify
 
-Controle remoto do app oficial do Spotify via Web API (OAuth Authorization Code + PKCE, sem servidor). A música toca no Spotify; a página só controla (capa, faixa, play/pause, anterior/próxima, escolher playlist).
+Controle remoto do app oficial do Spotify via Web API (OAuth Authorization Code + PKCE, sem servidor). A música toca no Spotify; o app só controla. A aba **Música** tem o player completo (capa, faixa, progresso, play/pause, anterior/próxima, suas playlists e aparelhos) e a tela Hoje tem um minicontrole.
 
 1. Acesse https://developer.spotify.com/dashboard → **Create app**.
 2. **Redirect URI:** `https://k3v1nn-ux.github.io/projeto-k/` (exatamente assim, com a barra final). Marque **Web API**.
 3. Em **User Management**, adicione o e-mail da sua conta Spotify (apps em modo de desenvolvimento só aceitam usuários cadastrados).
-4. Copie o **Client ID** → no app, **Ajustes → Spotify** → cole → **Conectar Spotify**.
+4. Copie o **Client ID** → no app, aba **Música** (ou Ajustes → Spotify) → cole → **Conectar Spotify**.
 5. Opcional: cole o link de uma playlist (plano B: player embutido + botão "Abrir no Spotify").
 
 Limitações: exige **Spotify Premium**; o app do Spotify precisa estar aberto/ativo no iPhone (se não houver aparelho ativo, o app tenta acordar o último aparelho e, se não houver nenhum, abre o Spotify). O Web Playback SDK (tocar no navegador) não funciona no Safari do iOS, por isso não é usado.
@@ -125,7 +132,7 @@ Limitações: exige **Spotify Premium**; o app do Spotify precisa estar aberto/a
 
 O Zepp já envia os dados ao app Saúde. Não existe API pública do Zepp, então o caminho é **Saúde → Atalho → Apps Script** (aba `health_imports`). Nada de scraping ou API não oficial.
 
-**Jeito rápido (arquivo pronto):** no iPhone, abra https://k3v1nn-ux.github.io/projeto-k/shortcuts/ e toque em **Baixar o Atalho** (ou Ajustes → Apple Saúde → Baixar o Atalho), toque em **Adicionar Atalho** e cole a URL `/exec` e o token quando ele pedir. Ele envia passos, kcal ativas, FC média e FC de repouso do dia. O arquivo é gerado e assinado por `python3 tools/make_shortcut.py` e não contém URL nem token.
+**Jeito rápido (arquivo pronto, v2):** no iPhone, abra https://k3v1nn-ux.github.io/projeto-k/shortcuts/ e toque em **Baixar o Atalho** (ou Mais → Atalho do Saúde), toque em **Adicionar Atalho** e cole a URL `/exec` e o token quando ele pedir. Ele envia passos, kcal ativas, FC média e FC de repouso do dia e **mostra na notificação a resposta da planilha** (`{"ok":true,...}` ou o erro, como `unauthorized (token errado)`). O arquivo é gerado e assinado por `python3 tools/make_shortcut.py` e não contém URL nem token. Se você instalou a v1, apague-a no app Atalhos antes.
 
 **Jeito manual:** crie no app **Atalhos** um atalho chamado **`Projeto K Saúde`** (o nome pode ser trocado em Ajustes). Os nomes das ações podem variar um pouco conforme a versão do iOS:
 
@@ -150,31 +157,28 @@ Na primeira execução o iOS pede permissão para ler cada tipo de dado do Saúd
 
 **Automação diária:** Atalhos → **Automação** → **+** → **Hora do Dia** (ex.: 21h30, Diariamente) → **Executar Imediatamente** → ação **Executar Atalho: Projeto K Saúde**. Lembre: com o iPhone bloqueado o Saúde não libera os dados; escolha um horário em que você costuma usar o celular.
 
-Os dados aparecem em **Analytics → Relógio**, cruzados com a sessão do dia (FC do treino, kcal, FC de repouso, passos e sono).
+Os dados aparecem em **Progresso → Relógio**, cruzados com a sessão do dia (FC do treino, kcal, FC de repouso, passos e sono).
 
 ## 8. Treino montado por um amigo
 
-- **Ajustes → Treino de um amigo → Gerar link.** O link abre uma tela simples (sem login) onde o amigo escolhe exercícios da base, séries, repetições, descanso e observações.
-- Com a planilha configurada, o link leva a URL do Apps Script e um **token de sugestão** (diferente do seu token; só permite gravar na aba `suggestions`). O treino chega como `pending` e aparece no app: **"Novo treino de [nome]"** → ver → **Aceitar** (vira o treino do dia escolhido) ou **Recusar**.
+- **Mais → Treinos recebidos → Gerar link de convite.** O link abre uma tela simples (sem login) onde o amigo monta **um ou vários dias** (exercícios da base, séries, repetições, descanso e observações).
+- Com a planilha configurada, o link leva a URL do Apps Script e um **token de sugestão** (diferente do seu token; só permite gravar na aba `suggestions`). O treino aparece no app ("Novo treino de [nome]" + selo na aba Mais). Em **Treinos recebidos** você marca quais dias quer e escolhe a data de cada um: aceitar tudo, só alguns dias (status `partial`) ou recusar. Cada dia aceito vira o treino daquela data; o rodízio se reorganiza em volta.
 - **Plano B sem backend:** ao enviar, o amigo recebe também um link `#/importar?w=...` com o treino comprimido (deflate + base64url) na própria URL, para mandar pelo WhatsApp. Ao abrir no seu aparelho, ele vira uma sugestão.
 
 ## 9. Programa de treino e fontes
 
 Perfil considerado: iniciante na prática (≈2 meses com muitas faltas), objetivo de recomposição corporal. **Sem agachamento** (preferência pessoal): nenhuma variação no plano; afundo e búlgaro existem só como alternativas marcadas `is_squat_variant`, desligadas por padrão (Ajustes).
 
-### Semana (nível Base)
+### Rodízio com meta semanal
 
-| Dia | Sessão | Por quê |
-|---|---|---|
-| Segunda | Superior A | |
-| Terça | Inferior A | |
-| Quarta | Cardio zona 2 (25–35 min) + mobilidade | recuperação ativa entre os blocos |
-| Quinta | Superior B | |
-| Sexta | Inferior B | |
-| Sábado | Cardio zona 2 + mobilidade | |
-| Domingo | Descanso | não conta como falta nem quebra a sequência |
+Em vez de dias fixos, o app usa um **rodízio**: Superior A → Inferior A → Superior B → Inferior B, com **meta de 4 treinos por semana** (ajustável para 3–5 em Ajustes).
 
-**Justificativa:** Superior/Inferior 4x por semana treina cada grupo **2x por semana**, a frequência com melhor resultado para hipertrofia [1], com ~9–12 séries semanais nos grupos grandes, o ponto de partida recomendado [2, 3], em sessões de ~50–60 min. Nunca há dois dias seguidos para os mesmos músculos. Os dois dias de cardio leve somam saúde cardiovascular sem atrapalhar a hipertrofia [11, 12].
+- O treino sugerido é sempre o que está **há mais tempo sem ser feito**. Trocou o treino de hoje, descansou ou pulou um dia? Nada se perde: o pendente vai para o próximo dia de treino e nenhum grupo muscular fica para trás.
+- **Você escolhe os dias de descanso**: toque em "Descansar hoje" (ou em qualquer dia na aba Semana). Os dias de descanso preferidos (padrão: qua, sáb, dom) só orientam a previsão da semana.
+- **Cardio** é o aquecimento de todo treino (8–10 min, etapa 1 da tela Hoje). Também dá para fazer **só cardio** num dia: o cardio é registrado, os exercícios ficam como não feitos e o treino continua pendente. Dia só de cardio não conta como treino.
+- **Aderência** é semanal (treinos ÷ meta). Não existe "falta" por dia.
+
+**Justificativa:** Superior/Inferior 4x por semana treina cada grupo **2x por semana**, a frequência com melhor resultado para hipertrofia [1], com ~9–12 séries semanais nos grupos grandes, o ponto de partida recomendado [2, 3], em sessões de ~50–60 min. Cardio curto e leve como aquecimento interfere pouco na hipertrofia [11] e soma minutos para a meta de atividade [12].
 
 **Superior A:** supino reto c/ halteres 3×8–12 · remada baixa 3×8–12 · desenvolvimento c/ halteres 3×8–12 · puxada frontal 3×8–12 · elevação lateral 2×12–15 · rosca alternada 2×10–12 · tríceps na polia 2×10–12
 
@@ -193,10 +197,10 @@ Cada exercício tem 1–2 alternativas com equipamento padrão de academia (máq
 - **Faixas:** 8–12 repetições na maioria, 12–15 nos isolados e panturrilha [4].
 - **Dupla progressão** [10]: fechou todas as séries no topo da faixa → próximo treino sobe a carga (+1–2,5 kg em superiores, +2,5–5 kg em inferiores/máquinas, conforme o incremento do aparelho) e volta ao início da faixa. Ficou abaixo do mínimo em 2 treinos seguidos → reduz ~10%. A sugestão já vem preenchida: registrar é 1 toque.
 - **Recordes:** carga máxima e 1RM estimado por **Epley** (carga × (1 + reps/30)) [14], comparando com treinos anteriores.
-- **Aquecimento:** 5 min de esteira/bike leve + 1 min de mobilidade + 2 séries de aproximação (50% × 10, 75% × 5) no 1º exercício.
+- **Aquecimento:** 8–10 min de cardio leve (registrado como cardio do dia) + 1 min de mobilidade + 2 séries de aproximação (50% × 10, 75% × 5) no 1º exercício.
 - **Semana de reentrada:** a 1ª semana (a partir de "Início do programa" em Ajustes) tem 1 série a menos por exercício e RIR 3–4, para achar as cargas. O músculo recupera rápido após pausas [13].
-- **Faltas:** dia planejado de musculação/cardio sem sessão até 23h59 vira `missed` automaticamente.
-- **Nível Intermediário:** bloqueado até **8 semanas (não precisam ser seguidas) com aderência ≥ 80%**, exibido como troféu. Ele mantém a divisão, com 3–4 séries por exercício, um exercício extra por dia (~14–16 séries semanais nos grupos grandes) e RIR 0–2.
+- **Sem faltas diárias:** a semana é avaliada pela meta. Sessões deixadas "em andamento" em dias passados são fechadas sozinhas (feito/parcial/só cardio).
+- **Nível Intermediário:** bloqueado até **8 semanas (não precisam ser seguidas) com pelo menos 3 de 4 treinos (≥ 75%)**, exibido como troféu. Ele mantém a divisão, com 3–4 séries por exercício, um exercício extra por dia (~14–16 séries semanais nos grupos grandes) e RIR 0–2.
 
 ### Fontes
 
@@ -215,6 +219,24 @@ Cada exercício tem 1–2 alternativas com equipamento padrão de academia (máq
 13. Ogasawara et al. *Comparison of muscle hypertrophy following 6-month of continuous and periodic strength training.* Eur J Appl Physiol, 2013. doi:10.1007/s00421-012-2511-9
 14. Epley B. *Poundage Chart.* Boyd Epley Workout, 1985.
 
+## 9b. Telas e análise com IA
+
+| Aba | O que tem |
+|---|---|
+| **Hoje** | Treino sugerido com anel de progresso, cronômetro do treino, faixa da semana, etapa 1 (cardio de aquecimento), etapa 2 (exercícios em acordeão, séries pré-preenchidas, 1 toque para registrar, descanso automático), trocar treino/aparelho, descansar hoje, só cardio, minicontrole de música. Dias passados podem ser editados. |
+| **Semana** | Seg–dom com o feito e o previsto pelo rodízio; tocar num dia mostra o treino e permite marcar/tirar descanso; dias de descanso preferidos. |
+| **Música** | Player do Spotify, playlists e aparelhos (ou o player embutido da playlist sem login). |
+| **Progresso** | *Visão geral* (semana, sequência, recomendações, mapa de frequência, treinos por semana) · *Treinos* (equilíbrio do rodízio, séries por grupo vs referência, cardio, histórico) · *Força* (gráfico por exercício, tabela com 1RM e tendência: subindo/parado/caiu, recordes) · *Corpo* (peso, IMC, força relativa, medidas) · *Relógio* (dados do Saúde) · *IA* · *Troféus*. |
+| **Mais** | Perfil, Treinos recebidos (com selo de pendentes), Troféus, Atalho do Saúde, Programa e fontes, Ajustes. |
+
+**Recomendações (sem IA):** regras locais apontam treinos que faltam na semana, exercícios parados há 3 treinos (com alternativas), grupos com pouco volume, rodízio desequilibrado, muitos dias sem treinar, hora de deload, peso sem registro ou caindo demais para o objetivo, pouco cardio e sono curto.
+
+**Análise com IA (Progresso → IA):** usa o modelo **Claude Opus 5.5** (`claude-opus-5-5`) pelo SDK oficial `@anthropic-ai/sdk` (carregado do jsDelivr só quando você pede a análise), com raciocínio adaptativo, resposta em streaming e fallback do servidor se a requisição for recusada. O app envia um **resumo numérico** (perfil, semanas, força por exercício, séries por grupo, peso, médias do relógio, exercícios indisponíveis), nunca a planilha inteira. Para usar, crie uma chave em https://console.anthropic.com → API Keys e cole na aba IA; ela fica só no aparelho. Cada análise custa poucos centavos de dólar. As análises ficam salvas na aba `ai_reports`.
+
+**Perfil:** nome, foto (só no aparelho), nascimento, sexo, altura, objetivo, experiência e observações (aba `profile`); o peso é registrado com data (aba `body_logs`) para mostrar a evolução e alimentar a IA.
+
+**Ícone:** monograma "K". Se você já adicionou o app à Tela de Início, apague o ícone antigo e adicione de novo para o iOS pegar o novo.
+
 ## 10. Modelo de dados
 
 Cada aba da planilha tem cabeçalho na linha 1. Todas as tabelas sincronizadas têm também `updated_at` (ISO, do aparelho), `deleted` (exclusão lógica) e `synced_at` (definido pelo servidor). Datas são `AAAA-MM-DD` no fuso do aparelho.
@@ -222,14 +244,19 @@ Cada aba da planilha tem cabeçalho na linha 1. Todas as tabelas sincronizadas t
 | Aba | Colunas | Observações |
 |---|---|---|
 | `exercises` | id, name_pt, muscle_group, equipment, media_url, instructions, alternatives, is_squat_variant, active | seed; fonte da verdade é `data/program.json` |
-| `plans` | id, level, weekday, session_name, exercise_id, order, sets, rep_min, rep_max, rest_seconds, notes | seed; weekday 1 = segunda … 7 = domingo |
-| `sessions` | id, date, planned_session, level, start_time, end_time, duration_min, status, notes, swaps_json | `id` = data (1 sessão por dia). status: `in_progress`, `done` (≥ 75% das séries), `partial`, `missed`. Descanso não gera linha. `swaps_json` guarda as trocas de aparelho do dia |
+| `plans` | id, level, slot, rotation_order, session_name, exercise_id, order, sets, rep_min, rep_max, rest_seconds, notes | seed; `slot`: upper_a, lower_a, upper_b, lower_b |
+| `sessions` | id, date, planned_session, level, start_time, end_time, duration_min, status, notes, swaps_json, synced_at, **slot** | `id` = data (1 sessão por dia). status: `in_progress`, `done` (≥ 75% das séries), `partial`, `cardio` (só cardio), `rest` (descanso escolhido). `slot` = posição no rodízio. `swaps_json` = trocas de aparelho do dia |
 | `set_logs` | id, session_id, exercise_id, set_number, load_kg, reps, rpe, timestamp, is_pr | `exercise_id` é o exercício feito (após troca) |
-| `cardio_logs` | id, session_id, type, duration_min, avg_hr, notes | type: esteira, bike, elíptico, escada, remo |
+| `cardio_logs` | id, session_id, type, duration_min, avg_hr, notes, synced_at, **phase** | type: esteira, bike, elíptico, escada, remo · phase: `pre` (aquecimento) ou `only` (dia só de cardio) |
 | `achievements` | id, unlocked_at | troféus nunca são retirados |
-| `suggestions` | id, author, created_at, payload_json, status, target_date | status: pending, accepted, rejected |
+| `suggestions` | id, author, created_at, payload_json, status, target_date | payload com 1+ dias · status: pending, accepted, partial, rejected · target_date: datas aceitas |
 | `overrides` | id, date, suggestion_id, session_name, payload_json | treino de amigo aceito para uma data (substitui o plano do dia) |
 | `health_imports` | id, date, resting_hr, avg_hr, active_kcal, steps, sleep_h, workout_avg_hr, workout_min, source | `id` = data; enviado pelo Atalho |
+| `profile` | id, name, birth_date, sex, height_cm, goal, experience, notes | uma linha (`id` = `me`); a foto não vai para a planilha |
+| `body_logs` | id, date, weight_kg, body_fat_pct, waist_cm, notes | `id` = data |
+| `ai_reports` | id, created_at, model, text | análises geradas pela IA |
+| `📊 Resumo`, `📋 Séries` | — | abas legíveis, recriadas pelo script a cada sincronização |
+| `_log` | time, action, ok, error, detail | últimas chamadas recebidas (diagnóstico) |
 
 **Backup:** Ajustes → Dados → **Backup JSON** (tudo) / **Importar JSON** / **CSV** por tabela ou todos num `.zip` (abre no Numbers).
 

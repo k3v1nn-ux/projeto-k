@@ -8,19 +8,22 @@ import { debounce, esc } from './util.js';
 export const TIERS = { bronze: 'Bronze', silver: 'Prata', gold: 'Ouro', platinum: 'Platina' };
 
 export const ACHIEVEMENTS = [
-  { id: 'first_workout', tier: 'bronze', title: 'Primeiro treino', desc: 'Registre seu primeiro treino.', target: 1, value: (s) => s.totalWorkouts },
-  { id: 'streak_3', tier: 'bronze', title: 'Três seguidos', desc: '3 dias planejados seguidos sem faltar (descanso não quebra).', target: 3, value: (s) => s.streakRecord },
+  { id: 'first_workout', tier: 'bronze', title: 'Primeiro treino', desc: 'Registre seu primeiro treino de musculação.', target: 1, value: (s) => s.totalWorkouts },
   { id: 'first_pr', tier: 'bronze', title: 'Primeiro recorde', desc: 'Bata um recorde pessoal de carga ou de 1RM estimado.', target: 1, value: (s) => s.prCount },
-  { id: 'workouts_10', tier: 'bronze', title: '10 treinos', desc: 'Complete 10 treinos (musculação ou cardio).', target: 10, value: (s) => s.totalWorkouts },
+  { id: 'workouts_10', tier: 'bronze', title: '10 treinos', desc: 'Complete 10 treinos de musculação.', target: 10, value: (s) => s.totalWorkouts },
+  { id: 'profile_done', tier: 'bronze', title: 'Ficha completa', desc: 'Preencha nome, altura e peso no perfil.', target: 1, value: (s) => s.profileDone },
   { id: 'health_link', tier: 'bronze', title: 'Relógio conectado', desc: 'Importe dados do Apple Saúde (Zepp) pela primeira vez.', target: 1, value: (s) => s.healthDays },
   { id: 'friend_workout', tier: 'bronze', title: 'Treino em dupla', desc: 'Aceite um treino montado por um amigo.', target: 1, value: (s) => s.acceptedSuggestions },
-  { id: 'perfect_week', tier: 'silver', title: 'Semana perfeita', desc: 'Cumpra 100% dos dias planejados de uma semana (seg–dom).', target: 1, value: (s) => s.perfectWeeks },
-  { id: 'streak_10', tier: 'silver', title: 'Dez seguidos', desc: '10 dias planejados seguidos sem faltar.', target: 10, value: (s) => s.streakRecord },
+  { id: 'ai_report', tier: 'bronze', title: 'Segunda opinião', desc: 'Gere sua primeira análise com IA.', target: 1, value: (s) => s.aiReports },
+  { id: 'perfect_week', tier: 'silver', title: 'Semana completa', desc: 'Bata a meta de treinos de uma semana (seg–dom).', target: 1, value: (s) => s.perfectWeeks },
+  { id: 'streak_3', tier: 'silver', title: 'Três semanas na meta', desc: '3 semanas seguidas batendo a meta de treinos.', target: 3, value: (s) => s.weekStreakRecord },
   { id: 'cardio_300', tier: 'silver', title: '300 minutos de cardio', desc: 'Acumule 300 min de cardio no mesmo mês.', target: 300, value: (s) => s.bestCardioMonth },
   { id: 'legpress_20', tier: 'silver', title: 'Leg press +20%', desc: 'Suba 20% a carga do leg press em relação ao primeiro registro.', target: 20, value: (s) => s.legPressGainPct, unit: '%' },
+  { id: 'weigh_in_8', tier: 'silver', title: 'De olho na balança', desc: 'Registre seu peso 8 vezes.', target: 8, value: (s) => s.weighIns },
   { id: 'workouts_50', tier: 'silver', title: '50 treinos', desc: 'Complete 50 treinos.', target: 50, value: (s) => s.totalWorkouts },
-  { id: 'adherence_4w', tier: 'gold', title: 'Um mês de constância', desc: '4 semanas com aderência ≥ 80%.', target: 4, value: (s) => s.weeks80 },
-  { id: 'intermediate_unlocked', tier: 'gold', title: 'Nível Intermediário', desc: '8 semanas com aderência ≥ 80% desbloqueiam o treino Intermediário.', target: 8, value: (s) => s.weeks80 },
+  { id: 'adherence_4w', tier: 'gold', title: 'Um mês de constância', desc: '4 semanas com pelo menos 75% da meta (3 de 4 treinos).', target: 4, value: (s) => s.weeks75 },
+  { id: 'streak_8', tier: 'gold', title: 'Dois meses na meta', desc: '8 semanas seguidas batendo a meta.', target: 8, value: (s) => s.weekStreakRecord },
+  { id: 'intermediate_unlocked', tier: 'gold', title: 'Nível Intermediário', desc: '8 semanas com ≥ 75% da meta desbloqueiam o treino Intermediário.', target: 8, value: (s) => s.weeks75 },
   { id: 'workouts_100', tier: 'gold', title: '100 treinos', desc: 'Complete 100 treinos.', target: 100, value: (s) => s.totalWorkouts },
 ];
 

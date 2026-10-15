@@ -91,15 +91,20 @@ def build():
         json_item("token", token_string(ref(u_token, "Text"))),
         json_item("date", token_string(ref(u_date, "Formatted Date"))),
         *[json_item(k, token_string(ref(u, "Statistics")), 3) for k, u in stats.items()],
-        json_item("source", token_string(text="Zepp via Saúde (Atalho)")),
+        json_item("source", token_string(text="Zepp via Saúde (Atalho v2)")),
     ]
+    u_dl = uid()
     actions.append(action(
-        "downloadurl", UUID=uid(), WFURL=token_string(ref(u_url, "Text")), WFHTTPMethod="POST",
+        "downloadurl", UUID=u_dl, WFURL=token_string(ref(u_url, "Text")), WFHTTPMethod="POST",
         WFHTTPBodyType="JSON", ShowHeaders=True,
         WFJSONValues={"Value": {"WFDictionaryFieldValueItems": items}, "WFSerializationType": "WFDictionaryFieldValue"},
     ))
-    actions.append(action("notification", UUID=uid(), WFNotificationActionTitle="Projeto K",
-                          WFNotificationActionBody="Dados do Saúde enviados para a planilha ✓",
+    # Shows the spreadsheet's answer ({"ok":true,...} or the error) so failures are visible.
+    body = "Resposta da planilha: " + OBJ
+    actions.append(action("notification", UUID=uid(), WFNotificationActionTitle="Projeto K Saúde",
+                          WFNotificationActionBody={"Value": {"string": body, "attachmentsByRange": {
+                              f"{{{len(body) - 1}, 1}}": ref(u_dl, "Contents of URL")}},
+                              "WFSerializationType": "WFTextTokenString"},
                           WFNotificationActionSound=False))
 
     return {

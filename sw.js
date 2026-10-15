@@ -1,6 +1,6 @@
 // Service worker: precaches the app shell, the program and all exercise images so the
 // app opens and works with no signal. Bump VERSION on every deploy.
-const VERSION = 'pk-v6';
+const VERSION = 'pk-v7';
 
 const SHELL = [
   './',
@@ -12,14 +12,16 @@ const SHELL = [
   'icons/icon-192.png',
   'icons/icon-512.png',
   'icons/apple-touch-icon.png',
-  'js/app.js',
   'js/achievements.js',
+  'js/ai.js',
+  'js/app.js',
   'js/charts.js',
   'js/db.js',
   'js/export.js',
   'js/friend.js',
   'js/program.js',
   'js/progression.js',
+  'js/recommend.js',
   'js/schema.js',
   'js/settings.js',
   'js/spotify.js',
@@ -29,9 +31,13 @@ const SHELL = [
   'js/ui.js',
   'js/util.js',
   'js/workout.js',
-  'js/screens/analytics.js',
   'js/screens/exercise.js',
   'js/screens/friend-pages.js',
+  'js/screens/inbox.js',
+  'js/screens/more.js',
+  'js/screens/music.js',
+  'js/screens/profile.js',
+  'js/screens/progress.js',
   'js/screens/settings.js',
   'js/screens/today.js',
   'js/screens/trophies.js',
