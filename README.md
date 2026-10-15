@@ -125,7 +125,9 @@ Limitações: exige **Spotify Premium**; o app do Spotify precisa estar aberto/a
 
 O Zepp já envia os dados ao app Saúde. Não existe API pública do Zepp, então o caminho é **Saúde → Atalho → Apps Script** (aba `health_imports`). Nada de scraping ou API não oficial.
 
-Crie no app **Atalhos** um atalho chamado **`Projeto K Saúde`** (o nome pode ser trocado em Ajustes). Os nomes das ações podem variar um pouco conforme a versão do iOS:
+**Jeito rápido (arquivo pronto):** no iPhone, abra https://k3v1nn-ux.github.io/projeto-k/shortcuts/Projeto-K-Saude.shortcut (ou Ajustes → Apple Saúde → Baixar o Atalho), toque em **Adicionar Atalho** e cole a URL `/exec` e o token quando ele pedir. Ele envia passos, kcal ativas, FC média e FC de repouso do dia. O arquivo é gerado e assinado por `python3 tools/make_shortcut.py` e não contém URL nem token.
+
+**Jeito manual:** crie no app **Atalhos** um atalho chamado **`Projeto K Saúde`** (o nome pode ser trocado em Ajustes). Os nomes das ações podem variar um pouco conforme a versão do iOS:
 
 1. **Receber** entrada do tipo *Texto*; se não houver entrada: *Continuar*.
 2. **Dividir texto** (Entrada do Atalho) por *Personalizado* `|` → item 1 = data, item 2 = minutos do treino (vem do botão "Importar do Saúde" do app; vazio quando roda pela automação).
