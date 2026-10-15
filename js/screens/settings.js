@@ -70,7 +70,7 @@ export function render(view) {
     <div class="section"><div class="section-title">Apple Saúde (Zepp)</div>
       <div class="card">
         <label class="field"><span>Nome do Atalho do iOS</span><input type="text" name="shortcutName" value="${esc(s.shortcutName)}"></label>
-        <a class="btn primary block" href="shortcuts/Projeto-K-Saude.shortcut" download>Baixar o Atalho “Projeto K Saúde”</a>
+        <a class="btn primary block" href="https://github.com/k3v1nn-ux/projeto-k/releases/download/shortcut-v1/ProjetoK-Saude.shortcut">Baixar o Atalho “Projeto K Saúde”</a>
         <p class="muted small" style="margin-top:8px">Abra no iPhone (Safari), toque em Adicionar Atalho e cole a URL e o token quando ele pedir. O Atalho envia passos, kcal ativas, FC média e FC de repouso do dia para a planilha.</p>
       </div>
     </div>
