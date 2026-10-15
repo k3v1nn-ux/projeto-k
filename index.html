@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Projeto K</title>
+  <meta name="description" content="Treino pessoal: plano semanal, registro de séries, progressão e analytics.">
+  <meta name="theme-color" content="#f6f7f5">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Projeto K">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="css/app.css">
+  <script>
+    // Apply the forced theme before first paint to avoid a flash.
+    try {
+      var t = JSON.parse(localStorage.getItem('pk.settings') || '{}').theme;
+      if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <header class="topbar">
+    <a href="#/hoje" class="brand" aria-label="Projeto K, início">Projeto K</a>
+    <div class="topbar-right">
+      <span id="session-clock" class="pill" hidden></span>
+      <button id="sync-badge" class="sync-badge" title="Sincronização" aria-label="Sincronização"></button>
+      <button id="theme-toggle" class="icon-btn" aria-label="Alternar tema"></button>
+    </div>
+  </header>
+
+  <main id="view" tabindex="-1"></main>
+
+  <div id="rest" class="rest-bar" hidden></div>
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+
+  <nav class="tabbar" id="tabbar">
+    <a href="#/hoje" data-tab="hoje"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9v6M18 9v6M3 11v2M21 11v2M6 12h12"/></svg><span>Hoje</span></a>
+    <a href="#/semana" data-tab="semana"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Semana</span></a>
+    <a href="#/analytics" data-tab="analytics"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V5M19 20v-6"/></svg><span>Analytics</span></a>
+    <a href="#/conquistas" data-tab="conquistas"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0V4zM8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8.5 20h7"/></svg><span>Troféus</span></a>
+    <a href="#/config" data-tab="config"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg><span>Ajustes</span></a>
+  </nav>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

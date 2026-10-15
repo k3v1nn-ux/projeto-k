@@ -1,0 +1,2333 @@
+{
+  "version": 1,
+  "name": "Projeto K — Superior/Inferior",
+  "levels": {
+    "base": {
+      "label": "Base",
+      "days": [
+        {
+          "type": "lift",
+          "session_name": "Superior A",
+          "exercises": [
+            {
+              "exercise_id": "db_bench_press",
+              "sets": 3,
+              "rep_min": 8,
+              "rep_max": 12,
+              "rest_seconds": 120,
+              "notes": ""
+            },
+            {
+              "exercise_id": "seated_cable_row",
+              "sets": 3,
+              "rep_min": 8,
+              "rep_max": 12,
+              "rest_seconds": 120,
+              "notes": ""
+            },
+            {
+              "exercise_id": "db_shoulder_press",
+              "sets": 3,
+              "rep_min": 8,
+              "rep_max": 12,
+              "rest_seconds": 90,
+              "notes": ""
+            },
+            {
+              "exercise_id": "lat_pulldown",
+              "sets": 3,
+              "rep_min": 8,
+              "rep_max": 12,
+              "rest_seconds": 90,
+              "notes": ""
+            },
+            {
+              "exercise_id": "db_lateral_raise",
+              "sets": 2,
+              "rep_min": 12,
+              "rep_max": 15,
+              "rest_seconds": 60,
+              "notes": ""
+            },
+            {
+              "exercise_id": "db_curl",
+              "sets": 2,
+              "rep_min": 10,
+              "rep_max": 12,
+              "rest_seconds": 60,
+              "notes": ""
+            },
+            {
+              "exercise_id": "triceps_pushdown",
+              "sets": 2,
+              "rep_min": 10,
+              "rep_max": 12,
+              "rest_seconds": 60,
+              "notes": ""
+            }
+          ],
+          "weekday": 1,
+          "weekday_pt": "Segunda",
+          "post_cardio": "Opcional: 10–20 min de cardio leve (zona 2) depois da musculação, nunca antes."
+        },
+        {
+          "type": "lift",
+          "session_name": "Inferior A",
+          "exercises": [
+            {
+              "exercise_id": "leg_press",
+              "sets": 3,
+              "rep_min": 10,
+              "rep_max": 12,
+              "rest_seconds": 120,
+              "notes": ""
+            },
+            {
+              "exercise_id": "db_rdl",
+              "sets": 3,
+              "rep_min": 8,
+              "rep_max": 12,
+              "rest_seconds": 120,
+              "notes": ""
+            },
+            {
+              "exercise_id": "leg_extension",
+              "sets": 3,
+              "rep_min": 12,
+              "rep_max": 15,
+              "rest_seconds": 90,
+              "notes": ""
+            },
+            {
+              "exercise_id": "lying_leg_curl",
+              "sets": 3,
+              "rep_min": 10,
+              "rep_max": 12,
+              "rest_seconds": 90,
+              "notes": ""
+            },
+            {
+              "exercise_id": "standing_calf",
+              "sets": 3,
+              "rep_min": 10,
+              "rep_max": 15,
+              "rest_seconds": 60,
+              "notes": ""
+            },
+            {
+              "exercise_id": "cable_crunch",
+              "sets": 2,
+              "rep_min": 12,
+              "rep_max": 15,
+              "rest_seconds": 60,
+              "notes": ""
+            }
+          ],
+          "weekday": 2,
+          "weekday_pt": "Terça",
+          "post_cardio": "Opcional: 10–20 min de cardio leve (zona 2) depois da musculação, nunca antes."
+        },
+        {
+          "type": "cardio",
+          "session_name": "Cardio Z2 + mobilidade",
+          "cardio": {
+            "minutes_min": 25,
+            "minutes_max": 35,
+            "note": "Zona 2: ritmo em que você consegue conversar em frases completas (esforço 3–4 de 10). Esteira inclinada, bike ou elíptico. Termine com 5–10 min de mobilidade de quadril, tornozelo e ombros."
+          },
+          "weekday": 3,
+          "weekday_pt": "Quarta"
+        },
+        {
+          "type": "lift",
+          "session_name": "Superior B",
+          "exercises": [
+            {
+              "exercise_id": "machine_row",
+              "sets": 3,
+              "rep_min": 8,
+              "rep_max": 12,
+              "rest_seconds": 120,
+              "notes": ""
+            },
+            {
+              "exercise_id": "db_incline_press",
+              "sets": 3,
+              "rep_min": 8,
+              "rep_max": 12,
+              "rest_seconds": 120,
+              "notes": ""
+            },
+            {
+              "exercise_id": "close_grip_pulldown",
+              "sets": 3,
+              "rep_min": 10,
+              "rep_max": 12,
+              "rest_seconds": 90,
+              "notes": ""
+            },
+            {
+              "exercise_id": "pec_deck",
+              "sets": 3,
+              "rep_min": 12,
+              "rep_max": 15,
+              "rest_seconds": 60,
+              "notes": ""
+            },
+            {
+              "exercise_id": "reverse_pec_deck",
+              "sets": 2,
+              "rep_min": 12,
+              "rep_max": 15,
+              "rest_seconds": 60,
+              "notes": ""
+            },
+            {
+              "exercise_id": "hammer_curl",
+              "sets": 2,
+              "rep_min": 10,
+              "rep_max": 12,
+              "rest_seconds": 60,
+              "notes": ""
+            },
+            {
+              "exercise_id": "overhead_rope_ext",
+              "sets": 2,
+              "rep_min": 10,
+              "rep_max": 12,
+              "rest_seconds": 60,
+              "notes": ""
+            }
+          ],
+          "weekday": 4,
+          "weekday_pt": "Quinta",
+          "post_cardio": "Opcional: 10–20 min de cardio leve (zona 2) depois da musculação, nunca antes."
+        },
+        {
+          "type": "lift",
+          "session_name": "Inferior B",
+          "exercises": [
+            {
+              "exercise_id": "hip_thrust",
+              "sets": 3,
+              "rep_min": 8,
+              "rep_max": 12,
+              "rest_seconds": 120,
+              "notes": ""
+            },
+            {
+              "exercise_id": "leg_press",
+              "sets": 3,
+              "rep_min": 12,
+              "rep_max": 15,
+              "rest_seconds": 120,
+              "notes": "Pés um pouco mais altos na plataforma."
+            },
+            {
+              "exercise_id": "seated_leg_curl",
+              "sets": 3,
+              "rep_min": 10,
+              "rep_max": 12,
+              "rest_seconds": 90,
+              "notes": ""
+            },
+            {
+              "exercise_id": "abductor",
+              "sets": 2,
+              "rep_min": 12,
+              "rep_max": 15,
+              "rest_seconds": 60,
+              "notes": ""
+            },
+            {
+              "exercise_id": "adductor",
+              "sets": 2,
+              "rep_min": 12,
+              "rep_max": 15,
+              "rest_seconds": 60,
+              "notes": ""
+            },
+            {
+              "exercise_id": "seated_calf",
+              "sets": 3,
+              "rep_min": 12,
+              "rep_max": 15,
+              "rest_seconds": 60,
+              "notes": ""
+            },
+            {
+              "exercise_id": "leg_raise",
+              "sets": 2,
+              "rep_min": 10,
+              "rep_max": 15,
+              "rest_seconds": 60,
+              "notes": ""
+            }
+          ],
+          "weekday": 5,
+          "weekday_pt": "Sexta",
+          "post_cardio": "Opcional: 10–20 min de cardio leve (zona 2) depois da musculação, nunca antes."
+        },
+        {
+          "type": "cardio",
+          "session_name": "Cardio Z2 + mobilidade",
+          "cardio": {
+            "minutes_min": 25,
+            "minutes_max": 35,
+            "note": "Zona 2: ritmo em que você consegue conversar em frases completas (esforço 3–4 de 10). Esteira inclinada, bike ou elíptico. Termine com 5–10 min de mobilidade de quadril, tornozelo e ombros."
+          },
+          "weekday": 6,
+          "weekday_pt": "Sábado"
+        },
+        {
+          "type": "rest",
+          "session_name": "Descanso",
+          "weekday": 7,
+          "weekday_pt": "Domingo"
+        }
+      ]
+    },
+    "intermediate": {
+      "label": "Intermediário",
+      "days": [
+        {
+          "type": "lift",
+          "session_name": "Superior A+",
+          "exercises": [
+            {
+              "exercise_id": "db_bench_press",
+              "sets": 4,
+              "rep_min": 6,
+              "rep_max": 10,
+              "rest_seconds": 150,
+              "notes": ""
+            },
+            {
+              "exercise_id": "seated_cable_row",
+              "sets": 4,
+              "rep_min": 8,
+              "rep_max": 12,
+              "rest_seconds": 120,
+              "notes": ""
+            },
+            {
+              "exercise_id": "db_shoulder_press",
+              "sets": 3,
+              "rep_min": 8,
+              "rep_max": 12,
+              "rest_seconds": 90,
+              "notes": ""
+            },
+            {
+              "exercise_id": "lat_pulldown",
+              "sets": 3,
+              "rep_min": 8,
+              "rep_max": 12,
+              "rest_seconds": 90,
+              "notes": ""
+            },
+            {
+              "exercise_id": "cable_fly",
+              "sets": 2,
+              "rep_min": 12,
+              "rep_max": 15,
+              "rest_seconds": 60,
+              "notes": ""
+            },
+            {
+              "exercise_id": "db_lateral_raise",
+              "sets": 3,
+              "rep_min": 12,
+              "rep_max": 15,
+              "rest_seconds": 60,
+              "notes": ""
+            },
+            {
+              "exercise_id": "db_curl",
+              "sets": 3,
+              "rep_min": 10,
+              "rep_max": 12,
+              "rest_seconds": 60,
+              "notes": ""
+            },
+            {
+              "exercise_id": "triceps_pushdown",
+              "sets": 3,
+              "rep_min": 10,
+              "rep_max": 12,
+              "rest_seconds": 60,
+              "notes": ""
+            }
+          ],
+          "weekday": 1,
+          "weekday_pt": "Segunda",
+          "post_cardio": "Opcional: 10–20 min de cardio leve (zona 2) depois da musculação, nunca antes."
+        },
+        {
+          "type": "lift",
+          "session_name": "Inferior A+",
+          "exercises": [
+            {
+              "exercise_id": "leg_press",
+              "sets": 4,
+              "rep_min": 8,
+              "rep_max": 12,
+              "rest_seconds": 150,
+              "notes": ""
+            },
+            {
+              "exercise_id": "db_rdl",
+              "sets": 4,
+              "rep_min": 8,
+              "rep_max": 12,
+              "rest_seconds": 120,
+              "notes": ""
+            },
+            {
+              "exercise_id": "leg_extension",
+              "sets": 3,
+              "rep_min": 12,
+              "rep_max": 15,
+              "rest_seconds": 90,
+              "notes": ""
+            },
+            {
+              "exercise_id": "lying_leg_curl",
+              "sets": 3,
+              "rep_min": 10,
+              "rep_max": 12,
+              "rest_seconds": 90,
+              "notes": ""
+            },
+            {
+              "exercise_id": "hip_thrust",
+              "sets": 2,
+              "rep_min": 10,
+              "rep_max": 12,
+              "rest_seconds": 90,
+              "notes": ""
+            },
+            {
+              "exercise_id": "standing_calf",
+              "sets": 4,
+              "rep_min": 10,
+              "rep_max": 15,
+              "rest_seconds": 60,
+              "notes": ""
+            },
+            {
+              "exercise_id": "cable_crunch",
+              "sets": 3,
+              "rep_min": 12,
+              "rep_max": 15,
+              "rest_seconds": 60,
+              "notes": ""
+            }
+          ],
+          "weekday": 2,
+          "weekday_pt": "Terça",
+          "post_cardio": "Opcional: 10–20 min de cardio leve (zona 2) depois da musculação, nunca antes."
+        },
+        {
+          "type": "cardio",
+          "session_name": "Cardio Z2 + mobilidade",
+          "cardio": {
+            "minutes_min": 25,
+            "minutes_max": 35,
+            "note": "Zona 2: ritmo em que você consegue conversar em frases completas (esforço 3–4 de 10). Esteira inclinada, bike ou elíptico. Termine com 5–10 min de mobilidade de quadril, tornozelo e ombros."
+          },
+          "weekday": 3,
+          "weekday_pt": "Quarta"
+        },
+        {
+          "type": "lift",
+          "session_name": "Superior B+",
+          "exercises": [
+            {
+              "exercise_id": "machine_row",
+              "sets": 4,
+              "rep_min": 8,
+              "rep_max": 12,
+              "rest_seconds": 120,
+              "notes": ""
+            },
+            {
+              "exercise_id": "db_incline_press",
+              "sets": 4,
+              "rep_min": 8,
+              "rep_max": 12,
+              "rest_seconds": 120,
+              "notes": ""
+            },
+            {
+              "exercise_id": "close_grip_pulldown",
+              "sets": 3,
+              "rep_min": 10,
+              "rep_max": 12,
+              "rest_seconds": 90,
+              "notes": ""
+            },
+            {
+              "exercise_id": "pec_deck",
+              "sets": 3,
+              "rep_min": 12,
+              "rep_max": 15,
+              "rest_seconds": 60,
+              "notes": ""
+            },
+            {
+              "exercise_id": "cable_lateral_raise",
+              "sets": 2,
+              "rep_min": 12,
+              "rep_max": 15,
+              "rest_seconds": 60,
+              "notes": ""
+            },
+            {
+              "exercise_id": "reverse_pec_deck",
+              "sets": 3,
+              "rep_min": 12,
+              "rep_max": 15,
+              "rest_seconds": 60,
+              "notes": ""
+            },
+            {
+              "exercise_id": "hammer_curl",
+              "sets": 3,
+              "rep_min": 10,
+              "rep_max": 12,
+              "rest_seconds": 60,
+              "notes": ""
+            },
+            {
+              "exercise_id": "overhead_rope_ext",
+              "sets": 3,
+              "rep_min": 10,
+              "rep_max": 12,
+              "rest_seconds": 60,
+              "notes": ""
+            }
+          ],
+          "weekday": 4,
+          "weekday_pt": "Quinta",
+          "post_cardio": "Opcional: 10–20 min de cardio leve (zona 2) depois da musculação, nunca antes."
+        },
+        {
+          "type": "lift",
+          "session_name": "Inferior B+",
+          "exercises": [
+            {
+              "exercise_id": "hip_thrust",
+              "sets": 4,
+              "rep_min": 8,
+              "rep_max": 12,
+              "rest_seconds": 120,
+              "notes": ""
+            },
+            {
+              "exercise_id": "leg_press",
+              "sets": 3,
+              "rep_min": 12,
+              "rep_max": 15,
+              "rest_seconds": 120,
+              "notes": "Pés um pouco mais altos na plataforma."
+            },
+            {
+              "exercise_id": "seated_leg_curl",
+              "sets": 4,
+              "rep_min": 10,
+              "rep_max": 12,
+              "rest_seconds": 90,
+              "notes": ""
+            },
+            {
+              "exercise_id": "single_leg_extension",
+              "sets": 2,
+              "rep_min": 12,
+              "rep_max": 15,
+              "rest_seconds": 60,
+              "notes": ""
+            },
+            {
+              "exercise_id": "abductor",
+              "sets": 3,
+              "rep_min": 12,
+              "rep_max": 15,
+              "rest_seconds": 60,
+              "notes": ""
+            },
+            {
+              "exercise_id": "adductor",
+              "sets": 2,
+              "rep_min": 12,
+              "rep_max": 15,
+              "rest_seconds": 60,
+              "notes": ""
+            },
+            {
+              "exercise_id": "seated_calf",
+              "sets": 3,
+              "rep_min": 12,
+              "rep_max": 15,
+              "rest_seconds": 60,
+              "notes": ""
+            },
+            {
+              "exercise_id": "leg_raise",
+              "sets": 3,
+              "rep_min": 10,
+              "rep_max": 15,
+              "rest_seconds": 60,
+              "notes": ""
+            }
+          ],
+          "weekday": 5,
+          "weekday_pt": "Sexta",
+          "post_cardio": "Opcional: 10–20 min de cardio leve (zona 2) depois da musculação, nunca antes."
+        },
+        {
+          "type": "cardio",
+          "session_name": "Cardio Z2 + mobilidade",
+          "cardio": {
+            "minutes_min": 25,
+            "minutes_max": 35,
+            "note": "Zona 2: ritmo em que você consegue conversar em frases completas (esforço 3–4 de 10). Esteira inclinada, bike ou elíptico. Termine com 5–10 min de mobilidade de quadril, tornozelo e ombros."
+          },
+          "weekday": 6,
+          "weekday_pt": "Sábado"
+        },
+        {
+          "type": "rest",
+          "session_name": "Descanso",
+          "weekday": 7,
+          "weekday_pt": "Domingo"
+        }
+      ]
+    }
+  },
+  "rules": {
+    "split_rationale": "Superior/Inferior 4x por semana treina cada grupo 2x/semana com ~9–12 séries semanais nos grupos grandes, cabendo em sessões de ~50–60 min. Quarta e sábado ficam para cardio zona 2 e mobilidade (recuperação ativa e saúde cardiovascular), domingo é descanso total. Nunca há dois dias seguidos treinando os mesmos músculos.",
+    "rir": {
+      "base": "1–3 repetições em reserva (pare quando sentir que faria mais 1–3 reps com boa técnica).",
+      "intermediate": "0–2 repetições em reserva nos isolados; 1–2 nos compostos."
+    },
+    "warmup": [
+      "5 min de esteira ou bike leve.",
+      "1 min de mobilidade: círculos de ombro, abertura de quadril.",
+      "No 1º exercício: 1 série com ~50% da carga × 10 e 1 série com ~75% × 5 (não registrar)."
+    ],
+    "reentry_week": {
+      "weeks": 1,
+      "set_delta": -1,
+      "min_sets": 2,
+      "rir": "3–4",
+      "note": "Semana de reentrada: 1 série a menos em cada exercício e cargas conservadoras (RIR 3–4). Use para achar as cargas e reaprender a técnica."
+    },
+    "double_progression": {
+      "rule": "Quando completar todas as séries no topo da faixa (ex.: 3×12) com boa execução, aumente a carga no próximo treino e volte para o início da faixa.",
+      "increment_upper_kg": [
+        1,
+        2.5
+      ],
+      "increment_lower_kg": [
+        2.5,
+        5
+      ],
+      "stall_rule": "Se ficar abaixo do mínimo da faixa em 2 treinos seguidos, reduza ~10% e reconstrua."
+    },
+    "missed_rule": "Dia planejado de musculação ou cardio sem sessão registrada até 23h59 vira falta. Domingo (descanso) não conta e não quebra a sequência.",
+    "intermediate_unlock": {
+      "weeks_required": 8,
+      "min_adherence": 0.8,
+      "description": "8 semanas (não precisam ser seguidas) com aderência ≥ 80% desbloqueiam o nível Intermediário."
+    },
+    "cardio": "Zona 2 / leve-moderado: 25–35 min nos dias de cardio; opcional 10–20 min após a musculação.",
+    "no_squat_policy": "Nenhuma variação de agachamento no plano (preferência pessoal). Afundo e búlgaro existem apenas como opção marcada com is_squat_variant=true, desligados por padrão (Configurações)."
+  },
+  "exercises": [
+    {
+      "id": "db_bench_press",
+      "name_pt": "Supino reto com halteres",
+      "muscle_group": "peito",
+      "equipment": "halteres",
+      "media_url": "img/ex/db_bench_press-0.jpg",
+      "media_frames": [
+        "img/ex/db_bench_press-0.jpg",
+        "img/ex/db_bench_press-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Dumbbell_Bench_Press",
+      "instructions": [
+        "Escápulas juntas e para baixo, pés firmes no chão.",
+        "Desça os halteres até a linha do peito com cotovelos a ~45° do tronco.",
+        "Empurre sem bater os halteres no topo."
+      ],
+      "alternatives": [
+        "machine_chest_press",
+        "smith_bench_press"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 2,
+      "start_load_kg": 10,
+      "load_note": "kg por halter"
+    },
+    {
+      "id": "machine_chest_press",
+      "name_pt": "Supino máquina (chest press)",
+      "muscle_group": "peito",
+      "equipment": "máquina",
+      "media_url": "img/ex/machine_chest_press-0.jpg",
+      "media_frames": [
+        "img/ex/machine_chest_press-0.jpg",
+        "img/ex/machine_chest_press-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Leverage_Chest_Press",
+      "instructions": [
+        "Ajuste o banco para a pegada ficar na altura do meio do peito.",
+        "Costas apoiadas, empurre sem travar os cotovelos.",
+        "Volte devagar (2–3 s)."
+      ],
+      "alternatives": [
+        "db_bench_press",
+        "smith_bench_press"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 5,
+      "start_load_kg": 20,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "smith_bench_press",
+      "name_pt": "Supino reto no smith",
+      "muscle_group": "peito",
+      "equipment": "smith",
+      "media_url": "img/ex/smith_bench_press-0.jpg",
+      "media_frames": [
+        "img/ex/smith_bench_press-0.jpg",
+        "img/ex/smith_bench_press-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Smith_Machine_Bench_Press",
+      "instructions": [
+        "Posicione o banco para a barra descer na linha do mamilo.",
+        "Pegada um pouco mais larga que os ombros.",
+        "Desça controlando e empurre."
+      ],
+      "alternatives": [
+        "db_bench_press",
+        "machine_chest_press"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 2.5,
+      "start_load_kg": 10,
+      "load_note": "anilhas somadas (sem a barra)"
+    },
+    {
+      "id": "db_incline_press",
+      "name_pt": "Supino inclinado com halteres",
+      "muscle_group": "peito",
+      "equipment": "halteres",
+      "media_url": "img/ex/db_incline_press-0.jpg",
+      "media_frames": [
+        "img/ex/db_incline_press-0.jpg",
+        "img/ex/db_incline_press-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Incline_Dumbbell_Press",
+      "instructions": [
+        "Banco a 30–45°.",
+        "Desça até a parte alta do peito, cotovelos levemente fechados.",
+        "Empurre para cima e um pouco para dentro."
+      ],
+      "alternatives": [
+        "smith_incline_press",
+        "machine_incline_press"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 2,
+      "start_load_kg": 8,
+      "load_note": "kg por halter"
+    },
+    {
+      "id": "smith_incline_press",
+      "name_pt": "Supino inclinado no smith",
+      "muscle_group": "peito",
+      "equipment": "smith",
+      "media_url": "img/ex/smith_incline_press-0.jpg",
+      "media_frames": [
+        "img/ex/smith_incline_press-0.jpg",
+        "img/ex/smith_incline_press-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Smith_Machine_Incline_Bench_Press",
+      "instructions": [
+        "Banco a 30–45° com a barra descendo na parte alta do peito.",
+        "Escápulas encaixadas.",
+        "Movimento controlado."
+      ],
+      "alternatives": [
+        "db_incline_press",
+        "machine_incline_press"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 2.5,
+      "start_load_kg": 10,
+      "load_note": "anilhas somadas (sem a barra)"
+    },
+    {
+      "id": "machine_incline_press",
+      "name_pt": "Supino inclinado máquina",
+      "muscle_group": "peito",
+      "equipment": "máquina",
+      "media_url": "img/ex/machine_incline_press-0.jpg",
+      "media_frames": [
+        "img/ex/machine_incline_press-0.jpg",
+        "img/ex/machine_incline_press-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Leverage_Incline_Chest_Press",
+      "instructions": [
+        "Ajuste o assento para a pegada ficar na altura do peito alto.",
+        "Empurre sem travar os cotovelos.",
+        "Volte devagar."
+      ],
+      "alternatives": [
+        "db_incline_press",
+        "smith_incline_press"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 5,
+      "start_load_kg": 20,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "pec_deck",
+      "name_pt": "Crucifixo máquina (voador)",
+      "muscle_group": "peito",
+      "equipment": "máquina",
+      "media_url": "img/ex/pec_deck-0.jpg",
+      "media_frames": [
+        "img/ex/pec_deck-0.jpg",
+        "img/ex/pec_deck-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Butterfly",
+      "instructions": [
+        "Cotovelos levemente flexionados e na altura dos ombros.",
+        "Feche os braços 'abraçando' e aperte o peito por 1 s.",
+        "Abra até sentir alongar, sem dor no ombro."
+      ],
+      "alternatives": [
+        "cable_fly",
+        "db_fly"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 5,
+      "start_load_kg": 20,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "cable_fly",
+      "name_pt": "Crucifixo no crossover",
+      "muscle_group": "peito",
+      "equipment": "polia",
+      "media_url": "img/ex/cable_fly-0.jpg",
+      "media_frames": [
+        "img/ex/cable_fly-0.jpg",
+        "img/ex/cable_fly-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Cable_Crossover",
+      "instructions": [
+        "Um pé à frente, tronco levemente inclinado.",
+        "Traga as mãos à frente do peito em arco.",
+        "Volte devagar até alongar."
+      ],
+      "alternatives": [
+        "pec_deck",
+        "db_fly"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 2.5,
+      "start_load_kg": 10,
+      "load_note": "carga por lado"
+    },
+    {
+      "id": "db_fly",
+      "name_pt": "Crucifixo com halteres",
+      "muscle_group": "peito",
+      "equipment": "halteres",
+      "media_url": "img/ex/db_fly-0.jpg",
+      "media_frames": [
+        "img/ex/db_fly-0.jpg",
+        "img/ex/db_fly-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Dumbbell_Flyes",
+      "instructions": [
+        "Cotovelos levemente flexionados e fixos.",
+        "Abra até a linha do peito, sem descer demais.",
+        "Feche em arco."
+      ],
+      "alternatives": [
+        "pec_deck",
+        "cable_fly"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 2,
+      "start_load_kg": 6,
+      "load_note": "kg por halter"
+    },
+    {
+      "id": "seated_cable_row",
+      "name_pt": "Remada baixa no cabo (triângulo)",
+      "muscle_group": "costas",
+      "equipment": "polia",
+      "media_url": "img/ex/seated_cable_row-0.jpg",
+      "media_frames": [
+        "img/ex/seated_cable_row-0.jpg",
+        "img/ex/seated_cable_row-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Seated_Cable_Rows",
+      "instructions": [
+        "Tronco ereto, joelhos levemente flexionados.",
+        "Puxe o triângulo até o umbigo levando os cotovelos para trás.",
+        "Aperte as escápulas e volte sem curvar a lombar."
+      ],
+      "alternatives": [
+        "machine_row",
+        "one_arm_db_row"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 5,
+      "start_load_kg": 25,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "machine_row",
+      "name_pt": "Remada máquina (apoio no peito)",
+      "muscle_group": "costas",
+      "equipment": "máquina",
+      "media_url": "img/ex/machine_row-0.jpg",
+      "media_frames": [
+        "img/ex/machine_row-0.jpg",
+        "img/ex/machine_row-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Leverage_Iso_Row",
+      "instructions": [
+        "Peito apoiado no encosto.",
+        "Puxe levando os cotovelos para trás e junte as escápulas.",
+        "Volte controlando."
+      ],
+      "alternatives": [
+        "seated_cable_row",
+        "one_arm_db_row"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 5,
+      "start_load_kg": 20,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "one_arm_db_row",
+      "name_pt": "Remada unilateral com halter (serrote)",
+      "muscle_group": "costas",
+      "equipment": "halteres",
+      "media_url": "img/ex/one_arm_db_row-0.jpg",
+      "media_frames": [
+        "img/ex/one_arm_db_row-0.jpg",
+        "img/ex/one_arm_db_row-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/One-Arm_Dumbbell_Row",
+      "instructions": [
+        "Joelho e mão no banco, coluna neutra.",
+        "Puxe o halter em direção ao quadril.",
+        "Desça alongando sem girar o tronco."
+      ],
+      "alternatives": [
+        "machine_row",
+        "seated_cable_row"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 2,
+      "start_load_kg": 12,
+      "load_note": "kg do halter"
+    },
+    {
+      "id": "lat_pulldown",
+      "name_pt": "Puxada frontal aberta",
+      "muscle_group": "costas",
+      "equipment": "polia",
+      "media_url": "img/ex/lat_pulldown-0.jpg",
+      "media_frames": [
+        "img/ex/lat_pulldown-0.jpg",
+        "img/ex/lat_pulldown-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Wide-Grip_Lat_Pulldown",
+      "instructions": [
+        "Pegada um pouco mais larga que os ombros.",
+        "Puxe a barra até o queixo/peito alto, cotovelos para baixo.",
+        "Suba controlando até esticar os braços."
+      ],
+      "alternatives": [
+        "close_grip_pulldown",
+        "underhand_pulldown"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 5,
+      "start_load_kg": 25,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "close_grip_pulldown",
+      "name_pt": "Puxada com triângulo (pegada neutra)",
+      "muscle_group": "costas",
+      "equipment": "polia",
+      "media_url": "img/ex/close_grip_pulldown-0.jpg",
+      "media_frames": [
+        "img/ex/close_grip_pulldown-0.jpg",
+        "img/ex/close_grip_pulldown-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/V-Bar_Pulldown",
+      "instructions": [
+        "Tronco levemente inclinado para trás.",
+        "Puxe o triângulo até o peito.",
+        "Suba devagar alongando as costas."
+      ],
+      "alternatives": [
+        "lat_pulldown",
+        "underhand_pulldown"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 5,
+      "start_load_kg": 25,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "underhand_pulldown",
+      "name_pt": "Puxada supinada",
+      "muscle_group": "costas",
+      "equipment": "polia",
+      "media_url": "img/ex/underhand_pulldown-0.jpg",
+      "media_frames": [
+        "img/ex/underhand_pulldown-0.jpg",
+        "img/ex/underhand_pulldown-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Underhand_Cable_Pulldowns",
+      "instructions": [
+        "Pegada supinada (palmas para você) na largura dos ombros.",
+        "Puxe até o peito alto.",
+        "Controle a subida."
+      ],
+      "alternatives": [
+        "lat_pulldown",
+        "close_grip_pulldown"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 5,
+      "start_load_kg": 25,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "db_shoulder_press",
+      "name_pt": "Desenvolvimento com halteres (sentado)",
+      "muscle_group": "ombros",
+      "equipment": "halteres",
+      "media_url": "img/ex/db_shoulder_press-0.jpg",
+      "media_frames": [
+        "img/ex/db_shoulder_press-0.jpg",
+        "img/ex/db_shoulder_press-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Dumbbell_Shoulder_Press",
+      "instructions": [
+        "Banco a ~80–90°, costas apoiadas.",
+        "Halteres na linha das orelhas, empurre para cima.",
+        "Não arqueie a lombar."
+      ],
+      "alternatives": [
+        "machine_shoulder_press",
+        "smith_shoulder_press"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 2,
+      "start_load_kg": 8,
+      "load_note": "kg por halter"
+    },
+    {
+      "id": "machine_shoulder_press",
+      "name_pt": "Desenvolvimento máquina",
+      "muscle_group": "ombros",
+      "equipment": "máquina",
+      "media_url": "img/ex/machine_shoulder_press-0.jpg",
+      "media_frames": [
+        "img/ex/machine_shoulder_press-0.jpg",
+        "img/ex/machine_shoulder_press-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Leverage_Shoulder_Press",
+      "instructions": [
+        "Pegada na altura dos ombros.",
+        "Empurre sem travar os cotovelos.",
+        "Desça controlando."
+      ],
+      "alternatives": [
+        "db_shoulder_press",
+        "smith_shoulder_press"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 5,
+      "start_load_kg": 15,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "smith_shoulder_press",
+      "name_pt": "Desenvolvimento no smith",
+      "muscle_group": "ombros",
+      "equipment": "smith",
+      "media_url": "img/ex/smith_shoulder_press-0.jpg",
+      "media_frames": [
+        "img/ex/smith_shoulder_press-0.jpg",
+        "img/ex/smith_shoulder_press-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Smith_Machine_Overhead_Shoulder_Press",
+      "instructions": [
+        "Banco sob a barra, encosto quase reto.",
+        "Desça até a altura do queixo.",
+        "Empurre sem arquear as costas."
+      ],
+      "alternatives": [
+        "db_shoulder_press",
+        "machine_shoulder_press"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 2.5,
+      "start_load_kg": 5,
+      "load_note": "anilhas somadas (sem a barra)"
+    },
+    {
+      "id": "db_lateral_raise",
+      "name_pt": "Elevação lateral com halteres",
+      "muscle_group": "ombros",
+      "equipment": "halteres",
+      "media_url": "img/ex/db_lateral_raise-0.jpg",
+      "media_frames": [
+        "img/ex/db_lateral_raise-0.jpg",
+        "img/ex/db_lateral_raise-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Side_Lateral_Raise",
+      "instructions": [
+        "Leve inclinação à frente, cotovelos levemente flexionados.",
+        "Suba até a altura dos ombros, sem balançar.",
+        "Desça em 2–3 s."
+      ],
+      "alternatives": [
+        "cable_lateral_raise"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 1,
+      "start_load_kg": 4,
+      "load_note": "kg por halter"
+    },
+    {
+      "id": "cable_lateral_raise",
+      "name_pt": "Elevação lateral na polia",
+      "muscle_group": "ombros",
+      "equipment": "polia",
+      "media_url": "img/ex/cable_lateral_raise-0.jpg",
+      "media_frames": [
+        "img/ex/cable_lateral_raise-0.jpg",
+        "img/ex/cable_lateral_raise-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Cable_Seated_Lateral_Raise",
+      "instructions": [
+        "Polia baixa, cabo passando à frente do corpo.",
+        "Eleve até a altura do ombro.",
+        "Volte devagar."
+      ],
+      "alternatives": [
+        "db_lateral_raise"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 2.5,
+      "start_load_kg": 5,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "reverse_pec_deck",
+      "name_pt": "Crucifixo invertido máquina",
+      "muscle_group": "ombros",
+      "equipment": "máquina",
+      "media_url": "img/ex/reverse_pec_deck-0.jpg",
+      "media_frames": [
+        "img/ex/reverse_pec_deck-0.jpg",
+        "img/ex/reverse_pec_deck-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Reverse_Machine_Flyes",
+      "instructions": [
+        "Peito apoiado no encosto do voador.",
+        "Abra os braços para trás na altura dos ombros.",
+        "Pausa de 1 s e volte devagar."
+      ],
+      "alternatives": [
+        "face_pull",
+        "db_rear_delt"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 5,
+      "start_load_kg": 15,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "face_pull",
+      "name_pt": "Face pull na polia (corda)",
+      "muscle_group": "ombros",
+      "equipment": "polia",
+      "media_url": "img/ex/face_pull-0.jpg",
+      "media_frames": [
+        "img/ex/face_pull-0.jpg",
+        "img/ex/face_pull-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Face_Pull",
+      "instructions": [
+        "Polia na altura do rosto, corda com pegada neutra.",
+        "Puxe em direção à testa abrindo os cotovelos.",
+        "Volte controlando."
+      ],
+      "alternatives": [
+        "reverse_pec_deck",
+        "db_rear_delt"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 2.5,
+      "start_load_kg": 10,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "db_rear_delt",
+      "name_pt": "Crucifixo invertido com halteres",
+      "muscle_group": "ombros",
+      "equipment": "halteres",
+      "media_url": "img/ex/db_rear_delt-0.jpg",
+      "media_frames": [
+        "img/ex/db_rear_delt-0.jpg",
+        "img/ex/db_rear_delt-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Seated_Bent-Over_Rear_Delt_Raise",
+      "instructions": [
+        "Sentado, tronco inclinado à frente.",
+        "Abra os braços para os lados com cotovelos levemente flexionados.",
+        "Sem usar impulso."
+      ],
+      "alternatives": [
+        "reverse_pec_deck",
+        "face_pull"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 1,
+      "start_load_kg": 3,
+      "load_note": "kg por halter"
+    },
+    {
+      "id": "db_curl",
+      "name_pt": "Rosca alternada com halteres",
+      "muscle_group": "bíceps",
+      "equipment": "halteres",
+      "media_url": "img/ex/db_curl-0.jpg",
+      "media_frames": [
+        "img/ex/db_curl-0.jpg",
+        "img/ex/db_curl-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Dumbbell_Alternate_Bicep_Curl",
+      "instructions": [
+        "Cotovelos colados ao corpo.",
+        "Suba girando a palma para cima.",
+        "Desça devagar até esticar."
+      ],
+      "alternatives": [
+        "cable_curl",
+        "machine_curl"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 1,
+      "start_load_kg": 6,
+      "load_note": "kg por halter"
+    },
+    {
+      "id": "cable_curl",
+      "name_pt": "Rosca direta na polia",
+      "muscle_group": "bíceps",
+      "equipment": "polia",
+      "media_url": "img/ex/cable_curl-0.jpg",
+      "media_frames": [
+        "img/ex/cable_curl-0.jpg",
+        "img/ex/cable_curl-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Standing_Biceps_Cable_Curl",
+      "instructions": [
+        "Polia baixa com barra reta.",
+        "Cotovelos fixos ao lado do corpo.",
+        "Sem balançar o tronco."
+      ],
+      "alternatives": [
+        "db_curl",
+        "machine_curl"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 2.5,
+      "start_load_kg": 10,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "machine_curl",
+      "name_pt": "Rosca scott máquina",
+      "muscle_group": "bíceps",
+      "equipment": "máquina",
+      "media_url": "img/ex/machine_curl-0.jpg",
+      "media_frames": [
+        "img/ex/machine_curl-0.jpg",
+        "img/ex/machine_curl-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Machine_Preacher_Curls",
+      "instructions": [
+        "Axilas encaixadas no apoio.",
+        "Suba contraindo o bíceps.",
+        "Desça até quase esticar, devagar."
+      ],
+      "alternatives": [
+        "cable_curl",
+        "db_curl"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 2.5,
+      "start_load_kg": 10,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "hammer_curl",
+      "name_pt": "Rosca martelo",
+      "muscle_group": "bíceps",
+      "equipment": "halteres",
+      "media_url": "img/ex/hammer_curl-0.jpg",
+      "media_frames": [
+        "img/ex/hammer_curl-0.jpg",
+        "img/ex/hammer_curl-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Hammer_Curls",
+      "instructions": [
+        "Pegada neutra (palmas para dentro).",
+        "Cotovelos fixos.",
+        "Suba e desça controlando."
+      ],
+      "alternatives": [
+        "rope_hammer_curl",
+        "db_curl"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 1,
+      "start_load_kg": 6,
+      "load_note": "kg por halter"
+    },
+    {
+      "id": "rope_hammer_curl",
+      "name_pt": "Rosca martelo na polia (corda)",
+      "muscle_group": "bíceps",
+      "equipment": "polia",
+      "media_url": "img/ex/rope_hammer_curl-0.jpg",
+      "media_frames": [
+        "img/ex/rope_hammer_curl-0.jpg",
+        "img/ex/rope_hammer_curl-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Cable_Hammer_Curls_-_Rope_Attachment",
+      "instructions": [
+        "Polia baixa com corda.",
+        "Pegada neutra, cotovelos fixos.",
+        "Desça devagar."
+      ],
+      "alternatives": [
+        "hammer_curl",
+        "cable_curl"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 2.5,
+      "start_load_kg": 10,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "triceps_pushdown",
+      "name_pt": "Tríceps na polia (barra)",
+      "muscle_group": "tríceps",
+      "equipment": "polia",
+      "media_url": "img/ex/triceps_pushdown-0.jpg",
+      "media_frames": [
+        "img/ex/triceps_pushdown-0.jpg",
+        "img/ex/triceps_pushdown-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Triceps_Pushdown",
+      "instructions": [
+        "Cotovelos colados ao corpo.",
+        "Empurre até esticar os braços.",
+        "Suba só até 90° no cotovelo."
+      ],
+      "alternatives": [
+        "rope_pushdown",
+        "overhead_rope_ext"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 2.5,
+      "start_load_kg": 15,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "rope_pushdown",
+      "name_pt": "Tríceps na polia (corda)",
+      "muscle_group": "tríceps",
+      "equipment": "polia",
+      "media_url": "img/ex/rope_pushdown-0.jpg",
+      "media_frames": [
+        "img/ex/rope_pushdown-0.jpg",
+        "img/ex/rope_pushdown-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Triceps_Pushdown_-_Rope_Attachment",
+      "instructions": [
+        "Cotovelos fixos.",
+        "No final, afaste as pontas da corda.",
+        "Volte controlando."
+      ],
+      "alternatives": [
+        "triceps_pushdown",
+        "overhead_rope_ext"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 2.5,
+      "start_load_kg": 12.5,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "overhead_rope_ext",
+      "name_pt": "Tríceps francês na polia (corda)",
+      "muscle_group": "tríceps",
+      "equipment": "polia",
+      "media_url": "img/ex/overhead_rope_ext-0.jpg",
+      "media_frames": [
+        "img/ex/overhead_rope_ext-0.jpg",
+        "img/ex/overhead_rope_ext-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Triceps_Overhead_Extension_with_Rope",
+      "instructions": [
+        "De costas para a polia, corda atrás da cabeça.",
+        "Estenda os braços à frente/acima.",
+        "Cotovelos apontando para frente."
+      ],
+      "alternatives": [
+        "db_overhead_ext",
+        "rope_pushdown"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 2.5,
+      "start_load_kg": 10,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "db_overhead_ext",
+      "name_pt": "Tríceps francês com halter",
+      "muscle_group": "tríceps",
+      "equipment": "halteres",
+      "media_url": "img/ex/db_overhead_ext-0.jpg",
+      "media_frames": [
+        "img/ex/db_overhead_ext-0.jpg",
+        "img/ex/db_overhead_ext-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Standing_Dumbbell_Triceps_Extension",
+      "instructions": [
+        "Sentado, halter com as duas mãos atrás da cabeça.",
+        "Estenda os braços para cima.",
+        "Cotovelos apontando para frente."
+      ],
+      "alternatives": [
+        "overhead_rope_ext",
+        "triceps_pushdown"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 2,
+      "start_load_kg": 8,
+      "load_note": "kg do halter"
+    },
+    {
+      "id": "leg_press",
+      "name_pt": "Leg press 45°",
+      "muscle_group": "quadríceps",
+      "equipment": "máquina",
+      "media_url": "img/ex/leg_press-0.jpg",
+      "media_frames": [
+        "img/ex/leg_press-0.jpg",
+        "img/ex/leg_press-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Leg_Press",
+      "instructions": [
+        "Pés na largura dos ombros no meio da plataforma.",
+        "Desça até ~90° nos joelhos sem tirar a lombar do encosto.",
+        "Empurre sem travar os joelhos."
+      ],
+      "alternatives": [
+        "leg_press_horizontal",
+        "bulgarian_split_squat"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 5,
+      "start_load_kg": 40,
+      "load_note": "anilhas somadas (sem o carrinho)"
+    },
+    {
+      "id": "leg_press_horizontal",
+      "name_pt": "Leg press horizontal (sentado)",
+      "muscle_group": "quadríceps",
+      "equipment": "máquina",
+      "media_url": "",
+      "media_frames": [],
+      "media_source": "",
+      "instructions": [
+        "Costas e quadril apoiados.",
+        "Desça até ~90° nos joelhos.",
+        "Empurre sem travar os joelhos."
+      ],
+      "alternatives": [
+        "leg_press",
+        "leg_extension"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 5,
+      "start_load_kg": 40,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "leg_extension",
+      "name_pt": "Cadeira extensora",
+      "muscle_group": "quadríceps",
+      "equipment": "máquina",
+      "media_url": "img/ex/leg_extension-0.jpg",
+      "media_frames": [
+        "img/ex/leg_extension-0.jpg",
+        "img/ex/leg_extension-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Leg_Extensions",
+      "instructions": [
+        "Joelho alinhado com o eixo da máquina.",
+        "Estenda as pernas e segure 1 s no topo.",
+        "Desça devagar."
+      ],
+      "alternatives": [
+        "single_leg_extension",
+        "leg_press"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 5,
+      "start_load_kg": 20,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "single_leg_extension",
+      "name_pt": "Cadeira extensora unilateral",
+      "muscle_group": "quadríceps",
+      "equipment": "máquina",
+      "media_url": "img/ex/single_leg_extension-0.jpg",
+      "media_frames": [
+        "img/ex/single_leg_extension-0.jpg",
+        "img/ex/single_leg_extension-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Single-Leg_Leg_Extension",
+      "instructions": [
+        "Uma perna por vez, mesma técnica da extensora.",
+        "Faça as reps planejadas em cada perna.",
+        "Registre a carga usada."
+      ],
+      "alternatives": [
+        "leg_extension",
+        "leg_press"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 2.5,
+      "start_load_kg": 10,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "lying_leg_curl",
+      "name_pt": "Mesa flexora",
+      "muscle_group": "posteriores",
+      "equipment": "máquina",
+      "media_url": "img/ex/lying_leg_curl-0.jpg",
+      "media_frames": [
+        "img/ex/lying_leg_curl-0.jpg",
+        "img/ex/lying_leg_curl-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Lying_Leg_Curls",
+      "instructions": [
+        "Rolo logo acima do calcanhar.",
+        "Quadril colado no banco.",
+        "Flexione e desça devagar."
+      ],
+      "alternatives": [
+        "seated_leg_curl",
+        "standing_leg_curl"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 5,
+      "start_load_kg": 20,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "seated_leg_curl",
+      "name_pt": "Cadeira flexora",
+      "muscle_group": "posteriores",
+      "equipment": "máquina",
+      "media_url": "img/ex/seated_leg_curl-0.jpg",
+      "media_frames": [
+        "img/ex/seated_leg_curl-0.jpg",
+        "img/ex/seated_leg_curl-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Seated_Leg_Curl",
+      "instructions": [
+        "Trave da coxa bem presa.",
+        "Flexione puxando o rolo para baixo.",
+        "Volte devagar."
+      ],
+      "alternatives": [
+        "lying_leg_curl",
+        "standing_leg_curl"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 5,
+      "start_load_kg": 20,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "standing_leg_curl",
+      "name_pt": "Flexora em pé (unilateral)",
+      "muscle_group": "posteriores",
+      "equipment": "máquina",
+      "media_url": "img/ex/standing_leg_curl-0.jpg",
+      "media_frames": [
+        "img/ex/standing_leg_curl-0.jpg",
+        "img/ex/standing_leg_curl-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Standing_Leg_Curl",
+      "instructions": [
+        "Uma perna por vez.",
+        "Flexione sem mover o quadril.",
+        "Desça controlando."
+      ],
+      "alternatives": [
+        "lying_leg_curl",
+        "seated_leg_curl"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 2.5,
+      "start_load_kg": 10,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "db_rdl",
+      "name_pt": "Stiff com halteres",
+      "muscle_group": "posteriores",
+      "equipment": "halteres",
+      "media_url": "img/ex/db_rdl-0.jpg",
+      "media_frames": [
+        "img/ex/db_rdl-0.jpg",
+        "img/ex/db_rdl-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Stiff-Legged_Dumbbell_Deadlift",
+      "instructions": [
+        "Joelhos levemente flexionados e fixos.",
+        "Leve o quadril para trás com a coluna neutra, halteres rentes às pernas.",
+        "Desça até sentir o posterior alongar e suba contraindo o glúteo."
+      ],
+      "alternatives": [
+        "barbell_rdl",
+        "smith_rdl"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 2,
+      "start_load_kg": 10,
+      "load_note": "kg por halter"
+    },
+    {
+      "id": "barbell_rdl",
+      "name_pt": "Levantamento terra romeno (barra)",
+      "muscle_group": "posteriores",
+      "equipment": "barra",
+      "media_url": "img/ex/barbell_rdl-0.jpg",
+      "media_frames": [
+        "img/ex/barbell_rdl-0.jpg",
+        "img/ex/barbell_rdl-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Romanian_Deadlift",
+      "instructions": [
+        "Barra rente às coxas.",
+        "Quadril para trás, coluna neutra.",
+        "Suba estendendo o quadril."
+      ],
+      "alternatives": [
+        "db_rdl",
+        "smith_rdl"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 5,
+      "start_load_kg": 20,
+      "load_note": "carga total (barra + anilhas)"
+    },
+    {
+      "id": "smith_rdl",
+      "name_pt": "Stiff no smith",
+      "muscle_group": "posteriores",
+      "equipment": "smith",
+      "media_url": "img/ex/smith_rdl-0.jpg",
+      "media_frames": [
+        "img/ex/smith_rdl-0.jpg",
+        "img/ex/smith_rdl-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Smith_Machine_Stiff-Legged_Deadlift",
+      "instructions": [
+        "Barra rente às pernas.",
+        "Quadril para trás, coluna neutra.",
+        "Suba contraindo o glúteo."
+      ],
+      "alternatives": [
+        "db_rdl",
+        "barbell_rdl"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 5,
+      "start_load_kg": 10,
+      "load_note": "anilhas somadas (sem a barra)"
+    },
+    {
+      "id": "hip_thrust",
+      "name_pt": "Elevação pélvica com barra",
+      "muscle_group": "glúteos",
+      "equipment": "barra",
+      "media_url": "img/ex/hip_thrust-0.jpg",
+      "media_frames": [
+        "img/ex/hip_thrust-0.jpg",
+        "img/ex/hip_thrust-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Barbell_Hip_Thrust",
+      "instructions": [
+        "Escápulas apoiadas no banco, barra no quadril (use proteção).",
+        "Suba até alinhar tronco e coxas, queixo para baixo.",
+        "Segure 1 s contraindo os glúteos."
+      ],
+      "alternatives": [
+        "smith_hip_thrust",
+        "glute_bridge"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 5,
+      "start_load_kg": 20,
+      "load_note": "carga total (barra + anilhas)"
+    },
+    {
+      "id": "smith_hip_thrust",
+      "name_pt": "Elevação pélvica no smith",
+      "muscle_group": "glúteos",
+      "equipment": "smith",
+      "media_url": "",
+      "media_frames": [],
+      "media_source": "",
+      "instructions": [
+        "Banco atrás de você, barra do smith no quadril.",
+        "Suba até alinhar tronco e coxas.",
+        "Pausa de 1 s no topo."
+      ],
+      "alternatives": [
+        "hip_thrust",
+        "glute_bridge"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 5,
+      "start_load_kg": 10,
+      "load_note": "anilhas somadas (sem a barra)"
+    },
+    {
+      "id": "glute_bridge",
+      "name_pt": "Ponte de glúteo com barra (no solo)",
+      "muscle_group": "glúteos",
+      "equipment": "barra",
+      "media_url": "img/ex/glute_bridge-0.jpg",
+      "media_frames": [
+        "img/ex/glute_bridge-0.jpg",
+        "img/ex/glute_bridge-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Barbell_Glute_Bridge",
+      "instructions": [
+        "Deitado no chão, barra sobre o quadril.",
+        "Suba o quadril contraindo os glúteos.",
+        "Desça controlando."
+      ],
+      "alternatives": [
+        "hip_thrust",
+        "smith_hip_thrust"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 5,
+      "start_load_kg": 20,
+      "load_note": "carga total (barra + anilhas)"
+    },
+    {
+      "id": "abductor",
+      "name_pt": "Cadeira abdutora",
+      "muscle_group": "glúteos",
+      "equipment": "máquina",
+      "media_url": "img/ex/abductor-0.jpg",
+      "media_frames": [
+        "img/ex/abductor-0.jpg",
+        "img/ex/abductor-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Thigh_Abductor",
+      "instructions": [
+        "Costas apoiadas (ou tronco levemente à frente para mais glúteo).",
+        "Abra as pernas e segure 1 s.",
+        "Volte devagar."
+      ],
+      "alternatives": [
+        "cable_hip_abduction"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 5,
+      "start_load_kg": 25,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "cable_hip_abduction",
+      "name_pt": "Abdução de quadril na polia",
+      "muscle_group": "glúteos",
+      "equipment": "polia",
+      "media_url": "",
+      "media_frames": [],
+      "media_source": "",
+      "instructions": [
+        "Caneleira na polia baixa.",
+        "Afaste a perna para o lado sem inclinar o tronco.",
+        "Volte devagar."
+      ],
+      "alternatives": [
+        "abductor"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 2.5,
+      "start_load_kg": 5,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "adductor",
+      "name_pt": "Cadeira adutora",
+      "muscle_group": "adutores",
+      "equipment": "máquina",
+      "media_url": "img/ex/adductor-0.jpg",
+      "media_frames": [
+        "img/ex/adductor-0.jpg",
+        "img/ex/adductor-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Thigh_Adductor",
+      "instructions": [
+        "Costas apoiadas.",
+        "Feche as pernas e segure 1 s.",
+        "Abra devagar até alongar."
+      ],
+      "alternatives": [
+        "cable_hip_adduction"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 5,
+      "start_load_kg": 25,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "cable_hip_adduction",
+      "name_pt": "Adução de quadril na polia",
+      "muscle_group": "adutores",
+      "equipment": "polia",
+      "media_url": "img/ex/cable_hip_adduction-0.jpg",
+      "media_frames": [
+        "img/ex/cable_hip_adduction-0.jpg",
+        "img/ex/cable_hip_adduction-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Cable_Hip_Adduction",
+      "instructions": [
+        "Caneleira na polia baixa, de lado para a polia.",
+        "Cruze a perna à frente da outra.",
+        "Volte devagar."
+      ],
+      "alternatives": [
+        "adductor"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 2.5,
+      "start_load_kg": 5,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "standing_calf",
+      "name_pt": "Panturrilha em pé (máquina)",
+      "muscle_group": "panturrilhas",
+      "equipment": "máquina",
+      "media_url": "img/ex/standing_calf-0.jpg",
+      "media_frames": [
+        "img/ex/standing_calf-0.jpg",
+        "img/ex/standing_calf-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Standing_Calf_Raises",
+      "instructions": [
+        "Ponta dos pés na plataforma, joelhos quase estendidos.",
+        "Desça o calcanhar até alongar (pausa 1 s).",
+        "Suba o máximo possível."
+      ],
+      "alternatives": [
+        "leg_press_calf",
+        "smith_calf"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 5,
+      "start_load_kg": 20,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "leg_press_calf",
+      "name_pt": "Panturrilha no leg press",
+      "muscle_group": "panturrilhas",
+      "equipment": "máquina",
+      "media_url": "img/ex/leg_press_calf-0.jpg",
+      "media_frames": [
+        "img/ex/leg_press_calf-0.jpg",
+        "img/ex/leg_press_calf-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Calf_Press_On_The_Leg_Press_Machine",
+      "instructions": [
+        "Ponta dos pés na borda da plataforma.",
+        "Não trave o leg press: mantenha as travas de segurança prontas.",
+        "Amplitude total."
+      ],
+      "alternatives": [
+        "standing_calf",
+        "seated_calf"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 5,
+      "start_load_kg": 30,
+      "load_note": "anilhas somadas (sem o carrinho)"
+    },
+    {
+      "id": "smith_calf",
+      "name_pt": "Panturrilha no smith",
+      "muscle_group": "panturrilhas",
+      "equipment": "smith",
+      "media_url": "img/ex/smith_calf-0.jpg",
+      "media_frames": [
+        "img/ex/smith_calf-0.jpg",
+        "img/ex/smith_calf-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Smith_Machine_Calf_Raise",
+      "instructions": [
+        "Ponta dos pés sobre um step.",
+        "Desça alongando e suba ao máximo.",
+        "Controle o ritmo."
+      ],
+      "alternatives": [
+        "standing_calf",
+        "leg_press_calf"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 5,
+      "start_load_kg": 10,
+      "load_note": "anilhas somadas (sem a barra)"
+    },
+    {
+      "id": "seated_calf",
+      "name_pt": "Panturrilha sentado",
+      "muscle_group": "panturrilhas",
+      "equipment": "máquina",
+      "media_url": "img/ex/seated_calf-0.jpg",
+      "media_frames": [
+        "img/ex/seated_calf-0.jpg",
+        "img/ex/seated_calf-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Seated_Calf_Raise",
+      "instructions": [
+        "Apoio sobre as coxas, ponta dos pés na plataforma.",
+        "Pausa de 1 s embaixo alongando.",
+        "Suba ao máximo."
+      ],
+      "alternatives": [
+        "leg_press_calf",
+        "standing_calf"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 5,
+      "start_load_kg": 15,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "cable_crunch",
+      "name_pt": "Abdominal na polia (ajoelhado)",
+      "muscle_group": "abdômen",
+      "equipment": "polia",
+      "media_url": "img/ex/cable_crunch-0.jpg",
+      "media_frames": [
+        "img/ex/cable_crunch-0.jpg",
+        "img/ex/cable_crunch-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Cable_Crunch",
+      "instructions": [
+        "Ajoelhado, corda ao lado da cabeça.",
+        "Enrole a coluna levando os cotovelos aos joelhos.",
+        "O quadril não se move."
+      ],
+      "alternatives": [
+        "machine_crunch",
+        "crunch"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 2.5,
+      "start_load_kg": 15,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "machine_crunch",
+      "name_pt": "Abdominal máquina",
+      "muscle_group": "abdômen",
+      "equipment": "máquina",
+      "media_url": "img/ex/machine_crunch-0.jpg",
+      "media_frames": [
+        "img/ex/machine_crunch-0.jpg",
+        "img/ex/machine_crunch-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Ab_Crunch_Machine",
+      "instructions": [
+        "Ajuste o banco e segure as alças.",
+        "Enrole o tronco contraindo o abdômen.",
+        "Volte devagar."
+      ],
+      "alternatives": [
+        "cable_crunch",
+        "crunch"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 5,
+      "start_load_kg": 15,
+      "load_note": "carga da placa"
+    },
+    {
+      "id": "crunch",
+      "name_pt": "Abdominal no solo",
+      "muscle_group": "abdômen",
+      "equipment": "peso corporal",
+      "media_url": "img/ex/crunch-0.jpg",
+      "media_frames": [
+        "img/ex/crunch-0.jpg",
+        "img/ex/crunch-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Crunches",
+      "instructions": [
+        "Joelhos flexionados, lombar no chão.",
+        "Tire as escápulas do chão contraindo o abdômen.",
+        "Sem puxar o pescoço."
+      ],
+      "alternatives": [
+        "cable_crunch",
+        "machine_crunch"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 0,
+      "start_load_kg": 0,
+      "load_note": "peso corporal (0 kg)"
+    },
+    {
+      "id": "leg_raise",
+      "name_pt": "Elevação de pernas no banco",
+      "muscle_group": "abdômen",
+      "equipment": "banco",
+      "media_url": "img/ex/leg_raise-0.jpg",
+      "media_frames": [
+        "img/ex/leg_raise-0.jpg",
+        "img/ex/leg_raise-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Flat_Bench_Lying_Leg_Raise",
+      "instructions": [
+        "Deitado no banco, segure atrás da cabeça.",
+        "Suba as pernas até 90° sem tirar a lombar.",
+        "Desça devagar."
+      ],
+      "alternatives": [
+        "reverse_crunch",
+        "crunch"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 0,
+      "start_load_kg": 0,
+      "load_note": "peso corporal (0 kg)"
+    },
+    {
+      "id": "reverse_crunch",
+      "name_pt": "Abdominal infra (reverso)",
+      "muscle_group": "abdômen",
+      "equipment": "peso corporal",
+      "media_url": "img/ex/reverse_crunch-0.jpg",
+      "media_frames": [
+        "img/ex/reverse_crunch-0.jpg",
+        "img/ex/reverse_crunch-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Reverse_Crunch",
+      "instructions": [
+        "Deitado, joelhos a 90°.",
+        "Leve os joelhos ao peito tirando o quadril do chão.",
+        "Desça controlando."
+      ],
+      "alternatives": [
+        "leg_raise",
+        "crunch"
+      ],
+      "is_squat_variant": false,
+      "active": true,
+      "increment_kg": 0,
+      "start_load_kg": 0,
+      "load_note": "peso corporal (0 kg)"
+    },
+    {
+      "id": "db_lunge",
+      "name_pt": "Afundo com halteres",
+      "muscle_group": "quadríceps",
+      "equipment": "halteres",
+      "media_url": "img/ex/db_lunge-0.jpg",
+      "media_frames": [
+        "img/ex/db_lunge-0.jpg",
+        "img/ex/db_lunge-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Dumbbell_Lunges",
+      "instructions": [
+        "Passo à frente, desça até o joelho de trás quase tocar o chão.",
+        "Tronco ereto.",
+        "Volte empurrando com a perna da frente."
+      ],
+      "alternatives": [
+        "leg_press",
+        "leg_extension"
+      ],
+      "is_squat_variant": true,
+      "active": false,
+      "increment_kg": 2,
+      "start_load_kg": 6,
+      "load_note": "kg por halter"
+    },
+    {
+      "id": "bulgarian_split_squat",
+      "name_pt": "Agachamento búlgaro",
+      "muscle_group": "quadríceps",
+      "equipment": "halteres",
+      "media_url": "img/ex/bulgarian_split_squat-0.jpg",
+      "media_frames": [
+        "img/ex/bulgarian_split_squat-0.jpg",
+        "img/ex/bulgarian_split_squat-1.jpg"
+      ],
+      "media_source": "yuhonas/free-exercise-db: exercises/Split_Squat_with_Dumbbells",
+      "instructions": [
+        "Pé de trás apoiado no banco.",
+        "Desça na vertical até ~90° na perna da frente.",
+        "Suba empurrando o calcanhar da frente."
+      ],
+      "alternatives": [
+        "leg_press",
+        "leg_extension"
+      ],
+      "is_squat_variant": true,
+      "active": false,
+      "increment_kg": 2,
+      "start_load_kg": 4,
+      "load_note": "kg por halter"
+    }
+  ],
+  "cardio_types": [
+    {
+      "id": "esteira",
+      "name_pt": "Esteira (caminhada inclinada)",
+      "media_frames": [
+        "img/ex/cardio-0-0.jpg",
+        "img/ex/cardio-0-1.jpg"
+      ]
+    },
+    {
+      "id": "bike",
+      "name_pt": "Bike ergométrica",
+      "media_frames": [
+        "img/ex/cardio-1-0.jpg",
+        "img/ex/cardio-1-1.jpg"
+      ]
+    },
+    {
+      "id": "elíptico",
+      "name_pt": "Elíptico",
+      "media_frames": [
+        "img/ex/cardio-2-0.jpg",
+        "img/ex/cardio-2-1.jpg"
+      ]
+    },
+    {
+      "id": "escada",
+      "name_pt": "Escada (simulador)",
+      "media_frames": [
+        "img/ex/cardio-3-0.jpg",
+        "img/ex/cardio-3-1.jpg"
+      ]
+    },
+    {
+      "id": "remo",
+      "name_pt": "Remo ergométrico",
+      "media_frames": [
+        "img/ex/cardio-4-0.jpg",
+        "img/ex/cardio-4-1.jpg"
+      ]
+    }
+  ],
+  "equipment_map": {
+    "máquina": "Máquinas guiadas Smart Fit (chest press, voador/peck deck, remada, desenvolvimento, extensora, flexoras, abdutora/adutora, panturrilha, abdominal)",
+    "polia": "Polias / crossover (puxadas, remadas, tríceps, rosca, elevação lateral, face pull, abdominal na polia)",
+    "halteres": "Halteres (rack de halteres)",
+    "barra": "Barras e anilhas livres",
+    "smith": "Smith machine",
+    "banco": "Bancos reto/inclinável",
+    "peso corporal": "Colchonete / área de alongamento",
+    "cardio": "Esteira, bike, elíptico, escada, remo (este último não existe em todas as unidades)"
+  },
+  "sources": [
+    {
+      "key": "schoenfeld2016freq",
+      "ref": "Schoenfeld BJ, Ogborn D, Krieger JW. Effects of Resistance Training Frequency on Measures of Muscle Hypertrophy: A Systematic Review and Meta-Analysis. Sports Med. 2016;46(11):1689-1697.",
+      "doi": "10.1007/s40279-016-0543-8",
+      "used_for": "Treinar cada grupo muscular 2x por semana (divisão Superior/Inferior)."
+    },
+    {
+      "key": "schoenfeld2017vol",
+      "ref": "Schoenfeld BJ, Ogborn D, Krieger JW. Dose-response relationship between weekly resistance training volume and increases in muscle mass: A systematic review and meta-analysis. J Sports Sci. 2017;35(11):1073-1082.",
+      "doi": "10.1080/02640414.2016.1210197",
+      "used_for": "~10 séries semanais por grupo como ponto de partida, aumentando no Intermediário."
+    },
+    {
+      "key": "pelland2024",
+      "ref": "Pelland JC, Remmert JF, Robinson ZP, et al. The Resistance Training Dose Response: Meta-Regressions Exploring the Effects of Weekly Volume and Frequency on Muscle Hypertrophy and Strength Gain. SportRxiv (preprint), 2024.",
+      "doi": "10.51224/SRXIV.460",
+      "used_for": "Ganhos crescem com o volume com retornos decrescentes; frequência importa mais para força."
+    },
+    {
+      "key": "schoenfeld2021reps",
+      "ref": "Schoenfeld BJ, Grgic J, Van Every DW, Plotkin DL. Loading Recommendations for Muscle Strength, Hypertrophy, and Local Endurance: A Re-Examination of the Repetition Continuum. Sports. 2021;9(2):32.",
+      "doi": "10.3390/sports9020032",
+      "used_for": "Faixas de 6–15 repetições; 8–12 como padrão prático."
+    },
+    {
+      "key": "refalo2023",
+      "ref": "Refalo MC, Helms ER, Trexler ET, Hamilton DL, Fyfe JJ. Influence of Resistance Training Proximity-to-Failure on Skeletal Muscle Hypertrophy: A Systematic Review with Meta-analysis. Sports Med. 2023;53(3):649-665.",
+      "doi": "10.1007/s40279-022-01784-y",
+      "used_for": "Não é preciso ir à falha; terminar com 1–3 repetições em reserva (RIR)."
+    },
+    {
+      "key": "robinson2024",
+      "ref": "Robinson ZP, Pelland JC, Remmert JF, et al. Exploring the Dose-Response Relationship Between Estimated Resistance Training Proximity to Failure, Strength Gain, and Muscle Hypertrophy: A Series of Meta-Regressions. Sports Med. 2024;54(9):2209-2231.",
+      "doi": "10.1007/s40279-024-02069-2",
+      "used_for": "Hipertrofia aumenta ao se aproximar da falha; força pouco muda. Base para RIR 1–3."
+    },
+    {
+      "key": "helms2016rir",
+      "ref": "Helms ER, Cronin J, Storey A, Zourdos MC. Application of the Repetitions in Reserve-Based Rating of Perceived Exertion Scale for Resistance Training. Strength Cond J. 2016;38(4):42-49.",
+      "doi": "10.1519/SSC.0000000000000218",
+      "used_for": "Escala RIR/RPE usada no registro opcional de RPE."
+    },
+    {
+      "key": "schoenfeld2016rest",
+      "ref": "Schoenfeld BJ, Pope ZK, Benik FM, et al. Longer Interset Rest Periods Enhance Muscle Strength and Hypertrophy in Resistance-Trained Men. J Strength Cond Res. 2016;30(7):1805-1812.",
+      "doi": "10.1519/JSC.0000000000001272",
+      "used_for": "Descanso de 2 min nos compostos; 60–90 s nos isolados."
+    },
+    {
+      "key": "singer2024rest",
+      "ref": "Singer A, Wolf M, Generoso L, et al. Give it a rest: a systematic review with Bayesian meta-analysis on the effect of inter-set rest interval duration on muscle hypertrophy. Front Sports Act Living. 2024;6:1429789.",
+      "doi": "10.3389/fspor.2024.1429789",
+      "used_for": "Descansos acima de 60 s trazem leve vantagem para hipertrofia."
+    },
+    {
+      "key": "acsm2009",
+      "ref": "American College of Sports Medicine. Position stand: Progression models in resistance training for healthy adults. Med Sci Sports Exerc. 2009;41(3):687-708.",
+      "doi": "10.1249/MSS.0b013e3181915670",
+      "used_for": "Dupla progressão: aumentar carga (~2–10%) ao passar do topo da faixa."
+    },
+    {
+      "key": "wilson2012concurrent",
+      "ref": "Wilson JM, Marin PJ, Rhea MR, et al. Concurrent training: a meta-analysis examining interference of aerobic and resistance exercises. J Strength Cond Res. 2012;26(8):2293-2307.",
+      "doi": "10.1519/JSC.0b013e31823a3e2d",
+      "used_for": "Cardio moderado e curto (bike/caminhada) interfere pouco na hipertrofia; feito depois da musculação."
+    },
+    {
+      "key": "who2020",
+      "ref": "Bull FC, Al-Ansari SS, Biddle S, et al. World Health Organization 2020 guidelines on physical activity and sedentary behaviour. Br J Sports Med. 2020;54(24):1451-1462.",
+      "doi": "10.1136/bjsports-2020-102955",
+      "used_for": "Meta semanal de 150–300 min de atividade aeróbica moderada + 2 dias de força."
+    },
+    {
+      "key": "ogasawara2013",
+      "ref": "Ogasawara R, Yasuda T, Ishii N, Abe T. Comparison of muscle hypertrophy following 6-month of continuous and periodic strength training. Eur J Appl Physiol. 2013;113(4):975-985.",
+      "doi": "10.1007/s00421-012-2511-9",
+      "used_for": "Músculo recupera rápido após pausas: justifica a semana de reentrada curta com cargas conservadoras."
+    },
+    {
+      "key": "epley1985",
+      "ref": "Epley B. Poundage Chart. Boyd Epley Workout. Lincoln, NE: Body Enterprises; 1985.",
+      "doi": null,
+      "used_for": "1RM estimado = carga × (1 + reps/30)."
+    }
+  ],
+  "media_license": "Imagens: yuhonas/free-exercise-db (Unlicense / domínio público). https://github.com/yuhonas/free-exercise-db"
+}
