@@ -110,11 +110,13 @@ async function main() {
   // On localhost the service worker only runs with ?sw, so edits show up without a version bump.
   const devHost = ['localhost', '127.0.0.1'].includes(location.hostname) && !location.search.includes('sw');
   if ('serviceWorker' in navigator && location.protocol !== 'file:' && !devHost) {
+    const hadController = Boolean(navigator.serviceWorker.controller);
     navigator.serviceWorker.register('sw.js').catch(() => {});
     let reloaded = false;
     navigator.serviceWorker.addEventListener('controllerchange', () => {
       // A new version took over: reload once so every module comes from the same version.
-      if (reloaded || !navigator.serviceWorker.controller) return;
+      // (On the very first install there is nothing stale to replace.)
+      if (reloaded || !hadController) return;
       reloaded = true;
       if (!document.querySelector('.set-row.next input:focus')) location.reload();
     });
