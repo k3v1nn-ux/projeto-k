@@ -23,7 +23,7 @@ const DEFAULTS = {
   restDays: [3, 6, 7], // preferred rest weekdays (1 = Monday), used only to project the week
   anthropicKey: '', // Claude API key for the AI analysis (stays on this device)
   homeWidgets: null, // [{ id, on }] order and visibility of the Início cards
-  palette: 'volt', // color theme: volt | ocean | emerald | sunset | violet | graphite
+  palette: 'blue', // color theme: blue | navy | cyan | volt | ocean | emerald | sunset | violet | graphite
   gymClose: { 6: '19:00', 7: '15:00' }, // Smart Fit closing time by weekday (Saturday 19h, Sunday 15h)
 };
 
@@ -35,6 +35,11 @@ export function settings() {
       cache = { ...DEFAULTS, ...JSON.parse(localStorage.getItem(KEY) || '{}') };
     } catch {
       cache = { ...DEFAULTS };
+    }
+    if (!cache.paletteV) {
+      cache.palette = 'blue'; // the app moved to blue tones (Oct 2026)
+      cache.paletteV = 2;
+      persist();
     }
     if (!cache.startDate) {
       cache.startDate = dateKey();
@@ -62,9 +67,9 @@ export function applyTheme() {
   const root = document.documentElement;
   if (t === 'auto') root.removeAttribute('data-theme');
   else root.setAttribute('data-theme', t);
-  root.setAttribute('data-palette', settings().palette || 'volt');
+  root.setAttribute('data-palette', settings().palette || 'blue');
   const dark = t === 'dark' || (t === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#0b0b0d' : '#e9e9ee');
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#050a15' : '#e6edf8');
 }
 
 export function isConfigured() {
@@ -98,6 +103,7 @@ export function gymCloseFor(dateKeyStr) {
 }
 
 export const PALETTES = [
-  ['volt', 'Volt', '#c6f432', '#2a3315'], ['ocean', 'Oceano', '#4db2ff', '#123a66'], ['emerald', 'Esmeralda', '#3ee0a1', '#0f4a37'],
+  ['blue', 'Azul', '#4da3ff', '#1b4a8a'], ['navy', 'Marinho', '#8fc4ff', '#22346e'], ['cyan', 'Ciano', '#4fd8f5', '#0f5068'],
+  ['volt', 'Volt', '#c6f432', '#2a3315'], ['emerald', 'Esmeralda', '#3ee0a1', '#0f4a37'],
   ['sunset', 'Pôr do sol', '#ff8a50', '#4a1f33'], ['violet', 'Violeta', '#b49cff', '#33255e'], ['graphite', 'Grafite', '#f5f5f7', '#34343b'],
 ];

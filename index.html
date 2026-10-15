@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>Antares V3</title>
   <meta name="description" content="Antares V3: treino pessoal com rodízio, registro de séries, progressão e análise.">
-  <meta name="theme-color" content="#e9e9ee">
+  <meta name="theme-color" content="#e6edf8">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -20,7 +20,7 @@
       var t = JSON.parse(localStorage.getItem('pk.settings') || '{}').theme;
       var st = JSON.parse(localStorage.getItem('pk.settings') || '{}');
       if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
-      document.documentElement.setAttribute('data-palette', st.palette || 'volt');
+      document.documentElement.setAttribute('data-palette', st.paletteV ? (st.palette || 'blue') : 'blue');
     } catch (e) {}
   </script>
 </head>
@@ -37,6 +37,7 @@
     </div>
   </header>
 
+  <nav id="backbar" class="backbar" hidden></nav>
   <main id="view" tabindex="-1"></main>
 
   <div id="rest" class="rest-bar" hidden></div>

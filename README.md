@@ -4,7 +4,7 @@ PWA pessoal de treino (mobile-first, offline-first) para a Smart Fit: rodízio S
 
 **App:** https://k3v1nn-ux.github.io/projeto-k/
 
-> Antares é a supergigante vermelha do coração de Escorpião: daí o logo (estrela de quatro pontas prateada com núcleo levemente quente). O visual usa superfícies de vidro translúcido com desfoque (como o Liquid Glass do iOS) e **6 temas de cor** escolhidos em Ajustes → Aparência (Volt, Oceano, Esmeralda, Pôr do sol, Violeta, Grafite), cada um com versão clara e escura.
+> Antares é a supergigante vermelha do coração de Escorpião: daí o logo (estrela de quatro pontas prateada com núcleo levemente quente). O visual usa superfícies de vidro translúcido com desfoque (como o Liquid Glass do iOS) tons de **azul** por padrão (temas Azul, Marinho e Ciano, com fundo e vidro azulados), além de Volt, Esmeralda, Pôr do sol, Violeta e Grafite em Ajustes → Aparência, cada um com versão clara e escura.
 
 ---
 

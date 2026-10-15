@@ -27,7 +27,6 @@ export function render(view, { id }) {
   const best = hist.reduce((b, h) => (h.bestE1rm > (b?.bestE1rm || 0) ? h : b), null);
 
   view.innerHTML = `
-    <button class="link-btn" onclick="history.back()">‹ Voltar</button>
     <h1>${esc(ex.name_pt)}</h1>
     <div class="row gap wrap" style="margin-bottom:10px">
       <span class="pill">${esc(ex.muscle_group)}</span><span class="pill">${esc(ex.equipment)}</span>

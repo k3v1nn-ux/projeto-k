@@ -28,20 +28,20 @@ import { pendingSuggestions } from './friend.js';
 const ROUTES = {
   inicio: { tab: 'inicio', render: (v) => home.render(v), live: true },
   hoje: { tab: 'hoje', render: (v) => today.render(v), live: true },
-  dia: { tab: 'semana', render: (v, [date]) => today.render(v, { date }), live: true },
+  dia: { back: ['#/semana', 'Semana'], tab: 'semana', render: (v, [date]) => today.render(v, { date }), live: true },
   semana: { tab: 'semana', render: (v) => week.render(v), live: true },
-  musica: { tab: 'mais', render: (v) => music.render(v) },
+  musica: { back: ['#/mais', 'Mais'], tab: 'mais', render: (v) => music.render(v) },
   progresso: { tab: 'progresso', render: (v, _a, q) => progress.render(v, q), live: true },
   analytics: { tab: 'progresso', render: (v, _a, q) => progress.render(v, q), live: true },
-  conquistas: { tab: 'mais', render: (v) => trophies.render(v), live: true },
-  ex: { tab: 'hoje', render: (v, [id]) => exercisePage.render(v, { id }) },
+  conquistas: { back: ['#/mais', 'Mais'], tab: 'mais', render: (v) => trophies.render(v), live: true },
+  ex: { back: ['#/hoje', 'Treino'], tab: 'hoje', render: (v, [id]) => exercisePage.render(v, { id }) },
   mais: { tab: 'mais', render: (v) => more.render(v), live: true },
-  perfil: { tab: 'mais', render: (v) => profilePage.render(v) },
-  recebidos: { tab: 'mais', render: (v) => inbox.render(v), live: true },
-  programa: { tab: 'mais', render: (v) => more.renderProgram(v) },
-  config: { tab: 'mais', render: (v) => settingsPage.render(v) },
+  perfil: { back: ['#/mais', 'Mais'], tab: 'mais', render: (v) => profilePage.render(v) },
+  recebidos: { back: ['#/mais', 'Mais'], tab: 'mais', render: (v) => inbox.render(v), live: true },
+  programa: { back: ['#/mais', 'Mais'], tab: 'mais', render: (v) => more.renderProgram(v) },
+  config: { back: ['#/mais', 'Mais'], tab: 'mais', render: (v) => settingsPage.render(v) },
   amigo: { tab: null, bare: true, render: (v, _a, q) => friendPages.renderBuilder(v, q) },
-  importar: { tab: null, render: (v, _a, q) => friendPages.renderImport(v, q) },
+  importar: { back: ['#/inicio', 'Início'], tab: null, render: (v, _a, q) => friendPages.renderImport(v, q) },
 };
 
 let current = null;
@@ -66,8 +66,31 @@ function route() {
   $$('.sheet-backdrop').forEach((el) => el.remove());
   const view = $('#view');
   view.onclick = view.onchange = view.onsubmit = view.oninput = null;
+  renderBack(r);
   r.render(view, args, query);
   window.scrollTo(0, 0);
+}
+
+/**
+ * iOS-style "‹ Voltar" above sub-pages: goes back in the app history when there is one,
+ * otherwise to the page's parent tab.
+ */
+let inAppDepth = 0;
+function renderBack(r) {
+  const bar = $('#backbar');
+  if (!r.back) {
+    bar.hidden = true;
+    return;
+  }
+  const [href, label] = r.back;
+  bar.hidden = false;
+  bar.innerHTML = `<a href="${href}" class="back-link" aria-label="Voltar para ${label}"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg><span>${inAppDepth > 1 ? 'Voltar' : label}</span></a>`;
+  bar.firstElementChild.onclick = (e) => {
+    if (inAppDepth > 1) {
+      e.preventDefault();
+      history.back();
+    }
+  };
 }
 
 /** Re-renders the current screen after remote changes, unless the user is typing. */
@@ -179,7 +202,7 @@ async function main() {
   onSync(renderSyncBadge);
   renderSyncBadge(syncState());
 
-  window.addEventListener('hashchange', route);
+  window.addEventListener('hashchange', () => { inAppDepth++; route(); });
   document.addEventListener('pk:profile', renderHeader);
   db.onChange((info) => {
     renderHeader();

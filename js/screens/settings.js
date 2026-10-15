@@ -63,7 +63,7 @@ export function render(view) {
           </div>
         </div>
         <div class="section-title" style="margin:0 0 8px">Cores do app</div>
-        <div class="palettes">${PALETTES.map(([id, name, accent, hero]) => `<button class="palette-opt" data-palette-set="${id}" aria-pressed="${(s.palette || 'volt') === id}"><span class="sw" style="background:linear-gradient(150deg, ${hero}, #0b0b0d)"><i style="background:${accent}"></i></span>${name}</button>`).join('')}</div>
+        <div class="palettes">${PALETTES.map(([id, name, accent, hero]) => `<button class="palette-opt" data-palette-set="${id}" aria-pressed="${(s.palette || 'blue') === id}"><span class="sw" style="background:linear-gradient(150deg, ${hero}, #0b0b0d)"><i style="background:${accent}"></i></span>${name}</button>`).join('')}</div>
         <p class="muted tiny" style="margin:10px 0 0">Muda na hora: experimente na academia e fique com a que preferir.</p>
       </div>
     </div>

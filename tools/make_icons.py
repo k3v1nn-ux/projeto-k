@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Draws the Antares V3 icon — a silver four-point star with a faint warm core over a graphite
+"""Draws the Antares V3 icon — a white-blue four-point star over a deep blue
 gradient — as PNG, anti-aliased by supersampling, no dependencies.
 Run: python3 tools/make_icons.py"""
 import math
@@ -8,12 +8,12 @@ import struct
 import zlib
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SKY_TOP = (52, 52, 59)      # graphite #34343b
-SKY_MID = (28, 28, 33)      # #1c1c21
-SKY_LOW = (14, 14, 17)      # #0e0e11
-GLOW = (200, 200, 214)      # silver halo
-CORE = (255, 236, 222)      # faint warm core (Antares is a red star)
-EDGE = (214, 216, 226)      # silver tips
+SKY_TOP = (27, 74, 138)     # blue #1b4a8a
+SKY_MID = (15, 44, 87)      # #0f2c57
+SKY_LOW = (7, 21, 43)       # #07152b
+GLOW = (110, 180, 255)      # blue halo
+CORE = (255, 255, 255)      # white core
+EDGE = (150, 205, 255)      # light-blue tips
 SS = 3
 
 STARS = [(20, 22, .9), (78, 16, .7), (16, 74, .6), (84, 80, .8), (66, 88, .5), (30, 88, .45), (88, 44, .5)]

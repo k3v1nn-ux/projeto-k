@@ -2,11 +2,11 @@
    (backdrop blur), white/silver accent, system green for "done". Light mode is its own palette:
    pale aluminium with white glass and a graphite accent. */
 :root {
-  --bg: #e9e9ee;
+  --bg: var(--pa-bg-light, #e9e9ee);
   --bg-glow-1: color-mix(in srgb, var(--pa-light) 10%, #ffffff);
   --bg-glow-2: color-mix(in srgb, var(--pa-light) 8%, #d9d9e0);
-  --surface: rgba(255, 255, 255, .62);
-  --surface-solid: #f7f7f9;
+  --surface: var(--pa-surface-light, rgba(255, 255, 255, .62));
+  --surface-solid: var(--pa-solid-light, #f7f7f9);
   --surface-2: rgba(118, 118, 128, .08);
   --surface-3: rgba(60, 60, 67, .16);
   --fill: rgba(118, 118, 128, .12);
@@ -62,8 +62,8 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0b0b0d; --bg-glow-1: color-mix(in srgb, var(--pa-dark) 20%, #19191d); --bg-glow-2: color-mix(in srgb, var(--pa-dark) 8%, #141417);
-    --surface: rgba(255, 255, 255, .065); --surface-solid: #1c1c20; --surface-2: rgba(255, 255, 255, .06); --surface-3: rgba(255, 255, 255, .14);
+    --bg: var(--pa-bg-dark, #0b0b0d); --bg-glow-1: color-mix(in srgb, var(--pa-dark) 20%, #19191d); --bg-glow-2: color-mix(in srgb, var(--pa-dark) 8%, #141417);
+    --surface: var(--pa-surface-dark, rgba(255, 255, 255, .065)); --surface-solid: var(--pa-solid-dark, #1c1c20); --surface-2: rgba(255, 255, 255, .06); --surface-3: rgba(255, 255, 255, .14);
     --fill: rgba(255, 255, 255, .09); --card-border: rgba(255, 255, 255, .09); --border: rgba(255, 255, 255, .1);
     --text: #f5f5f7; --muted: #a1a1a8; --faint: #6c6c73;
     --accent: var(--pa-dark); --accent-strong: var(--pa-dark); --accent-soft: var(--pa-dark-soft); --accent-text: var(--pa-on);
@@ -77,8 +77,8 @@
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0b0b0d; --bg-glow-1: color-mix(in srgb, var(--pa-dark) 20%, #19191d); --bg-glow-2: color-mix(in srgb, var(--pa-dark) 8%, #141417);
-  --surface: rgba(255, 255, 255, .065); --surface-solid: #1c1c20; --surface-2: rgba(255, 255, 255, .06); --surface-3: rgba(255, 255, 255, .14);
+  --bg: var(--pa-bg-dark, #0b0b0d); --bg-glow-1: color-mix(in srgb, var(--pa-dark) 20%, #19191d); --bg-glow-2: color-mix(in srgb, var(--pa-dark) 8%, #141417);
+  --surface: var(--pa-surface-dark, rgba(255, 255, 255, .065)); --surface-solid: var(--pa-solid-dark, #1c1c20); --surface-2: rgba(255, 255, 255, .06); --surface-3: rgba(255, 255, 255, .14);
   --fill: rgba(255, 255, 255, .09); --card-border: rgba(255, 255, 255, .09); --border: rgba(255, 255, 255, .1);
   --text: #f5f5f7; --muted: #a1a1a8; --faint: #6c6c73;
   --accent: var(--pa-dark); --accent-strong: var(--pa-dark); --accent-soft: var(--pa-dark-soft); --accent-text: var(--pa-on);
@@ -94,7 +94,30 @@
 
 /* ---------- color themes (Ajustes → Aparência). Each sets the accent for light and dark mode
    and the hero gradient; glass surfaces stay neutral. ---------- */
-:root, :root[data-palette="volt"] {
+
+/* Blue family: accent plus blue-tinted background and glass. */
+:root, :root[data-palette="blue"] {
+  --pa-light: #0a5fc2; --pa-light-soft: rgba(10, 95, 194, .12); --pa-on-light: #ffffff;
+  --pa-dark: #4da3ff; --pa-dark-soft: rgba(77, 163, 255, .17); --pa-on: #03101f;
+  --pa-hero-1: #1b4a8a; --pa-hero-2: #0f2c57; --pa-hero-3: #07152b; --pa-glow: rgba(110, 180, 255, .38);
+  --pa-bg-light: #e6edf8; --pa-surface-light: rgba(255, 255, 255, .64); --pa-solid-light: #f3f7fd;
+  --pa-bg-dark: #050a15; --pa-surface-dark: rgba(130, 170, 255, .075); --pa-solid-dark: #0f1a2e;
+}
+:root[data-palette="navy"] {
+  --pa-light: #1d3f8f; --pa-light-soft: rgba(29, 63, 143, .12); --pa-on-light: #ffffff;
+  --pa-dark: #8fc4ff; --pa-dark-soft: rgba(143, 196, 255, .16); --pa-on: #07142a;
+  --pa-hero-1: #22346e; --pa-hero-2: #141f47; --pa-hero-3: #090f26; --pa-glow: rgba(143, 196, 255, .3);
+  --pa-bg-light: #e5e9f4; --pa-surface-light: rgba(255, 255, 255, .64); --pa-solid-light: #f2f4fb;
+  --pa-bg-dark: #04071a; --pa-surface-dark: rgba(140, 160, 255, .075); --pa-solid-dark: #0d1330;
+}
+:root[data-palette="cyan"] {
+  --pa-light: #0a7a9c; --pa-light-soft: rgba(10, 122, 156, .12); --pa-on-light: #ffffff;
+  --pa-dark: #4fd8f5; --pa-dark-soft: rgba(79, 216, 245, .15); --pa-on: #02161c;
+  --pa-hero-1: #0f5068; --pa-hero-2: #0a3244; --pa-hero-3: #051923; --pa-glow: rgba(79, 216, 245, .32);
+  --pa-bg-light: #e4f0f4; --pa-surface-light: rgba(255, 255, 255, .64); --pa-solid-light: #f1f8fa;
+  --pa-bg-dark: #031015; --pa-surface-dark: rgba(110, 210, 255, .07); --pa-solid-dark: #0b1d25;
+}
+:root[data-palette="volt"] {
   --pa-light: #4c7a00; --pa-light-soft: rgba(110, 160, 0, .14); --pa-on-light: #ffffff;
   --pa-dark: #c6f432; --pa-dark-soft: rgba(198, 244, 50, .15); --pa-on: #0b0d06;
   --pa-hero-1: #2a3315; --pa-hero-2: #151a0c; --pa-hero-3: #0b0d07; --pa-glow: rgba(198, 244, 50, .28);
@@ -516,3 +539,8 @@ iframe.embed.compact { height: 152px; }
 
 .cap-first::first-letter { text-transform: uppercase; }
 .week-widget > .card { margin-top: 0; }
+
+/* ---------- back button (sub-pages) ---------- */
+.backbar { max-width: 720px; margin: 0 auto; padding: 2px 8px 0; }
+.back-link { display: inline-flex; align-items: center; gap: 2px; min-height: 40px; padding: 0 8px 0 2px; color: var(--accent-strong); font-size: 1.02rem; font-weight: 500; }
+.back-link svg { width: 24px; height: 24px; stroke-width: 2.4; }
