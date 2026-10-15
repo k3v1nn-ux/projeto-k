@@ -9,6 +9,14 @@ import { exportCsv, exportAllCsvZip, exportJson, importJson } from '../export.js
 import { toast, confirmSheet } from '../ui.js';
 import { esc, packJson, unpackJson } from '../util.js';
 
+/** Last "page wider than the screen" report from the layout guard in app.js, if any. */
+function layoutReport() {
+  let r = null;
+  try { r = JSON.parse(localStorage.getItem('pk.overflow') || 'null'); } catch { /* ignore */ }
+  if (!r) return '';
+  return `<details class="tiny muted" style="margin-bottom:10px"><summary>Aviso de layout (${esc(new Date(r.at).toLocaleString('pt-BR'))})</summary><pre style="white-space:pre-wrap;font-size:11px;margin:6px 0 0">${esc(JSON.stringify(r, null, 1))}</pre></details>`;
+}
+
 export function render(view) {
   const s = settings();
   const st = syncState();
@@ -24,6 +32,7 @@ export function render(view) {
           <div class="row gap"><button class="btn primary grow" type="submit">Salvar e testar</button><button class="btn grow" type="button" data-action="sync">Sincronizar</button></div>
         </form>
         <p class="muted small" style="margin-top:10px">Status: <strong>${statusText(st)}</strong>${st.pending ? ` · ${st.pending} registro(s) na fila` : ''}${st.lastSync ? ` · última: ${st.lastSync.toLocaleTimeString('pt-BR')}` : ''}${st.error ? `<br>Erro: ${esc(st.error)}` : ''}</p>
+        ${layoutReport()}
         <div class="row gap wrap"><button class="btn small" data-action="diagnose">Diagnóstico da planilha</button><button class="btn small ghost" data-action="seed">Enviar programa para a planilha</button></div>
         <div data-diag></div>
         <p class="muted tiny" style="margin-top:8px">A URL e o token ficam só neste aparelho. Repita a configuração no Mac.</p>

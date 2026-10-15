@@ -73,6 +73,7 @@ function route() {
   view.onclick = view.onchange = view.onsubmit = view.oninput = null;
   renderBack(r);
   r.render(view, args, query);
+  setTimeout(checkOverflow, 800);
   window.scrollTo(0, 0);
 }
 
@@ -160,6 +161,23 @@ function tickSessionClock() {
 }
 
 /** Blocks pinch and double-tap zoom (iOS ignores user-scalable=no in Safari). */
+/**
+ * Layout guard: if anything ends up wider than the screen, remember which element it was
+ * (shown in Ajustes → Diagnóstico) so a phone-only layout bug can be pinned down.
+ */
+function checkOverflow() {
+  const w = document.documentElement.clientWidth;
+  const over = [...document.body.querySelectorAll('*')].filter((e) => {
+    const b = e.getBoundingClientRect();
+    return b.width > 0 && b.right > w + 1 && !e.closest('.chips.scroll, .heatmap, .sheet-backdrop');
+  });
+  if (!over.length) return;
+  const bad = over.slice(-3).map((e) => `${e.tagName.toLowerCase()}.${String(e.className?.baseVal ?? e.className).split(' ')[0]} ${Math.round(e.getBoundingClientRect().right)}px "${(e.textContent || '').trim().slice(0, 24)}"`);
+  try {
+    localStorage.setItem('pk.overflow', JSON.stringify({ at: new Date().toISOString(), route: location.hash, screen: w, page: document.documentElement.scrollWidth, ua: navigator.userAgent.slice(0, 90), bad }));
+  } catch { /* ignore */ }
+}
+
 function blockZoom() {
   ['gesturestart', 'gesturechange', 'gestureend'].forEach((t) => document.addEventListener(t, (e) => e.preventDefault(), { passive: false }));
   document.addEventListener('touchmove', (e) => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
