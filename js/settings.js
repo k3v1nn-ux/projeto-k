@@ -22,6 +22,8 @@ const DEFAULTS = {
   weeklyTarget: 4, // lifting sessions per week
   restDays: [3, 6, 7], // preferred rest weekdays (1 = Monday), used only to project the week
   anthropicKey: '', // Claude API key for the AI analysis (stays on this device)
+  homeWidgets: null, // [{ id, on }] order and visibility of the Início cards
+  palette: 'volt', // color theme: volt | ocean | emerald | sunset | violet | graphite
   gymClose: { 6: '19:00', 7: '15:00' }, // Smart Fit closing time by weekday (Saturday 19h, Sunday 15h)
 };
 
@@ -52,7 +54,7 @@ export function updateSettings(patch) {
   Object.assign(settings(), patch);
   persist();
   invalidate();
-  if ('theme' in patch) applyTheme();
+  if ('theme' in patch || 'palette' in patch) applyTheme();
 }
 
 export function applyTheme() {
@@ -60,6 +62,7 @@ export function applyTheme() {
   const root = document.documentElement;
   if (t === 'auto') root.removeAttribute('data-theme');
   else root.setAttribute('data-theme', t);
+  root.setAttribute('data-palette', settings().palette || 'volt');
   const dark = t === 'dark' || (t === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#0b0b0d' : '#e9e9ee');
 }
@@ -71,7 +74,7 @@ export function isConfigured() {
 
 /* ---------- restore code (reinstalling the home-screen app starts with empty storage) ---------- */
 const RESTORE_KEYS = ['apiUrl', 'token', 'suggestToken', 'ownerName', 'theme', 'level', 'startDate', 'unavailable', 'allowSquatVariants',
-  'restSound', 'spotifyClientId', 'playlistUrl', 'shortcutName', 'weeklyTarget', 'restDays', 'anthropicKey', 'gymClose'];
+  'restSound', 'spotifyClientId', 'playlistUrl', 'shortcutName', 'weeklyTarget', 'restDays', 'anthropicKey', 'gymClose', 'palette', 'homeWidgets'];
 
 export function restorePayload() {
   const s = settings();
@@ -93,3 +96,8 @@ export function gymCloseFor(dateKeyStr) {
   const wd = new Date(y, m - 1, d).getDay() || 7;
   return (settings().gymClose || {})[wd] || '';
 }
+
+export const PALETTES = [
+  ['volt', 'Volt', '#c6f432', '#2a3315'], ['ocean', 'Oceano', '#4db2ff', '#123a66'], ['emerald', 'Esmeralda', '#3ee0a1', '#0f4a37'],
+  ['sunset', 'Pôr do sol', '#ff8a50', '#4a1f33'], ['violet', 'Violeta', '#b49cff', '#33255e'], ['graphite', 'Grafite', '#f5f5f7', '#34343b'],
+];

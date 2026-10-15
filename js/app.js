@@ -20,17 +20,20 @@ import * as more from './screens/more.js';
 import * as profilePage from './screens/profile.js';
 import * as inbox from './screens/inbox.js';
 import * as friendPages from './screens/friend-pages.js';
+import * as trophies from './screens/trophies.js';
+import * as home from './screens/home.js';
 import { profile } from './stats.js';
 import { pendingSuggestions } from './friend.js';
 
 const ROUTES = {
+  inicio: { tab: 'inicio', render: (v) => home.render(v), live: true },
   hoje: { tab: 'hoje', render: (v) => today.render(v), live: true },
   dia: { tab: 'semana', render: (v, [date]) => today.render(v, { date }), live: true },
   semana: { tab: 'semana', render: (v) => week.render(v), live: true },
-  musica: { tab: 'musica', render: (v) => music.render(v) },
+  musica: { tab: 'mais', render: (v) => music.render(v) },
   progresso: { tab: 'progresso', render: (v, _a, q) => progress.render(v, q), live: true },
   analytics: { tab: 'progresso', render: (v, _a, q) => progress.render(v, q), live: true },
-  conquistas: { tab: 'progresso', render: (v) => progress.render(v, new URLSearchParams('s=trofeus')), live: true },
+  conquistas: { tab: 'mais', render: (v) => trophies.render(v), live: true },
   ex: { tab: 'hoje', render: (v, [id]) => exercisePage.render(v, { id }) },
   mais: { tab: 'mais', render: (v) => more.render(v), live: true },
   perfil: { tab: 'mais', render: (v) => profilePage.render(v) },
@@ -44,7 +47,7 @@ const ROUTES = {
 let current = null;
 
 function parseHash() {
-  const raw = location.hash.replace(/^#\/?/, '') || 'hoje';
+  const raw = location.hash.replace(/^#\/?/, '') || 'inicio';
   const [path, query = ''] = raw.split('?');
   const [name, ...args] = path.split('/').map(decodeURIComponent);
   return { name, args, query: new URLSearchParams(query) };
@@ -52,7 +55,7 @@ function parseHash() {
 
 function route() {
   const { name, args, query } = parseHash();
-  const r = ROUTES[name] || ROUTES.hoje;
+  const r = ROUTES[name] || ROUTES.inicio;
   current = r;
   document.body.classList.toggle('no-tabbar', Boolean(r.bare));
   $('.topbar').hidden = Boolean(r.bare);

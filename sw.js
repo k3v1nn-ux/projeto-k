@@ -1,6 +1,6 @@
 // Service worker: precaches the app shell, the program and all exercise images so the
 // app opens and works with no signal. Bump VERSION on every deploy.
-const VERSION = 'pk-v11';
+const VERSION = 'pk-v13';
 
 const SHELL = [
   './',
@@ -12,6 +12,30 @@ const SHELL = [
   'icons/icon-192.png',
   'icons/icon-512.png',
   'icons/apple-touch-icon.png',
+  'img/avatars/a01.svg',
+  'img/avatars/a02.svg',
+  'img/avatars/a03.svg',
+  'img/avatars/a04.svg',
+  'img/avatars/a05.svg',
+  'img/avatars/a06.svg',
+  'img/avatars/a07.svg',
+  'img/avatars/a08.svg',
+  'img/avatars/a09.svg',
+  'img/avatars/a10.svg',
+  'img/avatars/a11.svg',
+  'img/avatars/a12.svg',
+  'img/avatars/a13.svg',
+  'img/avatars/a14.svg',
+  'img/avatars/a15.svg',
+  'img/avatars/a16.svg',
+  'img/avatars/a17.svg',
+  'img/avatars/a18.svg',
+  'img/avatars/a19.svg',
+  'img/avatars/a20.svg',
+  'img/avatars/a21.svg',
+  'img/avatars/a22.svg',
+  'img/avatars/a23.svg',
+  'img/avatars/a24.svg',
   'js/achievements.js',
   'js/ai.js',
   'js/app.js',
@@ -33,6 +57,7 @@ const SHELL = [
   'js/workout.js',
   'js/screens/exercise.js',
   'js/screens/friend-pages.js',
+  'js/screens/home.js',
   'js/screens/inbox.js',
   'js/screens/more.js',
   'js/screens/music.js',

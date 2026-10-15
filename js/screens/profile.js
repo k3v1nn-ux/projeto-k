@@ -24,23 +24,16 @@ async function savePhoto(dataUrl) {
   await db.save('profile', { ...profile(), id: 'me', photo: dataUrl || '' });
 }
 
-/** Preset avatars: an emoji over a soft gradient. Stored as "avatar:<index>" in profile.photo. */
-export const AVATARS = [
-  ['🦁', '#6b5a3a', '#2a2318'], ['🐺', '#55606e', '#1e232a'], ['🐯', '#7a5530', '#2b1d10'], ['🦅', '#5c4a3c', '#211a14'],
-  ['🐻', '#5e4a3f', '#211915'], ['🦍', '#4a4a52', '#18181c'], ['🐉', '#3d5c4a', '#14211a'], ['🦈', '#3e5468', '#141d26'],
-  ['🔥', '#6e3a2e', '#26130f'], ['⚡️', '#6b6430', '#25220f'], ['🚀', '#3c4a6e', '#131828'], ['🌟', '#5a5a64', '#1b1b20'],
-  ['🏋️', '#4d4d56', '#18181c'], ['🥊', '#6a3434', '#241010'], ['🏃', '#3a5d58', '#12201e'], ['🧘', '#57466b', '#1d1726'],
-];
+/** Preset avatars: CC0 illustrations (DiceBear "Notionists" and "Lorelei") stored in img/avatars.
+ * Saved as "avatar:aNN" in profile.photo. */
+export const AVATARS = Array.from({ length: 24 }, (_, i) => `a${String(i + 1).padStart(2, '0')}`);
 
 /** Inner HTML + style of an avatar for the current profile (photo, preset or initial). */
 export function avatarParts() {
   const src = photo();
-  const m = /^avatar:(\d+)$/.exec(src || '');
-  if (m && AVATARS[m[1]]) {
-    const [emoji, a, b] = AVATARS[m[1]];
-    return { html: `<span class="avatar-emoji">${emoji}</span>`, style: `background:linear-gradient(150deg, ${a}, ${b})` };
-  }
-  if (src) return { html: `<img src="${src}" alt="">`, style: '' };
+  const m = /^avatar:(a\d{2})$/.exec(src || '');
+  if (m) return { html: `<img src="img/avatars/${m[1]}.svg" alt="">`, style: 'background:transparent' };
+  if (src && !src.startsWith('avatar:')) return { html: `<img src="${src}" alt="">`, style: '' };
   return { html: esc((profile().name || 'A')[0].toUpperCase()), style: '' };
 }
 
@@ -81,7 +74,7 @@ export function render(view) {
       </div>
       <div class="section-title" style="margin:16px 0 8px">Escolha seu avatar</div>
       <div class="avatar-grid">
-        ${AVATARS.map(([e, a, b], i) => `<button type="button" class="avatar-opt" data-avatar="${i}" aria-pressed="${photo() === `avatar:${i}`}" style="background:linear-gradient(150deg, ${a}, ${b})" aria-label="Avatar ${i + 1}">${e}</button>`).join('')}
+        ${AVATARS.map((id, i) => `<button type="button" class="avatar-opt img" data-avatar="${id}" aria-pressed="${photo() === `avatar:${id}`}" aria-label="Avatar ${i + 1}"><img src="img/avatars/${id}.svg" alt="" loading="lazy"></button>`).join('')}
         <label class="avatar-opt photo" aria-pressed="${Boolean(photo()) && !photo().startsWith('avatar:')}" aria-label="Usar foto"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><input type="file" accept="image/*" data-photo hidden></label>
       </div>
       ${photo() ? '<button class="link-btn small mt" data-rmphoto>usar a inicial do nome</button>' : ''}

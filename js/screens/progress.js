@@ -13,10 +13,9 @@ import { settings, updateSettings } from '../settings.js';
 import { analyze, renderMarkdown, AI_MODEL } from '../ai.js';
 import { sheet, toast } from '../ui.js';
 import { dateKey, addDays, weekStart, fmtDay, fmtKg, fmtInt, esc, daysBetween } from '../util.js';
-import { render as renderTrophies } from './trophies.js';
 import { afterDataChange } from '../achievements.js';
 
-const TABS = [['geral', 'Visão geral'], ['treinos', 'Treinos'], ['forca', 'Força'], ['corpo', 'Corpo'], ['relogio', 'Relógio'], ['ia', 'IA'], ['trofeus', 'Troféus']];
+const TABS = [['geral', 'Visão geral'], ['treinos', 'Treinos'], ['forca', 'Força'], ['corpo', 'Corpo'], ['relogio', 'Relógio'], ['ia', 'IA']];
 const HEAT_WEEKS = 18;
 const TREND_WEEKS = 8;
 let charts = [];
@@ -36,7 +35,7 @@ export function render(view, query) {
     charts.forEach((c) => c.destroy());
     charts = [];
     el.onclick = el.onchange = el.onsubmit = null;
-    ({ geral, treinos, forca, corpo, relogio, ia, trofeus })[k](el, view);
+    ({ geral, treinos, forca, corpo, relogio, ia })[k](el, view);
   };
   show(tab);
   // Switching sub-tabs re-renders only the content: no route change, no jump to the top.
@@ -344,15 +343,13 @@ function corpo(el, view) {
           <label class="field"><span>Altura (cm)</span><input type="number" inputmode="numeric" name="height" value="${p.height_cm || ''}"></label>
           <label class="field"><span>Peso (kg)</span><input type="number" step="0.1" inputmode="decimal" name="weight" value="${w ?? ''}" required></label>
           <label class="field"><span>Data</span><input type="date" name="date" value="${dateKey()}"></label>
-          <label class="field"><span>% gordura (opcional)</span><input type="number" step="0.1" inputmode="decimal" name="fat"></label>
-          <label class="field"><span>Cintura cm (opcional)</span><input type="number" step="0.5" inputmode="decimal" name="waist"></label>
         </div>
         <button class="btn primary block" type="submit">Salvar medidas</button>
       </form>
     </div>
     ${logs.length ? `<div class="card mt"><h3>Peso</h3><div class="chart-box"><canvas id="c-weight" aria-label="Peso ao longo do tempo"></canvas></div>
-      <table class="hist mt"><thead><tr><th>Data</th><th>Peso</th><th>Gordura</th><th>Cintura</th><th></th></tr></thead><tbody>
-      ${[...logs].reverse().slice(0, 12).map((b) => `<tr><td>${lbl(b.date)}</td><td class="num">${fmtKg(b.weight_kg)}</td><td>${b.body_fat_pct ? `${fmtKg(b.body_fat_pct)}%` : '–'}</td><td>${b.waist_cm ? fmtKg(b.waist_cm) : '–'}</td><td><button class="link-btn" data-del-body="${b.id}">apagar</button></td></tr>`).join('')}
+      <table class="hist mt"><thead><tr><th>Data</th><th>Peso</th><th>IMC</th><th></th></tr></thead><tbody>
+      ${[...logs].reverse().slice(0, 12).map((b) => `<tr><td>${lbl(b.date)}</td><td class="num">${fmtKg(b.weight_kg)} kg</td><td class="num">${p.height_cm ? fmtKg(b.weight_kg / ((p.height_cm / 100) ** 2)) : '–'}</td><td><button class="link-btn" data-del-body="${b.id}">apagar</button></td></tr>`).join('')}
       </tbody></table></div>` : ''}
     ${bench && w ? `<p class="muted small mt">Supino c/ halteres: 1RM est. ${fmtKg(bench.best)} kg por halter (${fmtKg((bench.best * 2) / w)}× o peso corporal somando os dois).</p>` : ''}`;
   el.onsubmit = async (e) => {
@@ -362,7 +359,7 @@ function corpo(el, view) {
     if (!(weight > 20 && weight < 300)) { toast('Peso inválido'); return; }
     const height = Number(f.height.value);
     if (height > 100 && height < 250 && height !== Number(p.height_cm)) await db.save('profile', { ...profile(), id: 'me', height_cm: height });
-    await db.save('body_logs', { id: f.date.value || dateKey(), date: f.date.value || dateKey(), weight_kg: weight, body_fat_pct: Number(f.fat.value) || null, waist_cm: Number(f.waist.value) || null, notes: '' });
+    await db.save('body_logs', { id: f.date.value || dateKey(), date: f.date.value || dateKey(), weight_kg: weight, body_fat_pct: null, waist_cm: null, notes: '' });
     toast('Medidas salvas');
     afterDataChange();
     corpo(el, view);
@@ -476,9 +473,4 @@ function ia(el) {
       sh.el.querySelector('[data-del]').onclick = async () => { await db.remove('ai_reports', r.id); sh.close(); ia(el); };
     }
   };
-}
-
-/* ---------- Troféus ---------- */
-function trofeus(el) {
-  renderTrophies(el, { embedded: true });
 }

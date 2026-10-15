@@ -4,7 +4,7 @@ PWA pessoal de treino (mobile-first, offline-first) para a Smart Fit: rodízio S
 
 **App:** https://k3v1nn-ux.github.io/projeto-k/
 
-> Antares é a supergigante vermelha do coração de Escorpião: daí o logo (estrela de quatro pontas prateada com núcleo levemente quente). O visual é **grafite + vidro**: superfícies translúcidas com desfoque (como o Liquid Glass do iOS), destaque branco/prata, verde do sistema para o que foi concluído, e uma versão clara em alumínio.
+> Antares é a supergigante vermelha do coração de Escorpião: daí o logo (estrela de quatro pontas prateada com núcleo levemente quente). O visual usa superfícies de vidro translúcido com desfoque (como o Liquid Glass do iOS) e **6 temas de cor** escolhidos em Ajustes → Aparência (Volt, Oceano, Esmeralda, Pôr do sol, Violeta, Grafite), cada um com versão clara e escura.
 
 ---
 
@@ -203,6 +203,7 @@ Cada exercício tem 1–2 alternativas com equipamento padrão de academia (máq
 ### Regras
 
 - **Séries e repetições:** **3×12** no nível Base e **4×12** no Avançado. A carga sobe quando você fecha 12 repetições em todas as séries.
+- **Adicionar série:** botão **＋ Adicionar série** abaixo das séries do exercício.
 - **Apagar série:** arraste a série para a esquerda (registrada = apaga o registro; ainda não feita = sai do treino de hoje).
 - **Smart Fit:** sábado fecha às 19h e domingo às 15h; a tela Hoje avisa quanto tempo falta e a Semana mostra o horário.
 - **Descanso:** 120 s nos compostos, 60–90 s nos isolados [8, 9]. O cronômetro inicia sozinho ao registrar a série.
@@ -236,17 +237,18 @@ Cada exercício tem 1–2 alternativas com equipamento padrão de academia (máq
 
 | Aba | O que tem |
 |---|---|
-| **Hoje** | Treino sugerido com anel de progresso, cronômetro do treino, faixa da semana, etapa 1 (cardio de aquecimento), etapa 2 (exercícios em acordeão, séries pré-preenchidas, 1 toque para registrar, descanso automático), trocar treino/aparelho, descansar hoje, só cardio, minicontrole de música. Dias passados podem ser editados. |
+| **Início** | Painel com cartões de todas as abas (treino de hoje, semana, música, números da semana, recomendações, evolução de força, peso, relógio, troféus, treinos recebidos). Toque em um cartão para abrir a aba; **Personalizar início** liga, desliga e reordena os cartões. |
+| **Treino** | Treino sugerido com anel de progresso, cronômetro do treino, faixa da semana, etapa 1 (cardio de aquecimento), etapa 2 (exercícios em acordeão, séries pré-preenchidas, 1 toque para registrar, descanso automático), trocar treino/aparelho, descansar hoje, só cardio, minicontrole de música. Dias passados podem ser editados. |
 | **Semana** | Resumo (treinos/meta, séries, volume, minutos, cardio, séries por grupo, recordes) e seg–dom com detalhes de cada dia (exercícios, séries, volume, duração, cardio, recordes, horário da Smart Fit); tocar num dia mostra o treino e permite marcar/tirar descanso. |
 | **Música** | Player do Spotify, playlists e aparelhos (ou o player embutido da playlist sem login). |
-| **Progresso** | *Visão geral* (semana, sequência, recomendações, mapa de frequência, treinos por semana) · *Treinos* (equilíbrio do rodízio, séries por grupo vs referência, cardio, histórico) · *Força* (exercícios diferentes e realizados, dias em que as séries aumentaram, aumentos de carga, linha do tempo da evolução, gráfico por exercício, tabela com 1RM e tendência, recordes) · *Corpo* (peso, IMC, força relativa, medidas) · *Relógio* (dados do Saúde) · *IA* · *Troféus*. |
-| **Mais** | Perfil, Treinos recebidos (com selo de pendentes), Troféus, Atalho do Saúde, Programa e fontes, Ajustes. |
+| **Progresso** | *Visão geral* (semana, sequência, recomendações, mapa de frequência, treinos por semana) · *Treinos* (equilíbrio do rodízio, séries por grupo vs referência, cardio, histórico) · *Força* (exercícios diferentes e realizados, dias em que as séries aumentaram, aumentos de carga, linha do tempo da evolução, gráfico por exercício, tabela com 1RM e tendência, recordes) · *Corpo* (peso, IMC, força relativa, medidas) · *Relógio* (dados do Saúde) · *IA*. (Troféus ficam em Mais.) |
+| **Mais** | Perfil, Treinos recebidos (com selo de pendentes), Troféus, Música, Atalho do Saúde, Programa e fontes, Ajustes. |
 
 **Recomendações (sem IA):** regras locais apontam treinos que faltam na semana, exercícios parados há 3 treinos (com alternativas), grupos com pouco volume, rodízio desequilibrado, muitos dias sem treinar, hora de deload, peso sem registro ou caindo demais para o objetivo, pouco cardio e sono curto.
 
 **Análise com IA (Progresso → IA):** usa o modelo **Claude Opus 5.5** (`claude-opus-5-5`) pelo SDK oficial `@anthropic-ai/sdk` (carregado do jsDelivr só quando você pede a análise), com raciocínio adaptativo, resposta em streaming e fallback do servidor se a requisição for recusada. O app envia um **resumo numérico** (perfil, semanas, força por exercício, séries por grupo, peso, médias do relógio, exercícios indisponíveis), nunca a planilha inteira. Para usar, crie uma chave em https://console.anthropic.com → API Keys e cole na aba IA; ela fica só no aparelho. Cada análise custa poucos centavos de dólar. As análises ficam salvas na aba `ai_reports`.
 
-**Perfil:** nome, avatar (16 opções) ou foto, nascimento, sexo, altura, objetivo, experiência e observações (aba `profile`); o peso é registrado com data (aba `body_logs`) para mostrar a evolução e alimentar a IA.
+**Perfil:** nome, avatar (24 ilustrações [DiceBear](https://www.dicebear.com) *Notionists* e *Lorelei*, licença CC0) ou foto, nascimento, sexo, altura, objetivo, experiência e observações (aba `profile`); altura e peso são registrados com data (aba `body_logs`; as colunas de gordura e cintura ficam vazias) para mostrar a evolução e alimentar a IA.
 
 **Ícone e nome:** "Antares" com a estrela de quatro pontas. Para o iOS pegar o ícone novo, copie o código de restauração, apague o app da Tela de Início, adicione de novo e restaure.
 

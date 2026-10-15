@@ -96,7 +96,7 @@ function topBanners(date, today) {
 
 /* ---------- views ---------- */
 
-function weekStrip(date) {
+export function weekStrip(date) {
   const today = dateKey();
   const start = weekStart(date);
   const proj = weekProjection(date);
@@ -308,7 +308,7 @@ function exerciseCard(date, plan, it, i, { readonly, skipped, isOpen }) {
         </div>
         ${it.notes ? `<p class="muted small" style="margin:8px 0 0">${esc(it.notes)}</p>` : ''}
         <p class="muted tiny" style="margin:6px 0 0">${esc(ex.load_note)}</p>
-        ${readonly || skipped ? '' : `<div class="sets"><div class="set-labels"><span>#</span><span>kg</span><span>reps</span><span></span></div>${setsHtml}</div><p class="tiny faint center" style="margin:6px 0 0">Arraste uma série para a esquerda para apagar</p>`}
+        ${readonly || skipped ? '' : `<div class="sets"><div class="set-labels"><span>#</span><span>kg</span><span>reps</span><span></span></div>${setsHtml}<button type="button" class="add-set" data-action="add-set">＋ Adicionar série</button></div><p class="tiny faint center" style="margin:6px 0 0">Arraste uma série para a esquerda para apagar</p>`}
         <div class="ex-actions">
           ${readonly ? '' : '<button class="btn small" data-action="swap">Trocar</button>'}
 
@@ -396,6 +396,16 @@ function bind(view, date) {
         if (!log) return;
         const s = sheet(`<h3>Série ${log.set_number}: ${fmtKg(log.load_kg)} kg × ${log.reps}</h3><p class="muted small">Para corrigir, ajuste os valores na linha (salva sozinho).</p><button class="btn danger block" data-del>Apagar esta série</button><button class="btn ghost block mt" data-close>Fechar</button>`);
         s.el.querySelector('[data-del]').onclick = async () => { await deleteSet(log); s.close(); rerender(); };
+        break;
+      }
+      case 'add-set': {
+        const current = Math.max(item.sets, setsFor(date, item.exercise_id).length);
+        setDaySetCount(date, item.planned_id, current + 1 === item.base_sets ? null : current + 1);
+        open.date = date;
+        open.idx = Number(card.dataset.i);
+        const y = window.scrollY;
+        rerender();
+        window.scrollTo(0, y);
         break;
       }
       case 'swap': openSwap(date, item, rerender); break;

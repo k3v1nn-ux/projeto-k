@@ -18,7 +18,9 @@
     // Apply the forced theme before first paint to avoid a flash.
     try {
       var t = JSON.parse(localStorage.getItem('pk.settings') || '{}').theme;
+      var st = JSON.parse(localStorage.getItem('pk.settings') || '{}');
       if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+      document.documentElement.setAttribute('data-palette', st.palette || 'volt');
     } catch (e) {}
   </script>
 </head>
@@ -41,9 +43,9 @@
   <div id="toasts" class="toasts" aria-live="polite"></div>
 
   <nav class="tabbar" id="tabbar">
-    <a href="#/hoje" data-tab="hoje"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8v8M18 8v8M3 10.5v3M21 10.5v3M6 12h12"/></svg><span>Hoje</span></a>
+    <a href="#/inicio" data-tab="inicio"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-6.5 8 6.5V20h-5v-5.5h-6V20H4z"/></svg><span>Início</span></a>
+    <a href="#/hoje" data-tab="hoje"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8v8M18 8v8M3 10.5v3M21 10.5v3M6 12h12"/></svg><span>Treino</span></a>
     <a href="#/semana" data-tab="semana"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Semana</span></a>
-    <a href="#/musica" data-tab="musica"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V6l11-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg><span>Música</span></a>
     <a href="#/progresso" data-tab="progresso"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16M7 15l3.5-4 3 2.5L18 8"/><path d="M15 8h3v3"/></svg><span>Progresso</span></a>
     <a href="#/mais" data-tab="mais"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="18.5" cy="12" r="1.5"/></svg><span>Mais</span><span class="badge" id="inbox-badge" hidden></span></a>
   </nav>

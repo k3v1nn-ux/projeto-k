@@ -3,7 +3,7 @@
   "short_name": "Antares",
   "description": "Treino pessoal com rodízio, registro de séries, progressão e análise.",
   "lang": "pt-BR",
-  "start_url": "./#/hoje",
+  "start_url": "./#/inicio",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",

@@ -1,7 +1,7 @@
 // "Ajustes": cloud sync (+ diagnostics), theme, training options, unavailable equipment,
 // Spotify, Apple Health shortcut and data export.
 import * as db from '../db.js';
-import { settings, updateSettings, restorePayload, applyRestore } from '../settings.js';
+import { settings, updateSettings, restorePayload, applyRestore, PALETTES } from '../settings.js';
 import { api, sync, syncState } from '../sync.js';
 import { allExercises, seedTables } from '../program.js';
 import { TABLES } from '../schema.js';
@@ -56,10 +56,15 @@ export function render(view) {
     </div>
 
     <div class="section"><div class="section-title">Aparência</div>
-      <div class="card row between"><span>Tema</span>
-        <div class="seg" role="group" aria-label="Tema">
-          ${[['auto', 'Sistema'], ['light', 'Claro'], ['dark', 'Escuro']].map(([v, l]) => `<button data-theme-set="${v}" aria-pressed="${s.theme === v}">${l}</button>`).join('')}
+      <div class="card">
+        <div class="row between" style="margin-bottom:14px"><span>Modo</span>
+          <div class="seg" role="group" aria-label="Modo claro ou escuro">
+            ${[['auto', 'Sistema'], ['light', 'Claro'], ['dark', 'Escuro']].map(([v, l]) => `<button data-theme-set="${v}" aria-pressed="${s.theme === v}">${l}</button>`).join('')}
+          </div>
         </div>
+        <div class="section-title" style="margin:0 0 8px">Cores do app</div>
+        <div class="palettes">${PALETTES.map(([id, name, accent, hero]) => `<button class="palette-opt" data-palette-set="${id}" aria-pressed="${(s.palette || 'volt') === id}"><span class="sw" style="background:linear-gradient(150deg, ${hero}, #0b0b0d)"><i style="background:${accent}"></i></span>${name}</button>`).join('')}</div>
+        <p class="muted tiny" style="margin:10px 0 0">Muda na hora: experimente na academia e fique com a que preferir.</p>
       </div>
     </div>
 
@@ -175,6 +180,12 @@ function bind(view) {
   };
 
   view.onclick = async (e) => {
+    const pal = e.target.closest('[data-palette-set]');
+    if (pal) {
+      updateSettings({ palette: pal.dataset.paletteSet });
+      render(view);
+      return;
+    }
     const theme = e.target.closest('[data-theme-set]');
     if (theme) {
       updateSettings({ theme: theme.dataset.themeSet });

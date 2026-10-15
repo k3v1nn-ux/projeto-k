@@ -58,7 +58,7 @@ export function buildSummary(today = dateKey()) {
     series_ultimas_2_semanas_por_grupo: Object.fromEntries(Object.entries(vol).map(([g, v]) => [g, v.sets])),
     equilibrio_rodizio_28_dias: slotBalance(28, today),
     cardio_min_ultimos_7_dias: cardioMinutes(addDays(today, -6), today),
-    peso: bodyLogs().slice(-12).map((b) => ({ data: b.date, kg: b.weight_kg, gordura_pct: b.body_fat_pct || null, cintura_cm: b.waist_cm || null })),
+    peso: bodyLogs().slice(-12).map((b) => ({ data: b.date, kg: b.weight_kg })),
     relogio_30_dias: health.length ? { fc_repouso: avg('resting_hr'), passos: avg('steps'), sono_h: avg('sleep_h'), kcal_ativas: avg('active_kcal') } : null,
     exercicios_indisponiveis: settings().unavailable.map((id) => exercise(id)?.name_pt).filter(Boolean),
   };

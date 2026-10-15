@@ -13,6 +13,7 @@ const ICONS = {
   gear: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg>',
   heart: '<svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>',
   book: '<svg viewBox="0 0 24 24"><path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h10"/></svg>',
+  music: '<svg viewBox="0 0 24 24"><path d="M9 18V6l11-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg>',
   user: '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>',
 };
 
@@ -32,7 +33,8 @@ export function render(view) {
     </a>
     <div class="group mt"><ul class="list">
       ${item('#/recebidos', 'inbox', 'var(--series-1)', 'Treinos recebidos', 'convide amigos, aceite ou recuse', pending ? `<span class="pill danger">${pending}</span>` : '')}
-      ${item('#/progresso?s=trofeus', 'trophy', 'var(--gold)', 'Troféus', `${got} de ${trophies.length} desbloqueados`)}
+      ${item('#/conquistas', 'trophy', 'var(--gold)', 'Troféus', `${got} de ${trophies.length} desbloqueados`)}
+      ${item('#/musica', 'music', 'var(--danger)', 'Música', 'controle do Spotify e playlists')}
       ${item('#/perfil', 'user', 'var(--series-3)', 'Perfil e medidas', 'dados usados na análise com IA')}
     </ul></div>
     <div class="group mt"><ul class="list">
