@@ -46,6 +46,7 @@ export function render(view, params = {}) {
     html += liftView(date, session, future);
   }
   view.innerHTML = html;
+  document.body.classList.toggle('has-sticky', Boolean(view.querySelector('.sticky-actions')));
   bind(view, date);
   const slot = $('#spotify-slot', view);
   if (slot) mountSpotify(slot, { compact: true });

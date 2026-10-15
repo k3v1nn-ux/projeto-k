@@ -91,8 +91,7 @@ export function render(view) {
       <label class="field"><span>Experiência</span><select name="experience">${EXPERIENCE.map((g) => `<option ${p.experience === g ? 'selected' : ''}>${g}</option>`).join('')}</select></label>
       <label class="field"><span>Observações (lesões, preferências, rotina)</span><textarea name="notes" placeholder="ex.: não faço agachamento por preferência">${esc(p.notes || '')}</textarea></label>
       <button class="btn primary block" type="submit">Salvar perfil</button>
-    </form>
-    <p class="muted tiny center mt">Perfil e foto vão para a aba <code>profile</code> da planilha; o peso vai para <code>body_logs</code> (histórico em Progresso → Corpo).</p>`;
+    </form>`;
 
   view.onsubmit = async (e) => {
     e.preventDefault();

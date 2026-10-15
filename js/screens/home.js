@@ -60,7 +60,7 @@ const RENDER = {
   },
   musica() {
     if (!isConnected() && !playlistId(settings().playlistUrl)) {
-      return card('#/musica', 'Música', '<p class="muted small" style="margin:6px 0 0">Conecte o Spotify para controlar a música daqui.</p>');
+      return card('#/musica', 'Música', '<p class="muted small" style="margin:6px 0 0">Abra Spotify, YouTube Music, YouTube, Apple Music ou Deezer.</p>');
     }
     return `<div class="widget"><div class="row between" style="margin:0 4px 6px"><span class="widget-title">Música</span><a class="small" href="#/musica">abrir ›</a></div><div id="home-music"></div></div>`;
   },

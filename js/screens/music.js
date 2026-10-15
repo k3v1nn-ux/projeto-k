@@ -1,5 +1,6 @@
-// "Música": full Spotify remote (cover, track, progress, controls, playlists, devices).
-// Without a connection: setup steps and the embedded playlist as a fallback.
+// "Música": shortcuts to any music app (Spotify, YouTube Music, YouTube, Apple Music, Deezer) plus,
+// optionally, the full Spotify remote. A web app cannot read what other iPhone apps are playing,
+// so play/pause for any app stays in the Control Center / lock screen.
 import { settings, updateSettings } from '../settings.js';
 import { isConnected, login, logout, call, command, playlistId, ICONS } from '../spotify.js';
 import { toast } from '../ui.js';
@@ -7,25 +8,38 @@ import { esc, fmtDuration } from '../util.js';
 
 let poll = null;
 
+const APPS = [
+  ['Spotify', 'https://open.spotify.com', '#1db954'], ['YouTube Music', 'https://music.youtube.com', '#ff0033'],
+  ['YouTube', 'https://www.youtube.com', '#ff0000'], ['Apple Music', 'https://music.apple.com', '#fa2d48'],
+  ['Deezer', 'https://www.deezer.com', '#a238ff'], ['Amazon Music', 'https://music.amazon.com.br', '#25d1da'],
+];
+
+function launcher() {
+  return `
+    <div class="section"><div class="section-title"><span>Tocar em qualquer app</span></div>
+      <div class="app-grid">${APPS.map(([name, url, color]) => `<a class="app-tile" href="${url}" target="_blank" rel="noopener"><span class="app-dot" style="background:${color}">${name[0]}</span><span>${name}</span></a>`).join('')}</div>
+      <p class="muted tiny" style="margin:8px 16px 0">Para pausar ou pular em qualquer app, use a tela bloqueada ou a Central de Controle (deslize do canto superior direito).</p>
+    </div>`;
+}
+
 export function render(view) {
   clearInterval(poll);
   const s = settings();
   const pid = playlistId(s.playlistUrl);
   if (!isConnected()) {
     view.innerHTML = `
-      <div class="page-head"><h1>Música</h1><p>Controle o Spotify sem sair do treino.</p></div>
+      <div class="page-head"><h1>Música</h1><p>Abra seu app de música preferido sem sair do treino.</p></div>
+      ${launcher()}
       ${pid ? `<div class="card" style="padding:8px"><iframe class="embed" src="https://open.spotify.com/embed/playlist/${pid}?theme=0" loading="lazy" allow="encrypted-media; clipboard-write" title="Playlist no Spotify"></iframe></div>
       <a class="btn block mt" href="${esc(s.playlistUrl)}" target="_blank" rel="noopener">Abrir no Spotify</a>` : ''}
-      <div class="card mt">
-        <h3>Conectar o controle remoto</h3>
-        <p class="muted small">Com Spotify Premium, esta aba mostra capa, faixa e controles e escolhe playlists. A música toca no app do Spotify.</p>
+      <details class="card mt">
+        <summary>Controle do Spotify dentro do app (opcional)</summary>
+        <p class="muted small" style="margin-top:8px">Com Spotify Premium, esta aba mostra capa, faixa e controles e escolhe playlists. A música toca no app do Spotify.</p>
         <label class="field"><span>Client ID (developer.spotify.com/dashboard)</span><input type="text" name="spotifyClientId" value="${esc(s.spotifyClientId)}" autocomplete="off"></label>
         <p class="muted tiny">Redirect URI do app no Spotify: <code>${esc(location.origin + location.pathname)}</code></p>
         <button class="btn primary block" data-act="login">Conectar Spotify</button>
-      </div>
-      <div class="card mt">
-        <label class="field" style="margin:0"><span>Playlist do treino (link)</span><input type="url" name="playlistUrl" value="${esc(s.playlistUrl)}" placeholder="https://open.spotify.com/playlist/..."></label>
-      </div>`;
+        <label class="field mt" style="margin-bottom:0"><span>Playlist do treino (link do Spotify, opcional)</span><input type="url" name="playlistUrl" value="${esc(s.playlistUrl)}" placeholder="https://open.spotify.com/playlist/..."></label>
+      </details>`;
     view.onchange = (e) => {
       if (e.target.name === 'spotifyClientId') updateSettings({ spotifyClientId: e.target.value.trim() });
       if (e.target.name === 'playlistUrl') { updateSettings({ playlistUrl: e.target.value.trim() }); render(view); }
@@ -54,6 +68,7 @@ export function render(view) {
       </div>
     </div>
     <div class="section"><div class="section-title"><span>Suas playlists</span></div><div class="group" id="pl-grid"><p class="muted small" style="padding:12px 16px;margin:0">Carregando…</p></div></div>
+    ${launcher()}
     <div class="section"><div class="section-title"><span>Aparelhos</span><button class="link-btn" data-act="devices">atualizar</button></div><div class="group" id="devices"><p class="muted small" style="padding:12px 16px;margin:0">—</p></div></div>`;
 
   let playing = false;

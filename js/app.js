@@ -9,6 +9,7 @@ import { toast } from './ui.js';
 import { $, $$, dateKey, fmtDuration } from './util.js';
 import { afterDataChange } from './achievements.js';
 import { handleSpotifyCallback } from './spotify.js';
+import { initHelp } from './help.js';
 
 import * as today from './screens/today.js';
 import * as week from './screens/week.js';
@@ -58,6 +59,7 @@ function route() {
   const r = ROUTES[name] || ROUTES.inicio;
   current = r;
   document.body.classList.toggle('no-tabbar', Boolean(r.bare));
+  document.body.classList.remove('has-sticky');
   $('.topbar').hidden = Boolean(r.bare);
   $$('#tabbar a').forEach((a) => {
     if (a.dataset.tab === r.tab) a.setAttribute('aria-current', 'page');
@@ -186,6 +188,7 @@ async function main() {
   await db.loadAll();
   await loadProgram();
   initTimer();
+  initHelp();
   await handleSpotifyCallback();
 
   $('#theme-toggle').addEventListener('click', () => {
