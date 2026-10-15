@@ -107,7 +107,7 @@ function renderHeader() {
   const hour = new Date().getHours();
   const hello = hour < 12 ? 'Bom dia' : hour < 18 ? 'Boa tarde' : 'Boa noite';
   $('#greet-sub').textContent = hello;
-  $('#greet-name').textContent = p.name ? p.name.split(' ')[0] : 'Projeto K';
+  $('#greet-name').textContent = p.name ? p.name.split(' ')[0] : 'Antares';
   const photo = profilePage.photo();
   $('#avatar').innerHTML = photo ? `<img src="${photo}" alt="">` : (p.name || 'K')[0].toUpperCase();
   const n = pendingSuggestions().length;
@@ -127,7 +127,16 @@ function tickSessionClock() {
   }
 }
 
+/** Blocks pinch and double-tap zoom (iOS ignores user-scalable=no in Safari). */
+function blockZoom() {
+  ['gesturestart', 'gesturechange', 'gestureend'].forEach((t) => document.addEventListener(t, (e) => e.preventDefault(), { passive: false }));
+  document.addEventListener('touchmove', (e) => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
+  // Double-tap zoom is disabled by `touch-action: manipulation` in the CSS, so fast taps on
+  // the +/− buttons still register.
+}
+
 async function main() {
+  blockZoom();
   applyTheme();
   renderThemeButton();
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { applyTheme(); refresh(); });

@@ -13,7 +13,7 @@ const WD = ['seg', 'ter', 'qua', 'qui', 'sex', 'sáb', 'dom'];
 function describe(d, p, today) {
   const s = db.get('sessions', d);
   switch (p.kind) {
-    case 'done': return { title: s?.planned_session || 'Treino', sub: `${(db.index('set_logs', 'session_id').get(d) || []).length} séries${s?.duration_min ? ` · ${s.duration_min} min` : ''}`, pill: s?.status === 'partial' ? ['parcial', 'warn'] : ['feito', 'accent'], icon: '🏋️' };
+    case 'done': return { title: s?.planned_session || 'Treino', sub: `${(db.index('set_logs', 'session_id').get(d) || []).length} séries${s?.duration_min ? ` · ${s.duration_min} min` : ''}`, pill: s?.status === 'partial' ? ['parcial', 'warn'] : ['feito', 'success'], icon: '🏋️' };
     case 'today': return { title: p.slot === 'friend' ? (db.get('overrides', d)?.session_name || 'Treino do amigo') : slotDef(p.slot)?.session_name, sub: s?.status === 'in_progress' ? 'em andamento' : 'treino de hoje', pill: ['hoje', 'info'], icon: '🏋️' };
     case 'planned': return { title: p.slot === 'friend' ? (db.get('overrides', d)?.session_name || 'Treino do amigo') : slotDef(p.slot)?.session_name, sub: p.slot === 'friend' ? 'treino recebido' : slotDef(p.slot)?.focus, pill: ['previsto', ''], icon: '🗓️' };
     case 'rest': return { title: 'Descanso', sub: 'escolhido por você', pill: ['descanso', ''], icon: '😴' };

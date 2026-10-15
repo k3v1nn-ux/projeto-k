@@ -11,7 +11,7 @@ import { dateKey, addDays, uuid, nowIso } from './util.js';
 const SDK_URL = 'https://cdn.jsdelivr.net/npm/@anthropic-ai/sdk@0.128.0/+esm';
 export const AI_MODEL = 'claude-opus-5-5';
 
-const SYSTEM = `Você é um treinador de força e hipertrofia baseado em evidências, analisando os dados de treino de um aluno que usa o app Projeto K numa academia Smart Fit.
+const SYSTEM = `Você é um treinador de força e hipertrofia baseado em evidências, analisando os dados de treino de um aluno que usa o app Antares V3 numa academia Smart Fit.
 Escreva em português do Brasil, direto e motivador, sem enrolação. Use os números fornecidos; não invente dados que não estão no resumo. Se faltar informação (ex.: peso não registrado), diga o que registrar.
 Respeite as preferências do aluno: ele não faz nenhuma variação de agachamento; só sugira equipamentos comuns de academia.
 Estruture em Markdown com estas seções curtas:

@@ -53,7 +53,7 @@ export function render(view) {
         <button class="icon-btn" data-cmd="next" aria-label="Próxima">${ICONS.next}</button>
       </div>
     </div>
-    <div class="section"><div class="section-title"><span>Suas playlists</span></div><div class="pl-grid" id="pl-grid"><p class="muted small">Carregando…</p></div></div>
+    <div class="section"><div class="section-title"><span>Suas playlists</span></div><div class="group" id="pl-grid"><p class="muted small" style="padding:12px 16px;margin:0">Carregando…</p></div></div>
     <div class="section"><div class="section-title"><span>Aparelhos</span><button class="link-btn" data-act="devices">atualizar</button></div><div class="group" id="devices"><p class="muted small" style="padding:12px 16px;margin:0">—</p></div></div>`;
 
   let playing = false;
@@ -83,7 +83,7 @@ export function render(view) {
     try {
       const data = await call('GET', '/me/playlists?limit=50');
       const items = (data?.items || []).filter(Boolean);
-      $('#pl-grid').innerHTML = items.map((p) => `<button class="pl" data-uri="${esc(p.uri)}"><img src="${esc(p.images?.[0]?.url || '')}" alt="" loading="lazy"><div>${esc(p.name)}</div></button>`).join('') || '<p class="muted small">Nenhuma playlist.</p>';
+      $('#pl-grid').innerHTML = items.length ? `<ul class="list">${items.map((p) => `<li><button class="list-item" data-uri="${esc(p.uri)}"><img class="pl-thumb" src="${esc(p.images?.[p.images.length - 1]?.url || p.images?.[0]?.url || '')}" alt="" loading="lazy"><span class="grow"><strong class="ellipsis">${esc(p.name)}</strong><br><span class="li-sub">${p.tracks?.total ?? ''} faixas${p.owner?.display_name ? ` · ${esc(p.owner.display_name)}` : ''}</span></span><span class="li-chev">${ICONS.play}</span></button></li>`).join('')}</ul>` : '<p class="muted small" style="padding:12px 16px;margin:0">Nenhuma playlist.</p>';
     } catch (err) {
       $('#pl-grid').innerHTML = `<p class="muted small">Não carregou: ${esc(err.message)}</p>`;
     }

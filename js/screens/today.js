@@ -4,7 +4,7 @@
 import * as db from '../db.js';
 import {
   dayPlan, exercise, getProgram, usableAlternatives, weekProjection, slotQueue, lastDoneBySlot, rotation,
-  setChoice, estimateMinutes, slotDef,
+  setChoice, estimateMinutes, slotDef, setDaySetCount,
 } from '../program.js';
 import { suggestion, TREND_LABEL, e1rm } from '../progression.js';
 import { settings, updateSettings } from '../settings.js';
@@ -58,6 +58,9 @@ export function render(view, params = {}) {
 
 function topBanners(date, today) {
   let html = '';
+  if (!settings().apiUrl && !db.all('sessions').length) {
+    html += '<a class="banner" href="#/config" style="text-decoration:none"><span>☁️</span><span class="grow"><strong>Reinstalou o app?</strong> Cole seu código de restauração em Ajustes para trazer tudo de volta.</span><span class="btn small">Abrir</span></a>';
+  }
   if (date !== today) {
     html += `<div class="banner warn"><span class="grow">${date < today ? `Editando ${fmtDay(date)}` : `Prévia de ${fmtDay(date)}`}</span><a class="btn small" href="#/hoje">Hoje</a></div>`;
   }
@@ -241,7 +244,7 @@ function exerciseCard(date, plan, it, i, { readonly, skipped, isOpen }) {
   const logs = setsFor(date, it.exercise_id);
   const sugg = suggestion(it, date, plan.session_name);
   const complete = logs.length >= it.sets;
-  const step = ex.increment_kg || 1;
+  const step = 1; // load buttons always move 1 kg
   const rows = Math.max(it.sets, logs.length);
   const lastLoad = logs.length ? logs[logs.length - 1].load_kg : sugg.load;
   const swapped = it.exercise_id !== it.planned_id;
@@ -284,8 +287,8 @@ function exerciseCard(date, plan, it, i, { readonly, skipped, isOpen }) {
         ${readonly || skipped ? '' : `<div class="sets"><div class="set-labels"><span>#</span><span>kg</span><span>reps</span><span></span></div>${setsHtml}</div>`}
         <div class="ex-actions">
           ${readonly ? '' : '<button class="btn small" data-action="swap">Trocar</button>'}
-          ${readonly || skipped ? '' : '<button class="btn small" data-action="extra">+ Série</button>'}
-          <a class="btn small" href="#/ex/${ex.id}">Detalhes</a>
+          ${readonly || skipped ? '' : `<button class="btn small" data-action="less" ${rows <= Math.max(1, logs.length) ? 'disabled' : ''} aria-label="Remover série">− Série</button><button class="btn small" data-action="extra" aria-label="Adicionar série">+ Série</button>`}
+          <a class="btn small" href="#/ex/${ex.id}">Info</a>
         </div>
       </div>
     </div>`;
@@ -371,19 +374,17 @@ function bind(view, date) {
         s.el.querySelector('[data-del]').onclick = async () => { await deleteSet(log); s.close(); rerender(); };
         break;
       }
-      case 'extra': {
-        const sets = card.querySelector('.sets');
-        const rows = sets.querySelectorAll('.set-row');
-        const clone = rows[rows.length - 1].cloneNode(true);
-        clone.classList.remove('logged');
-        clone.classList.add('next');
-        clone.removeAttribute('data-log');
-        clone.dataset.n = String(rows.length + 1);
-        clone.querySelector('.set-n').textContent = String(rows.length + 1);
-        const ok = clone.querySelector('.set-ok');
-        ok.dataset.action = 'log';
-        ok.innerHTML = CHECK;
-        sets.appendChild(clone);
+      case 'extra':
+      case 'less': {
+        const logged = setsFor(date, item.exercise_id).length;
+        const current = Math.max(item.sets, logged);
+        const next = btn.dataset.action === 'extra' ? current + 1 : Math.max(1, logged, current - 1);
+        setDaySetCount(date, item.planned_id, next === item.base_sets ? null : next);
+        open.date = date;
+        open.idx = Number(card.dataset.i);
+        const y = window.scrollY;
+        rerender();
+        window.scrollTo(0, y);
         break;
       }
       case 'swap': openSwap(date, item, rerender); break;

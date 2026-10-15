@@ -102,7 +102,7 @@ EXERCISES = [
      ["Polia baixa com corda.", "Pegada neutra, cotovelos fixos.", "Desça devagar."]),
     # ---------- Triceps ----------
     ("triceps_pushdown", "Tríceps na polia (barra)", "tríceps", "polia", "Triceps_Pushdown", 2.5, 15, "carga da placa",
-     ["rope_pushdown", "overhead_rope_ext"],
+     ["rope_pushdown", "machine_triceps"],
      ["Cotovelos colados ao corpo.", "Empurre até esticar os braços.", "Suba só até 90° no cotovelo."]),
     ("rope_pushdown", "Tríceps na polia (corda)", "tríceps", "polia", "Triceps_Pushdown_-_Rope_Attachment", 2.5, 12.5, "carga da placa",
      ["triceps_pushdown", "overhead_rope_ext"],
@@ -113,6 +113,9 @@ EXERCISES = [
     ("db_overhead_ext", "Tríceps francês com halter", "tríceps", "halteres", "Standing_Dumbbell_Triceps_Extension", 2, 8, "kg do halter",
      ["overhead_rope_ext", "triceps_pushdown"],
      ["Sentado, halter com as duas mãos atrás da cabeça.", "Estenda os braços para cima.", "Cotovelos apontando para frente."]),
+    ("machine_triceps", "Tríceps máquina", "tríceps", "máquina", "Machine_Triceps_Extension", 2.5, 15, "carga da placa",
+     ["triceps_pushdown", "rope_pushdown"],
+     ["Ajuste o banco para os cotovelos ficarem alinhados com o eixo.", "Estenda os braços sem tirar as costas do encosto.", "Volte devagar até ~90°."]),
     # ---------- Quads ----------
     ("leg_press", "Leg press 45°", "quadríceps", "máquina", "Leg_Press", 5, 40, "anilhas somadas (sem o carrinho)",
      ["leg_press_horizontal", "bulgarian_split_squat"],
@@ -147,7 +150,7 @@ EXERCISES = [
      ["Barra rente às pernas.", "Quadril para trás, coluna neutra.", "Suba contraindo o glúteo."]),
     # ---------- Glutes ----------
     ("hip_thrust", "Elevação pélvica com barra", "glúteos", "barra", "Barbell_Hip_Thrust", 5, 20, "carga total (barra + anilhas)",
-     ["smith_hip_thrust", "glute_bridge"],
+     ["glute_machine", "smith_hip_thrust", "glute_bridge"],
      ["Escápulas apoiadas no banco, barra no quadril (use proteção).", "Suba até alinhar tronco e coxas, queixo para baixo.", "Segure 1 s contraindo os glúteos."]),
     ("smith_hip_thrust", "Elevação pélvica no smith", "glúteos", "smith", None, 5, 10, "anilhas somadas (sem a barra)",
      ["hip_thrust", "glute_bridge"],
@@ -155,8 +158,11 @@ EXERCISES = [
     ("glute_bridge", "Ponte de glúteo com barra (no solo)", "glúteos", "barra", "Barbell_Glute_Bridge", 5, 20, "carga total (barra + anilhas)",
      ["hip_thrust", "smith_hip_thrust"],
      ["Deitado no chão, barra sobre o quadril.", "Suba o quadril contraindo os glúteos.", "Desça controlando."]),
+    ("glute_machine", "Glúteo máquina (coice)", "glúteos", "máquina", "Glute_Kickback", 5, 15, "carga da placa",
+     ["hip_thrust", "abductor"],
+     ["Apoie o peito/antebraços e o joelho de apoio.", "Empurre a plataforma para trás estendendo o quadril, sem arquear a lombar.", "Volte devagar; uma perna por vez."]),
     ("abductor", "Cadeira abdutora", "glúteos", "máquina", "Thigh_Abductor", 5, 25, "carga da placa",
-     ["cable_hip_abduction"],
+     ["cable_hip_abduction", "glute_machine"],
      ["Costas apoiadas (ou tronco levemente à frente para mais glúteo).", "Abra as pernas e segure 1 s.", "Volte devagar."]),
     ("cable_hip_abduction", "Abdução de quadril na polia", "glúteos", "polia", None, 2.5, 5, "carga da placa",
      ["abductor"],
@@ -210,7 +216,6 @@ CARDIO_TYPES = [
     {"id": "bike", "name_pt": "Bike ergométrica", "media": "Bicycling_Stationary"},
     {"id": "elíptico", "name_pt": "Elíptico", "media": "Elliptical_Trainer"},
     {"id": "escada", "name_pt": "Escada (simulador)", "media": "Stairmaster"},
-    {"id": "remo", "name_pt": "Remo ergométrico", "media": "Rowing_Stationary"},
 ]
 
 
@@ -233,7 +238,7 @@ BASE_ROTATION = [
     {"slot": "lower_a", "session_name": "Inferior A", "focus": "Quadríceps, posteriores e panturrilhas", "exercises": [
         ex("leg_press", 3, 10, 12, 120), ex("db_rdl", 3, 8, 12, 120),
         ex("leg_extension", 3, 12, 15, 90), ex("lying_leg_curl", 3, 10, 12, 90),
-        ex("standing_calf", 3, 10, 15, 60), ex("cable_crunch", 2, 12, 15, 60)]},
+        ex("leg_press_calf", 3, 10, 15, 60), ex("machine_crunch", 2, 12, 15, 60)]},
     {"slot": "upper_b", "session_name": "Superior B", "focus": "Costas, peito inclinado, ombros e braços", "exercises": [
         ex("machine_row", 3, 8, 12, 120), ex("db_incline_press", 3, 8, 12, 120),
         ex("close_grip_pulldown", 3, 10, 12, 90), ex("pec_deck", 3, 12, 15, 60),
@@ -255,8 +260,8 @@ INTERMEDIATE_ROTATION = [
     {"slot": "lower_a", "session_name": "Inferior A+", "focus": "Quadríceps, posteriores e panturrilhas", "exercises": [
         ex("leg_press", 4, 8, 12, 150), ex("db_rdl", 4, 8, 12, 120),
         ex("leg_extension", 3, 12, 15, 90), ex("lying_leg_curl", 3, 10, 12, 90),
-        ex("hip_thrust", 2, 10, 12, 90), ex("standing_calf", 4, 10, 15, 60),
-        ex("cable_crunch", 3, 12, 15, 60)]},
+        ex("hip_thrust", 2, 10, 12, 90), ex("leg_press_calf", 4, 10, 15, 60),
+        ex("machine_crunch", 3, 12, 15, 60)]},
     {"slot": "upper_b", "session_name": "Superior B+", "focus": "Costas, peito inclinado, ombros e braços", "exercises": [
         ex("machine_row", 4, 8, 12, 120), ex("db_incline_press", 4, 8, 12, 120),
         ex("close_grip_pulldown", 3, 10, 12, 90), ex("pec_deck", 3, 12, 15, 60),
@@ -313,8 +318,31 @@ EQUIPMENT_MAP = {
     "smith": "Smith machine",
     "banco": "Bancos reto/inclinável",
     "peso corporal": "Colchonete / área de alongamento",
-    "cardio": "Esteira, bike, elíptico, escada, remo (este último não existe em todas as unidades)",
+    "cardio": "Esteira, bike, elíptico e escada",
 }
+
+
+# Smart Fit uses Matrix Fitness equipment (Aura/Ultra/Versa lines). "citado" = named by Smart Fit's
+# own articles; "matrix" = machine of the Matrix lines; "livre" = free weights/cables/bench;
+# "varia" = not in every unit.
+SMARTFIT = {
+    "citado": {"leg_press", "leg_extension", "lying_leg_curl", "machine_crunch", "lat_pulldown", "close_grip_pulldown",
+               "underhand_pulldown", "abductor", "smith_bench_press", "smith_incline_press", "smith_shoulder_press",
+               "smith_rdl", "smith_calf", "smith_hip_thrust"},
+    "matrix": {"machine_chest_press", "machine_incline_press", "pec_deck", "reverse_pec_deck", "machine_row",
+               "machine_shoulder_press", "seated_leg_curl", "adductor", "machine_curl", "machine_triceps",
+               "glute_machine", "leg_press_calf", "standing_calf", "seated_calf"},
+    "varia": {"leg_press_horizontal", "standing_leg_curl", "single_leg_extension"},
+}
+SMARTFIT_LABEL = {"citado": "Smart Fit: aparelho padrão", "matrix": "Smart Fit: linha Matrix (comum)",
+                  "livre": "Smart Fit: peso livre / polia", "varia": "Smart Fit: depende da unidade"}
+
+
+def availability(eid):
+    for k, ids in SMARTFIT.items():
+        if eid in ids:
+            return k
+    return "livre"
 
 
 def build():
@@ -329,6 +357,7 @@ def build():
             "media_source": f"yuhonas/free-exercise-db: exercises/{media}" if media else "",
             "instructions": instr, "alternatives": alts, "is_squat_variant": squat,
             "active": not squat, "increment_kg": inc, "start_load_kg": start, "load_note": note,
+            "smartfit": availability(eid), "smartfit_label": SMARTFIT_LABEL[availability(eid)],
         })
     ids = {e["id"] for e in exercises}
     for e in exercises:
@@ -345,7 +374,7 @@ def build():
 
     program = {
         "version": 2,
-        "name": "Projeto K — Superior/Inferior",
+        "name": "Antares V3 — rodízio Superior/Inferior",
         "levels": {
             "base": {"label": "Base", "weekly_target": 4, "rotation": rotation(BASE_ROTATION)},
             "intermediate": {"label": "Intermediário", "weekly_target": 4, "rotation": rotation(INTERMEDIATE_ROTATION)},
@@ -356,6 +385,11 @@ def build():
                           "media_frames": [f"img/ex/cardio-{i}-0.jpg", f"img/ex/cardio-{i}-1.jpg"]}
                          for i, c in enumerate(CARDIO_TYPES)],
         "equipment_map": EQUIPMENT_MAP,
+        "equipment_sources": [
+            "Matrix Fitness e Smart Fit anunciam parceria de equipamentos (2020): https://www.americanspa.com/press-releases/matrix-fitness-smart-fit-announce-partnership",
+            "Smart News — Você conhece os aparelhos de academia?: https://www.smartfit.com.br/news/academia/voce-conhece-os-aparelhos-de-academia/",
+            "Smart News — Aparelhos da academia para o bumbum: https://www.smartfit.com.br/news/fitness/5-aparelhos-da-academia-para-empinar-o-bumbum/",
+        ],
         "sources": SOURCES,
         "media_license": "Imagens: yuhonas/free-exercise-db (Unlicense / domínio público). https://github.com/yuhonas/free-exercise-db",
     }

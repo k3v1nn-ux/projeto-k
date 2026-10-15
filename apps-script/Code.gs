@@ -14,7 +14,7 @@
  * (keeps the same /exec URL).
  */
 
-var VERSION = '2.0';
+var VERSION = '2.1';
 
 // New columns are only appended at the end so existing rows stay aligned.
 var SCHEMA = {
@@ -25,7 +25,7 @@ var SCHEMA = {
   suggestions: ['id', 'author', 'created_at', 'payload_json', 'status', 'target_date', 'updated_at', 'deleted', 'synced_at'],
   health_imports: ['id', 'date', 'resting_hr', 'avg_hr', 'active_kcal', 'steps', 'sleep_h', 'workout_avg_hr', 'workout_min', 'source', 'updated_at', 'deleted', 'synced_at'],
   overrides: ['id', 'date', 'suggestion_id', 'session_name', 'payload_json', 'updated_at', 'deleted', 'synced_at'],
-  profile: ['id', 'name', 'birth_date', 'sex', 'height_cm', 'goal', 'experience', 'notes', 'updated_at', 'deleted', 'synced_at'],
+  profile: ['id', 'name', 'birth_date', 'sex', 'height_cm', 'goal', 'experience', 'notes', 'updated_at', 'deleted', 'synced_at', 'photo'],
   body_logs: ['id', 'date', 'weight_kg', 'body_fat_pct', 'waist_cm', 'notes', 'updated_at', 'deleted', 'synced_at'],
   ai_reports: ['id', 'created_at', 'model', 'text', 'updated_at', 'deleted', 'synced_at']
 };

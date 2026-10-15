@@ -37,7 +37,7 @@ export async function renderBuilder(view, query) {
   const draw = () => {
     const total = state.days.reduce((a, d) => a + d.items.length, 0);
     view.innerHTML = `
-      <div class="hero"><div class="eyebrow">Projeto K</div><h1>Monte um treino para ${esc(owner)}</h1>
+      <div class="hero"><div class="eyebrow">Antares V3</div><h1>Monte um treino para ${esc(owner)}</h1>
         <div class="sub">Um ou vários dias. Só aparelhos comuns de academia e nenhuma variação de agachamento. ${esc(owner)} pode aceitar tudo ou só alguns dias.</div></div>
       <div class="card mt">
         <label class="field"><span>Seu nome</span><input type="text" data-top="author" value="${esc(state.author)}" placeholder="ex.: Ana"></label>
@@ -113,7 +113,7 @@ async function send(view, config, state) {
       sent = true;
     } catch { /* fall back to WhatsApp below */ }
   }
-  const wa = `https://wa.me/?text=${encodeURIComponent(`Montei um treino pra você no Projeto K: ${planB}`)}`;
+  const wa = `https://wa.me/?text=${encodeURIComponent(`Montei um treino pra você no Antares: ${planB}`)}`;
   view.querySelector('[data-send]').hidden = true;
   view.querySelector('[data-result]').innerHTML = `
     <div class="card mt">

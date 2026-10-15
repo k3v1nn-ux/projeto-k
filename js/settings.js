@@ -60,10 +60,28 @@ export function applyTheme() {
   if (t === 'auto') root.removeAttribute('data-theme');
   else root.setAttribute('data-theme', t);
   const dark = t === 'dark' || (t === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#090d0b' : '#f3f4f1');
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#000000' : '#f2f2f7');
 }
 
 export function isConfigured() {
   const s = settings();
   return Boolean(s.apiUrl && s.token);
+}
+
+/* ---------- restore code (reinstalling the home-screen app starts with empty storage) ---------- */
+const RESTORE_KEYS = ['apiUrl', 'token', 'suggestToken', 'ownerName', 'theme', 'level', 'startDate', 'unavailable', 'allowSquatVariants',
+  'restSound', 'spotifyClientId', 'playlistUrl', 'shortcutName', 'weeklyTarget', 'restDays', 'anthropicKey'];
+
+export function restorePayload() {
+  const s = settings();
+  const out = { v: 1, settings: Object.fromEntries(RESTORE_KEYS.map((k) => [k, s[k]])) };
+  try { out.spotify = JSON.parse(localStorage.getItem('pk.spotify') || 'null'); } catch { /* ignore */ }
+  return out;
+}
+
+export function applyRestore(payload) {
+  if (!payload || payload.v !== 1 || !payload.settings) throw new Error('código inválido');
+  const patch = Object.fromEntries(Object.entries(payload.settings).filter(([k]) => RESTORE_KEYS.includes(k)));
+  updateSettings(patch);
+  try { if (payload.spotify) localStorage.setItem('pk.spotify', JSON.stringify(payload.spotify)); } catch { /* ignore */ }
 }

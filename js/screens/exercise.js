@@ -31,6 +31,7 @@ export function render(view, { id }) {
     <div class="row gap wrap" style="margin-bottom:10px">
       <span class="pill">${esc(ex.muscle_group)}</span><span class="pill">${esc(ex.equipment)}</span>
       ${ex.is_squat_variant ? '<span class="pill warn">variação de agachamento</span>' : ''}
+      ${ex.smartfit_label ? `<span class="pill ${ex.smartfit === 'varia' ? 'warn' : 'success'}">${esc(ex.smartfit_label)}</span>` : ''}
     </div>
     ${mediaHtml(ex)}
     ${ex.media_frames?.length ? `<p class="tiny muted" style="margin-top:4px">Imagens: free-exercise-db (domínio público) · <a href="${youtubeSearch(ex.name_pt)}" target="_blank" rel="noopener">ver no YouTube</a></p>` : ''}

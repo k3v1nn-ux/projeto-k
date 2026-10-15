@@ -1,8 +1,10 @@
-# Projeto K — Gym Dashboard
+# Antares V3 — treino pessoal
 
 PWA pessoal de treino (mobile-first, offline-first) para a Smart Fit: rodízio Superior/Inferior com meta semanal, registro de séries em 1 toque, cronômetro de descanso, progressão de carga, progresso com recomendações e análise por IA (Claude), perfil e medidas, troféus, treinos montados por amigos, aba de música (Spotify) e dados do relógio (Zepp → Apple Saúde).
 
 **App:** https://k3v1nn-ux.github.io/projeto-k/
+
+> Antares é a supergigante vermelha do coração de Escorpião: daí o logo (estrela de quatro pontas) e a paleta laranja-avermelhada sobre um céu noturno. O visual segue os padrões do iOS (fundos agrupados, listas inset, numerais arredondados, barras com blur).
 
 ---
 
@@ -91,7 +93,7 @@ tools/             geração de dados, imagens, ícones, servidor de dev e mock 
 7. No app: **Ajustes → Planilha** → cole URL e token → **Salvar e testar**. Depois toque em **Enviar exercícios e plano para a planilha** para preencher as abas `exercises` e `plans` (ou importe `data/seed/*.csv` manualmente).
 8. Repita o passo 7 no Mac.
 
-> **Atualizou o `Code.gs`?** (a v2 é obrigatória para perfil, peso, IA, diagnóstico e abas legíveis) Cole o arquivo novo, salve e use *Implantar → Gerenciar implantações → editar (lápis) → Versão: Nova versão → Implantar*. Assim a URL e o token continuam os mesmos.
+> **Atualizou o `Code.gs`?** (a v2.1 é necessária para perfil com foto, peso, IA, diagnóstico e abas legíveis) Cole o arquivo novo, salve e use *Implantar → Gerenciar implantações → editar (lápis) → Versão: Nova versão → Implantar*. Assim a URL e o token continuam os mesmos.
 >
 > **Abas legíveis:** a v2 mantém as abas técnicas (o banco do app) e gera, a cada sincronização, **📊 Resumo** (um treino por linha, em português) e **📋 Séries** (cada série com o nome do exercício). Use essas duas para ler no Numbers/Sheets.
 >
@@ -110,6 +112,10 @@ Para publicar uma mudança:
 2. `git commit` e `git push`. Em ~1 min o Pages atualiza. Na próxima abertura, o app baixa a nova versão e recarrega sozinho.
 
 ## 5. Adicionar à Tela de Início (iPhone e Mac)
+
+> **Não precisa reinstalar para atualizar:** o app baixa versões novas sozinho (feche e abra). Só é preciso apagar e adicionar de novo quando o **ícone ou o nome** mudam.
+>
+> **Reinstalou? Nada se perde:** o iPhone apaga os dados de um app da Tela de Início junto com o ícone. Antes de apagar, vá em **Ajustes → Reinstalar sem perder nada → Copiar meu código** e cole no app Notas. Na instalação nova, cole o código no mesmo lugar e toque em **Restaurar**: planilha, token, Spotify, chave da IA e ajustes voltam, e os treinos, o perfil e a foto são baixados da planilha. O código contém seus tokens: não compartilhe.
 
 - **iPhone:** abra o link no **Safari** → botão Compartilhar → **Adicionar à Tela de Início**. Abra sempre pelo ícone (tela cheia, e o iOS não apaga os dados de apps instalados).
 - **Mac:** Safari → **Arquivo → Adicionar ao Dock** (macOS Sonoma+), ou Chrome → ícone de instalar na barra de endereço.
@@ -188,6 +194,8 @@ Em vez de dias fixos, o app usa um **rodízio**: Superior A → Inferior A → S
 
 **Inferior B:** elevação pélvica 3×8–12 · leg press 45° (pés altos) 3×12–15 · cadeira flexora 3×10–12 · abdutora 2×12–15 · adutora 2×12–15 · panturrilha sentado 3×12–15 · elevação de pernas 2×10–15
 
+**Aparelhos da Smart Fit.** A rede tem parceria de equipamentos com a [Matrix Fitness](https://www.americanspa.com/press-releases/matrix-fitness-smart-fit-announce-partnership) (linhas Aura/Ultra/Versa), e os próprios artigos da Smart Fit citam leg press, cadeira extensora, flexora deitada, crunch machine (abdominal), pulley, Smith, polias, halteres, barras e cadeira abdutora ([1](https://www.smartfit.com.br/news/academia/voce-conhece-os-aparelhos-de-academia/), [2](https://www.smartfit.com.br/news/fitness/5-aparelhos-da-academia-para-empinar-o-bumbum/)). O programa prioriza esses aparelhos (ex.: abdominal máquina e panturrilha no leg press no Inferior A, tríceps máquina e glúteo máquina como alternativas) e cada exercício mostra um selo: *aparelho padrão*, *linha Matrix (comum)*, *peso livre/polia* ou *depende da unidade*. O remo ergométrico saiu do cardio (não é padrão na rede). Não há lista oficial por unidade, por isso todo exercício tem alternativas.
+
 Cada exercício tem 1–2 alternativas com equipamento padrão de academia (máquina, polia, halteres, barra, smith). O botão **Trocar** muda na hora; "não existe na minha unidade" troca sempre. O detalhe completo (com notas de carga) está em [`data/program.json`](data/program.json).
 
 ### Regras
@@ -235,7 +243,9 @@ Cada exercício tem 1–2 alternativas com equipamento padrão de academia (máq
 
 **Perfil:** nome, foto (só no aparelho), nascimento, sexo, altura, objetivo, experiência e observações (aba `profile`); o peso é registrado com data (aba `body_logs`) para mostrar a evolução e alimentar a IA.
 
-**Ícone:** monograma "K". Se você já adicionou o app à Tela de Início, apague o ícone antigo e adicione de novo para o iOS pegar o novo.
+**Ícone e nome:** "Antares" com a estrela de quatro pontas. Para o iOS pegar o ícone novo, copie o código de restauração, apague o app da Tela de Início, adicione de novo e restaure.
+
+**Zoom:** o app bloqueia pinça e duplo toque (viewport + `touch-action: manipulation` + bloqueio dos gestos do Safari), sem atrapalhar toques rápidos nos botões + e −.
 
 ## 10. Modelo de dados
 
@@ -252,7 +262,7 @@ Cada aba da planilha tem cabeçalho na linha 1. Todas as tabelas sincronizadas t
 | `suggestions` | id, author, created_at, payload_json, status, target_date | payload com 1+ dias · status: pending, accepted, partial, rejected · target_date: datas aceitas |
 | `overrides` | id, date, suggestion_id, session_name, payload_json | treino de amigo aceito para uma data (substitui o plano do dia) |
 | `health_imports` | id, date, resting_hr, avg_hr, active_kcal, steps, sleep_h, workout_avg_hr, workout_min, source | `id` = data; enviado pelo Atalho |
-| `profile` | id, name, birth_date, sex, height_cm, goal, experience, notes | uma linha (`id` = `me`); a foto não vai para a planilha |
+| `profile` | id, name, birth_date, sex, height_cm, goal, experience, notes, synced_at, **photo** | uma linha (`id` = `me`); `photo` = foto 192 px em JPEG (data URL), para voltar após reinstalar |
 | `body_logs` | id, date, weight_kg, body_fat_pct, waist_cm, notes | `id` = data |
 | `ai_reports` | id, created_at, model, text | análises geradas pela IA |
 | `📊 Resumo`, `📋 Séries` | — | abas legíveis, recriadas pelo script a cada sincronização |

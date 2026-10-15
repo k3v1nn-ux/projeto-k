@@ -8,7 +8,7 @@ export const TABLES = {
   suggestions: ['id', 'author', 'created_at', 'payload_json', 'status', 'target_date', 'updated_at', 'deleted'],
   health_imports: ['id', 'date', 'resting_hr', 'avg_hr', 'active_kcal', 'steps', 'sleep_h', 'workout_avg_hr', 'workout_min', 'source', 'updated_at', 'deleted'],
   overrides: ['id', 'date', 'suggestion_id', 'session_name', 'payload_json', 'updated_at', 'deleted'],
-  profile: ['id', 'name', 'birth_date', 'sex', 'height_cm', 'goal', 'experience', 'notes', 'updated_at', 'deleted'],
+  profile: ['id', 'name', 'birth_date', 'sex', 'height_cm', 'goal', 'experience', 'notes', 'updated_at', 'deleted', 'photo'],
   body_logs: ['id', 'date', 'weight_kg', 'body_fat_pct', 'waist_cm', 'notes', 'updated_at', 'deleted'],
   ai_reports: ['id', 'created_at', 'model', 'text', 'updated_at', 'deleted'],
 };

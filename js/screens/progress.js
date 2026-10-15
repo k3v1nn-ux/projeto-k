@@ -1,18 +1,18 @@
 // "Progresso": analytics split into sub-menus — Visão geral, Treinos, Força, Corpo, Relógio,
 // IA and Troféus — plus rule-based recommendations.
 import * as db from '../db.js';
-import { exercise, rotation, weeklyTarget } from '../program.js';
+import { exercise, rotation, weeklyTarget, weekProjection, slotDef } from '../program.js';
 import { exerciseHistory, e1rm } from '../progression.js';
 import {
   dayInfo, weekAdherence, weekStreaks, totals, weekVolume, weekCardioMinutes, recentPRs, strengthTable,
-  slotBalance, profile, bodyLogs, currentWeight, bmi, age,
+  slotBalance, profile, bodyLogs, currentWeight, bmi, age, liftSessions,
 } from '../stats.js';
 import { recommendations } from '../recommend.js';
 import { loadChart, chartColors } from '../charts.js';
 import { settings, updateSettings } from '../settings.js';
 import { analyze, renderMarkdown, AI_MODEL } from '../ai.js';
 import { sheet, toast } from '../ui.js';
-import { dateKey, addDays, weekStart, fmtDay, fmtKg, fmtInt, esc } from '../util.js';
+import { dateKey, addDays, weekStart, fmtDay, fmtKg, fmtInt, esc, daysBetween } from '../util.js';
 import { render as renderTrophies } from './trophies.js';
 import { afterDataChange } from '../achievements.js';
 
@@ -32,7 +32,24 @@ export function render(view, query) {
     <div class="chips scroll" role="tablist">${TABS.map(([k, l]) => `<a class="chip" role="tab" href="#/progresso?s=${k}" aria-pressed="${k === tab}" style="text-decoration:none">${l}</a>`).join('')}</div>
     <div id="tab" class="mt"></div>`;
   const el = view.querySelector('#tab');
-  ({ geral, treinos, forca, corpo, relogio, ia, trofeus })[tab](el, view);
+  const show = (k) => {
+    charts.forEach((c) => c.destroy());
+    charts = [];
+    el.onclick = el.onchange = el.onsubmit = null;
+    ({ geral, treinos, forca, corpo, relogio, ia, trofeus })[k](el, view);
+  };
+  show(tab);
+  // Switching sub-tabs re-renders only the content: no route change, no jump to the top.
+  view.querySelector('[role=tablist]').onclick = (e) => {
+    const a = e.target.closest('a[href^="#/progresso"]');
+    if (!a) return;
+    e.preventDefault();
+    const k = new URLSearchParams(a.getAttribute('href').split('?')[1]).get('s');
+    history.replaceState(null, '', `#/progresso?s=${k}`);
+    view.querySelectorAll('[role=tablist] a').forEach((x) => x.setAttribute('aria-pressed', String(x === a)));
+    a.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+    show(k);
+  };
 }
 
 const make = (Chart, id, config) => {
@@ -43,60 +60,139 @@ const bar = { borderRadius: { topLeft: 4, topRight: 4 }, borderSkipped: 'start',
 const lbl = (d) => fmtDay(d, { weekday: false });
 
 /* ---------- Visão geral ---------- */
+function weekStats(start, today, upTo = addDays(start, 6)) {
+  const end = upTo < addDays(start, 6) ? upTo : addDays(start, 6);
+  const sets = db.all('set_logs').filter((l) => l.session_id >= start && l.session_id <= end && l.session_id <= today);
+  const sessions = liftSessions().filter((x) => x.date >= start && x.date <= end);
+  return {
+    ...weekAdherence(start, today),
+    sets: sets.length,
+    volume: sets.reduce((a, l) => a + (l.load_kg || 0) * (l.reps || 0), 0),
+    minutes: sessions.reduce((a, x) => a + (x.duration_min || 0), 0),
+    cardio: db.all('cardio_logs').filter((c) => c.session_id >= start && c.session_id <= end).reduce((a, c) => a + (c.duration_min || 0), 0),
+  };
+}
+
+function monthStats(prefix) {
+  const sets = db.all('set_logs').filter((l) => l.session_id.startsWith(prefix));
+  return {
+    workouts: liftSessions().filter((x) => x.date.startsWith(prefix)).length,
+    volume: sets.reduce((a, l) => a + (l.load_kg || 0) * (l.reps || 0), 0),
+    cardio: db.all('cardio_logs').filter((c) => c.session_id.startsWith(prefix)).reduce((a, c) => a + (c.duration_min || 0), 0),
+  };
+}
+
+const delta = (now, before) => {
+  if (!before) return '';
+  const pct = Math.round(((now - before) / before) * 100);
+  if (!pct) return '<span class="tiny muted">= sem. passada</span>';
+  return `<span class="tiny ${pct > 0 ? 'up' : 'down'}">${pct > 0 ? '▲' : '▼'} ${Math.abs(pct)}%</span>`;
+};
+
 function geral(el) {
   const today = dateKey();
   const thisWeek = weekStart(today);
   const st = weekStreaks(today);
   const tot = totals();
-  const adh = weekAdherence(thisWeek, today);
+  const wk = weekStats(thisWeek, today);
+  // Last week up to the same weekday, so a week in progress is compared fairly.
+  const prevStart = addDays(thisWeek, -7);
+  const prev = weekStats(prevStart, today, addDays(prevStart, daysBetween(thisWeek, today)));
   const recos = recommendations(today);
+  const lifts = liftSessions();
+  const last = lifts.filter((x) => x.date <= today).pop();
+  const lastSets = last ? (db.index('set_logs', 'session_id').get(last.id) || []) : [];
+  const proj = weekProjection(today);
+  const nextEntry = Object.entries(proj).filter(([d, p]) => d >= today && (p.kind === 'today' || p.kind === 'planned') && !(d === today && db.get('sessions', d)?.status === 'done')).sort()[0];
+  const nextDef = nextEntry && nextEntry[1].slot !== 'friend' ? slotDef(nextEntry[1].slot) : null;
+  const month = today.slice(0, 7);
+  const prevMonth = dateKey(new Date(Number(month.slice(0, 4)), Number(month.slice(5, 7)) - 2, 1)).slice(0, 7);
+  const m = monthStats(month);
+  const pm = monthStats(prevMonth);
+  const top = strengthTable().filter((r) => r.sessions >= 3 && r.changePct > 0).sort((a, b) => b.changePct - a.changePct).slice(0, 3);
+  const logs = bodyLogs();
+  const w = currentWeight();
+  const w30 = [...logs].reverse().find((b) => b.date <= addDays(today, -28));
   const heatStart = addDays(thisWeek, -(HEAT_WEEKS - 1) * 7);
   let cells = '';
-  let lifts = 0;
-  let cardio = 0;
+  let nLift = 0;
+  let nCardio = 0;
   for (let i = 0; i < HEAT_WEEKS * 7; i++) {
     const d = addDays(heatStart, i);
     const info = dayInfo(d, today);
     const cls = { lift: 'l3', partial: 'l1', cardio: 'cardio', rest: 'rest', future: 'future' }[info.state] || '';
-    if (info.state === 'lift' || info.state === 'partial') lifts++;
-    if (info.state === 'cardio') cardio++;
+    if (info.state === 'lift' || info.state === 'partial') nLift++;
+    if (info.state === 'cardio') nCardio++;
     cells += `<span class="c ${cls}" title="${fmtDay(d)}: ${{ lift: 'treino', partial: 'treino parcial', cardio: 'só cardio', rest: 'descanso' }[info.state] || '—'}"></span>`;
   }
   el.innerHTML = `
-    <div class="tiles">
-      <div class="tile"><div class="v">${adh.lifts}<small>/${adh.target}</small></div><div class="l">treinos nesta semana</div></div>
-      <div class="tile"><div class="v">${st.current}<small> sem.</small></div><div class="l">sequência na meta · recorde ${st.record}</div></div>
+    <div class="card">
+      <div class="row between"><h3 style="margin:0">Esta semana <span class="tiny muted" style="font-weight:500">vs. mesmo ponto da anterior</span></h3><span class="pill ${wk.lifts >= wk.target ? 'success' : 'accent'}">${wk.lifts}/${wk.target} treinos</span></div>
+      <div class="meter"><i style="width:${Math.min(100, (wk.lifts / wk.target) * 100)}%"></i></div>
+      <div class="kv">
+        <div><b>${wk.sets}</b><span>séries</span><br>${delta(wk.sets, prev.sets)}</div>
+        <div><b>${fmtKg(wk.volume / 1000)}t</b><span>volume</span><br>${delta(wk.volume, prev.volume)}</div>
+        <div><b>${wk.minutes}</b><span>min treino</span><br>${delta(wk.minutes, prev.minutes)}</div>
+        <div><b>${wk.cardio}</b><span>min cardio</span><br>${delta(wk.cardio, prev.cardio)}</div>
+      </div>
+    </div>
+    <div class="grid2 mt">
+      <a class="tile" href="#/hoje" style="color:inherit"><div class="l">Próximo treino</div><div class="v sm">${esc(nextEntry ? (nextDef?.session_name || 'Treino do amigo') : 'Meta batida ✓')}</div><div class="l">${nextEntry ? (nextEntry[0] === today ? 'hoje' : fmtDay(nextEntry[0])) : 'descanse'}</div></a>
+      <a class="tile" href="${last ? `#/dia/${last.date}` : '#/hoje'}" style="color:inherit"><div class="l">Último treino</div><div class="v sm">${esc(last?.planned_session || '—')}</div><div class="l">${last ? `${fmtDay(last.date, { weekday: false })} · ${lastSets.length} séries${last.duration_min ? ` · ${last.duration_min} min` : ''}` : 'nenhum ainda'}</div></a>
+    </div>
+    <div class="tiles mt">
       <div class="tile"><div class="v">${tot.workouts}</div><div class="l">treinos no total</div></div>
-      <div class="tile"><div class="v">${tot.avgDuration ?? '–'}${tot.avgDuration ? '<small> min</small>' : ''}</div><div class="l">tempo médio na academia</div></div>
+      <div class="tile"><div class="v">${st.current}<small> sem.</small></div><div class="l">na meta seguidas · recorde ${st.record}</div></div>
+      <div class="tile"><div class="v">${tot.avgDuration ?? '–'}${tot.avgDuration ? '<small> min</small>' : ''}</div><div class="l">tempo médio</div></div>
+      <div class="tile"><div class="v">${db.all('set_logs').filter((l) => l.is_pr).length}</div><div class="l">recordes pessoais</div></div>
     </div>
     <div class="section"><div class="section-title"><span>Recomendações</span></div>
-      <div class="card">${recos.length ? recos.map((r) => `<div class="reco ${r.level}"><span class="ico">${r.icon}</span><div class="grow"><strong>${esc(r.title)}</strong><div class="small muted">${esc(r.text)}</div></div></div>`).join('') : '<p class="muted" style="margin:0">Registre alguns treinos para receber recomendações.</p>'}</div>
+      <div class="card">${recos.length ? recos.slice(0, 6).map((r) => `<div class="reco ${r.level}"><span class="ico">${r.icon}</span><div class="grow"><strong>${esc(r.title)}</strong><div class="small muted">${esc(r.text)}</div></div></div>`).join('') : '<p class="muted" style="margin:0">Registre alguns treinos para receber recomendações.</p>'}</div>
     </div>
+    <div class="section"><div class="section-title"><span>Volume por semana</span></div>
+      <div class="card"><div class="chart-box short"><canvas id="c-vol8" aria-label="Volume semanal em toneladas"></canvas></div><p class="tiny muted" style="margin:6px 0 0">Toneladas levantadas (séries × reps × carga) nas últimas ${TREND_WEEKS} semanas.</p></div></div>
+    <div class="card mt">
+      <h3>Treinos por semana</h3>
+      <div class="chart-box short"><canvas id="c-adh" aria-label="Treinos por semana"></canvas></div>
+      <p class="tiny muted" style="margin:6px 0 0">Tracejado: meta de ${weeklyTarget()}. Azul = meta batida; laranja = abaixo.</p>
+    </div>
+    <div class="section"><div class="section-title"><span>Este mês × mês passado</span></div>
+      <div class="card"><div class="kv" style="grid-template-columns:repeat(3,1fr);margin-top:0">
+        <div><b>${m.workouts}</b><span>treinos (antes ${pm.workouts})</span></div>
+        <div><b>${fmtKg(m.volume / 1000)}t</b><span>volume (antes ${fmtKg(pm.volume / 1000)}t)</span></div>
+        <div><b>${m.cardio}</b><span>min cardio (antes ${pm.cardio})</span></div>
+      </div></div></div>
+    ${top.length ? `<div class="section"><div class="section-title"><span>Maiores evoluções</span><a href="#/progresso?s=forca">ver força ›</a></div>
+      <div class="group"><ul class="list">${top.map((r) => `<li><a class="list-item" href="#/ex/${r.ex.id}" style="color:inherit"><span class="li-ico" style="background:var(--success)">↑</span><span class="grow"><strong>${esc(r.ex.name_pt)}</strong><br><span class="li-sub">1RM est. ${fmtKg(r.best)} kg · ${r.sessions} treinos</span></span><span class="trend up">+${r.changePct}%</span></a></li>`).join('')}</ul></div></div>` : ''}
+    <a class="card mt" href="#/progresso?s=corpo" style="display:flex;gap:12px;align-items:center;color:inherit">
+      <span class="li-ico" style="background:var(--series-1)">⚖︎</span>
+      <span class="grow"><strong>${w ? `${fmtKg(w)} kg` : 'Registre seu peso'}</strong><br><span class="li-sub">${w && w30 ? `${w - w30.weight_kg >= 0 ? '+' : ''}${fmtKg(w - w30.weight_kg)} kg em ~30 dias` : 'altura e peso em Corpo'}${bmi() ? ` · IMC ${fmtKg(bmi())}` : ''}</span></span><span class="li-chev">›</span>
+    </a>
     <div class="card mt">
       <h3>Frequência · ${HEAT_WEEKS} semanas</h3>
-      <p class="muted small">${lifts} treinos · ${cardio} dias só de cardio</p>
+      <p class="muted small">${nLift} treinos · ${nCardio} dias só de cardio</p>
       <div class="row gap" style="align-items:flex-start">
         <div class="tiny muted" style="display:grid;grid-template-rows:repeat(7,14px);gap:3px;line-height:14px">${['S', 'T', 'Q', 'Q', 'S', 'S', 'D'].map((l) => `<span>${l}</span>`).join('')}</div>
         <div class="heatmap" role="img" aria-label="Mapa de frequência">${cells}</div>
       </div>
-      <div class="legend"><span><i style="background:var(--heat-3)"></i>treino</span><span><i style="background:var(--heat-1)"></i>parcial</span><span><i style="background:var(--heat-cardio)"></i>só cardio</span><span><i style="border:1px dashed var(--surface-3)"></i>descanso</span></div>
-    </div>
-    <div class="card mt">
-      <h3>Treinos por semana</h3>
-      <div class="chart-box"><canvas id="c-adh" aria-label="Treinos por semana"></canvas></div>
-      <p class="tiny muted">Linha tracejada: meta de ${weeklyTarget()}. Azul = meta batida; laranja = abaixo.</p>
+      <div class="legend"><span><i style="background:var(--heat-3)"></i>treino</span><span><i style="background:var(--heat-1)"></i>parcial</span><span><i style="background:var(--heat-cardio)"></i>só cardio</span><span><i style="box-shadow:inset 0 0 0 1px var(--surface-3)"></i>descanso</span></div>
     </div>`;
   loadChart().then((Chart) => {
     const c = chartColors();
     const weeks = Array.from({ length: TREND_WEEKS }, (_, i) => addDays(thisWeek, (i - TREND_WEEKS + 1) * 7));
-    const w = weeks.map((s) => weekAdherence(s, today));
+    const ws = weeks.map((x) => weekStats(x, today));
+    make(Chart, 'c-vol8', {
+      type: 'line',
+      data: { labels: weeks.map(lbl), datasets: [{ label: 'Volume (t)', data: ws.map((x) => Math.round(x.volume / 100) / 10), borderColor: c.series[0], backgroundColor: c.series[0], borderWidth: 2, tension: 0.3, pointRadius: 3 }] },
+      options: c.options({ beginAtZero: true, plugins: { legend: { display: false } } }),
+    });
     make(Chart, 'c-adh', {
       type: 'bar',
       data: {
         labels: weeks.map(lbl),
         datasets: [
           { type: 'line', label: 'Meta', data: weeks.map(() => weeklyTarget()), borderColor: c.text, borderDash: [4, 4], borderWidth: 1.5, pointRadius: 0 },
-          { label: 'Treinos', data: w.map((x) => x.lifts), backgroundColor: w.map((x) => (x.lifts >= x.target ? c.series[0] : c.series[1])), ...bar },
+          { label: 'Treinos', data: ws.map((x) => x.lifts), backgroundColor: ws.map((x) => (x.lifts >= x.target ? c.series[0] : c.series[1])), ...bar },
         ],
       },
       options: c.options({ beginAtZero: true, y: { suggestedMax: weeklyTarget() + 1, ticks: { color: c.text, stepSize: 1 } }, plugins: { legend: { display: false } } }),
@@ -227,11 +323,12 @@ function corpo(el, view) {
     </div>
     ${!p.name || !p.height_cm ? '<a class="banner mt" href="#/perfil" style="text-decoration:none"><span>👤</span><span class="grow">Complete o perfil (nome, altura, nascimento, objetivo).</span><span class="btn small">Perfil</span></a>' : ''}
     <div class="card mt">
-      <h3>Registrar medidas</h3>
+      <h3>Medidas</h3><p class="muted small" style="margin-top:0">Altura e peso alimentam o IMC, a força relativa e a análise com IA.</p>
       <form data-form="body">
         <div class="grid2">
-          <label class="field"><span>Data</span><input type="date" name="date" value="${dateKey()}"></label>
+          <label class="field"><span>Altura (cm)</span><input type="number" inputmode="numeric" name="height" value="${p.height_cm || ''}"></label>
           <label class="field"><span>Peso (kg)</span><input type="number" step="0.1" inputmode="decimal" name="weight" value="${w ?? ''}" required></label>
+          <label class="field"><span>Data</span><input type="date" name="date" value="${dateKey()}"></label>
           <label class="field"><span>% gordura (opcional)</span><input type="number" step="0.1" inputmode="decimal" name="fat"></label>
           <label class="field"><span>Cintura cm (opcional)</span><input type="number" step="0.5" inputmode="decimal" name="waist"></label>
         </div>
@@ -248,6 +345,8 @@ function corpo(el, view) {
     const f = e.target;
     const weight = Number(String(f.weight.value).replace(',', '.'));
     if (!(weight > 20 && weight < 300)) { toast('Peso inválido'); return; }
+    const height = Number(f.height.value);
+    if (height > 100 && height < 250 && height !== Number(p.height_cm)) await db.save('profile', { ...profile(), id: 'me', height_cm: height });
     await db.save('body_logs', { id: f.date.value || dateKey(), date: f.date.value || dateKey(), weight_kg: weight, body_fat_pct: Number(f.fat.value) || null, waist_cm: Number(f.waist.value) || null, notes: '' });
     toast('Medidas salvas');
     afterDataChange();

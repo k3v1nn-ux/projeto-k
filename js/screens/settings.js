@@ -1,12 +1,12 @@
 // "Ajustes": cloud sync (+ diagnostics), theme, training options, unavailable equipment,
 // Spotify, Apple Health shortcut and data export.
-import { settings, updateSettings } from '../settings.js';
+import { settings, updateSettings, restorePayload, applyRestore } from '../settings.js';
 import { api, sync, syncState } from '../sync.js';
 import { allExercises, seedTables } from '../program.js';
 import { TABLES } from '../schema.js';
 import { exportCsv, exportAllCsvZip, exportJson, importJson } from '../export.js';
 import { toast, confirmSheet } from '../ui.js';
-import { esc } from '../util.js';
+import { esc, packJson, unpackJson } from '../util.js';
 import { isUnlocked } from '../achievements.js';
 import { spotifySettingsHtml, bindSpotifySettings } from '../spotify.js';
 
@@ -32,6 +32,17 @@ export function render(view) {
         <div class="row gap wrap"><button class="btn small" data-action="diagnose">Diagnóstico da planilha</button><button class="btn small ghost" data-action="seed">Enviar programa para a planilha</button></div>
         <div data-diag></div>
         <p class="muted tiny" style="margin-top:8px">A URL e o token ficam só neste aparelho. Repita a configuração no Mac.</p>
+      </div>
+    </div>
+
+    <div class="section"><div class="section-title">Reinstalar sem perder nada</div>
+      <div class="card">
+        <p class="small" style="margin-top:0">Ao apagar o app da Tela de Início, o iPhone apaga junto os dados dele. Guarde este código (ex.: no app Notas). Numa instalação nova, cole aqui: a planilha, o Spotify, a chave da IA e os ajustes voltam, e os treinos são baixados da planilha.</p>
+        <div class="row gap"><button class="btn grow" data-action="copy-restore">Copiar meu código</button></div>
+        <textarea data-restore-out readonly hidden class="mt"></textarea>
+        <label class="field mt" style="margin-bottom:8px"><span>Colar código de restauração</span><textarea data-restore-in placeholder="ANT1.…"></textarea></label>
+        <button class="btn primary block" data-action="restore">Restaurar</button>
+        <p class="muted tiny" style="margin:8px 0 0">O código contém seu token e chaves: não compartilhe. Para receber versões novas do app não é preciso reinstalar; ele se atualiza sozinho.</p>
       </div>
     </div>
 
@@ -84,7 +95,7 @@ export function render(view) {
       </div>
     </div>
 
-    <p class="muted tiny center" style="margin-top:24px">Projeto K · dados locais em IndexedDB + planilha · imagens: free-exercise-db (domínio público)</p>`;
+    <p class="muted tiny center" style="margin-top:24px">Antares V3 · dados locais em IndexedDB + planilha · imagens: free-exercise-db (domínio público)</p>`;
 
   bind(view);
   bindSpotifySettings(view, () => render(view));
@@ -191,6 +202,28 @@ function bind(view) {
             ${(r.logs || []).some((l) => l.action === 'health') ? '' : '<p class="tiny muted" style="margin-top:6px">Nenhuma chamada do Atalho (health) chegou. Confira a URL e o token dentro do Atalho.</p>'}</div>`;
         } catch (err) {
           out.innerHTML = `<div class="banner warn mt"><span class="grow small">${/desconhecida/.test(err.message) ? 'O Apps Script publicado é a versão antiga. Cole o Code.gs novo e publique uma nova versão (veja o README).' : `Falhou: ${esc(err.message)}`}</span></div>`;
+        }
+        break;
+      }
+      case 'copy-restore': {
+        const code = `ANT1.${await packJson(restorePayload())}`;
+        const out = view.querySelector('[data-restore-out]');
+        out.hidden = false;
+        out.value = code;
+        out.select();
+        try { await navigator.clipboard.writeText(code); toast('Código copiado. Cole no app Notas.'); } catch { toast('Copie o código selecionado'); }
+        break;
+      }
+      case 'restore': {
+        const raw = view.querySelector('[data-restore-in]').value.trim();
+        try {
+          if (!raw.startsWith('ANT1.')) throw new Error('formato');
+          applyRestore(await unpackJson(raw.slice(5)));
+          toast('Restaurado. Baixando seus dados da planilha…', { ms: 4000 });
+          await sync();
+          render(view);
+        } catch {
+          toast('Código inválido. Copie de novo do aparelho antigo.');
         }
         break;
       }

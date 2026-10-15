@@ -204,6 +204,18 @@ export function daySwaps(date) {
   return { ...local, ...(safeJson(session?.swaps_json) || {}) };
 }
 
+/** Per-day set counts changed with "+ Série" / "− Série" (keyed by the planned exercise). */
+export function daySetCounts(date) {
+  try { return JSON.parse(localStorage.getItem(`pk.sets.${date}`) || '{}'); } catch { return {}; }
+}
+
+export function setDaySetCount(date, plannedId, count) {
+  const all = daySetCounts(date);
+  if (count === null) delete all[plannedId]; else all[plannedId] = count;
+  try { localStorage.setItem(`pk.sets.${date}`, JSON.stringify(all)); } catch { /* ignore */ }
+  db.invalidate();
+}
+
 export function setLocalSwaps(date, swaps) {
   try { localStorage.setItem(`pk.swaps.${date}`, JSON.stringify(swaps)); } catch { /* ignore */ }
   db.invalidate();
@@ -243,12 +255,14 @@ export function dayPlan(date, forcedSlot) {
   const reentry = isReentry(date);
   const rules = program.rules.reentry_week;
   const swaps = daySwaps(date);
+  const counts = daySetCounts(date);
   plan.reentry = reentry;
   plan.level = level;
   plan.exercises = plan.exercises.filter((it) => exercise(it.exercise_id)).map((it) => {
     const resolved = swaps[it.exercise_id] || resolveExercise(it.exercise_id);
-    const sets = reentry ? Math.max(rules.min_sets, it.sets + rules.set_delta) : it.sets;
-    return { ...it, planned_id: it.exercise_id, exercise_id: resolved, sets: Number(sets) || 3 };
+    const base = reentry ? Math.max(rules.min_sets, it.sets + rules.set_delta) : it.sets;
+    const sets = counts[it.exercise_id] ?? base;
+    return { ...it, planned_id: it.exercise_id, exercise_id: resolved, sets: Number(sets) || 1, base_sets: Number(base) || 3 };
   });
   return plan;
 }

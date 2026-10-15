@@ -10,8 +10,18 @@ const PHOTO_KEY = 'pk.photo';
 const GOALS = ['Recomposição corporal', 'Ganhar massa muscular', 'Ganhar força', 'Perder gordura', 'Saúde e condicionamento'];
 const EXPERIENCE = ['Iniciante (< 6 meses)', 'Iniciante com pausas', 'Intermediário (6 meses a 2 anos)', 'Avançado (> 2 anos)'];
 
+/** Profile photo: synced in the profile row (so a reinstall gets it back), cached locally. */
 export function photo() {
+  const synced = profile().photo;
+  if (synced) return synced;
   try { return localStorage.getItem(PHOTO_KEY) || ''; } catch { return ''; }
+}
+
+async function savePhoto(dataUrl) {
+  try {
+    if (dataUrl) localStorage.setItem(PHOTO_KEY, dataUrl); else localStorage.removeItem(PHOTO_KEY);
+  } catch { /* ignore */ }
+  await db.save('profile', { ...profile(), id: 'me', photo: dataUrl || '' });
 }
 
 export function avatarHtml(cls = '') {
@@ -25,14 +35,14 @@ function resizeImage(file) {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => {
-      const size = 256;
+      const size = 192; // ~15 KB, fits a spreadsheet cell
       const c = document.createElement('canvas');
       c.width = size;
       c.height = size;
       const s = Math.min(img.width, img.height);
       c.getContext('2d').drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, 0, 0, size, size);
       URL.revokeObjectURL(img.src);
-      resolve(c.toDataURL('image/jpeg', 0.82));
+      resolve(c.toDataURL('image/jpeg', 0.8));
     };
     img.onerror = reject;
     img.src = URL.createObjectURL(file);
@@ -65,13 +75,13 @@ export function render(view) {
       <label class="field"><span>Observações (lesões, preferências, rotina)</span><textarea name="notes" placeholder="ex.: não faço agachamento por preferência">${esc(p.notes || '')}</textarea></label>
       <button class="btn primary block" type="submit">Salvar perfil</button>
     </form>
-    <p class="muted tiny center mt">A foto fica só neste aparelho. Os demais dados vão para a aba <code>profile</code> da planilha; o peso vai para <code>body_logs</code> (histórico em Progresso → Corpo).</p>`;
+    <p class="muted tiny center mt">Perfil e foto vão para a aba <code>profile</code> da planilha; o peso vai para <code>body_logs</code> (histórico em Progresso → Corpo).</p>`;
 
   view.onsubmit = async (e) => {
     e.preventDefault();
     const f = e.target;
     await db.save('profile', {
-      id: 'me', name: f.name.value.trim(), birth_date: f.birth_date.value, sex: f.sex.value, height_cm: Number(f.height_cm.value) || null,
+      ...profile(), id: 'me', name: f.name.value.trim(), birth_date: f.birth_date.value, sex: f.sex.value, height_cm: Number(f.height_cm.value) || null,
       goal: f.goal.value, experience: f.experience.value, notes: f.notes.value.trim(),
     });
     const weight = Number(String(f.weight.value).replace(',', '.'));
@@ -86,7 +96,7 @@ export function render(view) {
   view.onchange = async (e) => {
     if (!e.target.matches('[data-photo]') || !e.target.files[0]) return;
     try {
-      localStorage.setItem(PHOTO_KEY, await resizeImage(e.target.files[0]));
+      await savePhoto(await resizeImage(e.target.files[0]));
       toast('Foto atualizada');
       document.dispatchEvent(new CustomEvent('pk:profile'));
       render(view);
@@ -96,7 +106,7 @@ export function render(view) {
   };
   view.onclick = (e) => {
     if (e.target.closest('[data-rmphoto]')) {
-      try { localStorage.removeItem(PHOTO_KEY); } catch { /* ignore */ }
+      savePhoto('');
       document.dispatchEvent(new CustomEvent('pk:profile'));
       render(view);
     }

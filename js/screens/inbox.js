@@ -41,7 +41,7 @@ export function render(view) {
       out.hidden = false;
       out.value = link;
       out.select();
-      if (navigator.share) navigator.share({ title: 'Monte um treino pra mim', text: 'Monte um treino pra mim no Projeto K:', url: link }).catch(() => {});
+      if (navigator.share) navigator.share({ title: 'Monte um treino pra mim', text: 'Monte um treino pra mim no Antares:', url: link }).catch(() => {});
       else navigator.clipboard?.writeText(link).then(() => toast('Link copiado'), () => {});
       return;
     }
