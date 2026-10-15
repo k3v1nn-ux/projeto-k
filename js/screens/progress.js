@@ -130,7 +130,7 @@ function geral(el) {
       <div class="meter"><i style="width:${Math.min(100, (wk.lifts / wk.target) * 100)}%"></i></div>
       <div class="kv">
         <div><b>${wk.sets}</b><span>séries</span><br>${delta(wk.sets, prev.sets)}</div>
-        <div><b>${fmtVolume(wk.volume)}</b><span>volume</span><br>${delta(wk.volume, prev.volume)}</div>
+        <div><b>${fmtInt(wk.volume)}</b><span>kg levantados</span><br>${delta(wk.volume, prev.volume)}</div>
         <div><b>${wk.minutes}</b><span>min treino</span><br>${delta(wk.minutes, prev.minutes)}</div>
         <div><b>${wk.cardio}</b><span>min cardio</span><br>${delta(wk.cardio, prev.cardio)}</div>
       </div>
@@ -158,7 +158,7 @@ function geral(el) {
     <div class="section"><div class="section-title"><span>Este mês × mês passado</span></div>
       <div class="card"><div class="kv" style="grid-template-columns:repeat(3,1fr);margin-top:0">
         <div><b>${m.workouts}</b><span>treinos (antes ${pm.workouts})</span></div>
-        <div><b>${fmtVolume(m.volume)}</b><span>volume (antes ${fmtVolume(pm.volume)})</span></div>
+        <div><b>${fmtInt(m.volume)}</b><span>kg levantados (antes ${fmtVolume(pm.volume)})</span></div>
         <div><b>${m.cardio}</b><span>min cardio (antes ${pm.cardio})</span></div>
       </div></div></div>
     ${top.length ? `<div class="section"><div class="section-title"><span>Maiores evoluções</span><a href="#/progresso?s=forca">ver força ›</a></div>

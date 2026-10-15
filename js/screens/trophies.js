@@ -24,7 +24,7 @@ export function render(view, { embedded = false } = {}) {
             <div class="small muted">${esc(a.desc)}</div>
             ${a.unlocked
               ? `<div class="tiny muted" style="margin-top:4px">Desbloqueado em ${fmtDay(dateKey(new Date(a.unlocked_at)), { weekday: false })}</div>`
-              : `<div class="bar"><i style="width:${Math.round((a.value / a.target) * 100)}%"></i></div><div class="tiny muted" style="margin-top:3px">${a.value}${a.unit || ''}/${a.target}${a.unit || ''}</div>`}
+              : `<div class="bar"><i style="width:${Math.min(100, Math.round((a.value / a.target) * 100))}%"></i></div><div class="tiny muted" style="margin-top:3px">${a.value}${a.unit || ''}/${a.target}${a.unit || ''}</div>`}
           </div>
         </div>`).join('')}
     </div>`;

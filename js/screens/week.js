@@ -5,7 +5,7 @@ import { dayPlan, exercise, weekProjection, slotDef, weeklyTarget, estimateMinut
 import { markRest, unmarkRest, cardioFor, setsFor, ratingEmoji } from '../workout.js';
 import { settings, updateSettings, gymCloseFor } from '../settings.js';
 import { sheet, toast } from '../ui.js';
-import { setsLabel, dateKey, addDays, weekStart, parseKey, fmtShortWeekday, fmtDay, esc, fmtKg, fmtVolume } from '../util.js';
+import { setsLabel, dateKey, addDays, weekStart, parseKey, fmtShortWeekday, fmtDay, esc, fmtKg, fmtVolume, fmtInt } from '../util.js';
 
 let offset = 0;
 const WD = ['seg', 'ter', 'qua', 'qui', 'sex', 'sáb', 'dom'];
@@ -85,7 +85,7 @@ export function render(view) {
       <div class="meter"><i style="width:${Math.min(100, (done / weeklyTarget()) * 100)}%"></i></div>
       <div class="kv">
         <div><b>${sum('sets')}</b><span>séries</span></div>
-        <div><b>${fmtVolume(sum('volume'))}</b><span>volume</span></div>
+        <div><b>${fmtInt(sum('volume'))}</b><span>kg levantados</span></div>
         <div><b>${minutes}</b><span>min treino</span></div>
         <div><b>${sum('cardio')}</b><span>min cardio</span></div>
       </div>
