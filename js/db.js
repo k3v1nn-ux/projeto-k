@@ -4,7 +4,7 @@ import { TABLES, coerce, remoteWins } from './schema.js';
 import { nowIso } from './util.js';
 
 const DB_NAME = 'projeto-k';
-const DB_VERSION = 1;
+const DB_VERSION = 2; // bump whenever a table is added to TABLES (creates the missing stores)
 
 let dbPromise;
 const mem = {}; // table -> Map(id -> row)
@@ -24,7 +24,11 @@ function openDb() {
       if (!db.objectStoreNames.contains('outbox')) db.createObjectStore('outbox', { keyPath: 'seq', autoIncrement: true });
       if (!db.objectStoreNames.contains('kv')) db.createObjectStore('kv');
     };
-    req.onsuccess = () => resolve(req.result);
+    req.onsuccess = () => {
+      const db = req.result;
+      db.onversionchange = () => db.close(); // let a newer version of the app upgrade the schema
+      resolve(db);
+    };
     req.onerror = () => reject(req.error);
   });
   return dbPromise;

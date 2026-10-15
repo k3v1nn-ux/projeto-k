@@ -1,6 +1,6 @@
 // Service worker: precaches the app shell, the program and all exercise images so the
 // app opens and works with no signal. Bump VERSION on every deploy.
-const VERSION = 'pk-v7';
+const VERSION = 'pk-v8';
 
 const SHELL = [
   './',
@@ -75,16 +75,13 @@ self.addEventListener('fetch', (event) => {
   if (url.origin !== self.location.origin) return; // Apps Script, Spotify: always network
 
   if (req.mode === 'navigate') {
-    // Any navigation (including ?code=... from the Spotify login) gets the cached shell.
+    // The page comes from the same cache version as the scripts (never a newer HTML with older JS).
+    // A new deploy installs a new service worker, which takes over and reloads the page once.
     event.respondWith((async () => {
       const cache = await caches.open(VERSION);
-      try {
-        const fresh = await fetch(req);
-        if (fresh.ok) cache.put('index.html', fresh.clone());
-        return fresh;
-      } catch {
-        return (await cache.match('index.html')) || (await cache.match('./'));
-      }
+      const hit = (await cache.match('index.html')) || (await cache.match('./'));
+      if (hit) return hit;
+      return fetch(req);
     })());
     return;
   }
