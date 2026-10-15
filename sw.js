@@ -1,6 +1,6 @@
 // Service worker: precaches the app shell, the program and all exercise images so the
 // app opens and works with no signal. Bump VERSION on every deploy.
-const VERSION = 'pk-v18';
+const VERSION = 'pk-v19';
 
 const SHELL = [
   './',

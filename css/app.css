@@ -229,6 +229,7 @@ code { font-size: .85em; background: var(--fill); padding: 1px 5px; border-radiu
 /* ---------- layout ---------- */
 main { padding: 4px 16px 28px; max-width: 720px; margin: 0 auto; outline: none; min-width: 0; overflow-wrap: anywhere; overflow-x: clip; }
 /* Nothing may make the page wider than the phone (iOS lets overflowing content widen it). */
+#view > *, .section, .card { min-width: 0; max-width: 100%; }
 body { max-width: 100%; position: relative; }
 .topbar, .backbar, .tabbar { max-width: 100%; overflow-x: clip; }
 .topbar-right { flex-shrink: 0; }
@@ -323,7 +324,7 @@ textarea { min-height: 72px; resize: vertical; }
 .step.done .step-n { background: var(--success); color: #fff; }
 
 /* ---------- exercises ---------- */
-.ex-list { display: grid; gap: 10px; }
+.ex-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
 .ex-card { padding: 0; overflow: hidden; }
 .ex-row { display: flex; gap: 12px; align-items: center; padding: 12px; width: 100%; background: none; border: 0; color: inherit; font: inherit; text-align: left; cursor: pointer; }
 .ex-thumb { width: 54px; height: 54px; border-radius: 13px; object-fit: cover; background: #fff; flex: none; }
@@ -341,8 +342,8 @@ textarea { min-height: 72px; resize: vertical; }
 .ex-actions .btn { flex: 1; padding: 0 6px; }
 .chev { width: 18px; height: 18px; color: var(--faint); transition: transform .2s; flex: none; }
 .ex-card.open .chev { transform: rotate(180deg); }
-.sets { margin-top: 10px; display: grid; gap: 6px; }
-.set-labels, .set-row { display: grid; grid-template-columns: 26px 1fr 1fr 54px; gap: 6px; align-items: center; }
+.sets { margin-top: 10px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; }
+.set-labels, .set-row { display: grid; grid-template-columns: 26px minmax(0, 1fr) minmax(0, 1fr) 54px; gap: 6px; align-items: center; }
 .set-labels { font-size: .68rem; color: var(--muted); text-align: center; text-transform: uppercase; letter-spacing: .05em; font-weight: 600; }
 .add-set { width: 100%; min-height: 44px; border-radius: 14px; border: 1.5px dashed var(--surface-3); background: transparent; color: var(--muted); font: inherit; font-weight: 600; font-size: .9rem; cursor: pointer; }
 .add-set:active { background: var(--fill); }
@@ -355,7 +356,7 @@ textarea { min-height: 72px; resize: vertical; }
 .set-row.next { outline: 2px solid var(--accent); outline-offset: -2px; }
 .set-row.logged { background: color-mix(in srgb, var(--success) 16%, var(--surface-solid)); }
 .set-n { text-align: center; font-weight: 700; color: var(--muted); font-size: .85rem; font-family: var(--rounded); }
-.stepper { display: grid; grid-template-columns: 34px 1fr 34px; align-items: center; background: var(--surface); border-radius: 11px; overflow: hidden; box-shadow: inset 0 0 0 1px var(--border); }
+.stepper { display: grid; grid-template-columns: 34px minmax(0, 1fr) 34px; align-items: center; background: var(--surface); border-radius: 11px; overflow: hidden; box-shadow: inset 0 0 0 1px var(--border); }
 .set-row.logged .stepper { background: transparent; box-shadow: none; }
 .stepper button { height: 42px; border: 0; background: transparent; color: var(--accent-strong); font-size: 1.2rem; font-weight: 600; cursor: pointer; padding: 0; }
 .stepper input { border: 0; background: transparent; min-height: 42px; padding: 0; text-align: center; font-weight: 750; font-variant-numeric: tabular-nums; width: 100%; min-width: 0; -moz-appearance: textfield; border-radius: 0; font-family: var(--rounded); font-size: 17px; }
@@ -427,7 +428,7 @@ body.resting .sticky-actions { bottom: calc(var(--tabbar-h) + var(--safe-b) + 92
 
 /* ---------- week page ---------- */
 .week-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-.day-row { display: grid; grid-template-columns: 46px 1fr auto; gap: 12px; align-items: center; padding: 11px 16px; }
+.day-row { display: grid; grid-template-columns: 46px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 11px 16px; }
 .day-row + .day-row { border-top: .5px solid var(--border); }
 .day-row.today { background: color-mix(in srgb, var(--accent-soft) 70%, transparent); }
 .day-date { text-align: center; line-height: 1.1; }
@@ -475,7 +476,7 @@ table.hist tr:last-child td { border-bottom: 0; }
 .reco.good .ico { background: var(--success-soft); }
 .reco.warn .ico { background: var(--warn-soft); }
 .reco.info .ico { background: var(--info-soft); }
-.bar-row { display: grid; grid-template-columns: 96px 1fr 44px; gap: 8px; align-items: center; font-size: .84rem; padding: 4px 0; }
+.bar-row { display: grid; grid-template-columns: 96px minmax(0, 1fr) 44px; gap: 8px; align-items: center; font-size: .84rem; padding: 4px 0; }
 .bar-track { height: 10px; border-radius: 5px; background: var(--fill); position: relative; overflow: hidden; }
 .bar-track i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 5px; background: var(--series-1); }
 .bar-track .mark { position: absolute; top: -2px; bottom: -2px; width: 2px; background: var(--text); opacity: .35; }
@@ -495,7 +496,7 @@ table.hist tr:last-child td { border-bottom: 0; }
 .md ul { padding-left: 1.2em; }
 
 /* ---------- trophies ---------- */
-.trophies { display: grid; grid-template-columns: 1fr; gap: 10px; }
+.trophies { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
 .trophy { display: flex; gap: 12px; align-items: center; padding: 12px 14px; }
 .trophy .ico { width: 48px; height: 48px; flex: none; }
 .trophy.locked { opacity: .5; filter: grayscale(1); }
@@ -521,6 +522,9 @@ table.hist tr:last-child td { border-bottom: 0; }
 .spotify-mini img { width: 48px; height: 48px; border-radius: 10px; background: var(--fill); object-fit: cover; flex: none; }
 .spotify-mini .t { min-width: 0; flex: 1; }
 .spotify-mini .t div { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.spotify-mini > .row { flex: none; gap: 4px; }
+.spotify-mini .icon-btn { width: 38px; height: 38px; }
+@media (max-width: 400px) { .spotify-mini [data-sp-cmd="playlists"] { display: none; } }
 iframe.embed { width: 100%; height: 352px; border: 0; border-radius: 14px; }
 iframe.embed.compact { height: 152px; }
 
@@ -550,7 +554,8 @@ iframe.embed.compact { height: 152px; }
 }
 
 /* ---------- home (Início) ---------- */
-.widgets { display: grid; gap: 12px; }
+.widgets { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.widgets > * { min-width: 0; }
 .widget-title { font-size: .8rem; font-weight: 650; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; }
 .widget .li-chev svg { width: 16px; height: 16px; }
 .widget-hero h1 { font-size: 1.8rem; }
