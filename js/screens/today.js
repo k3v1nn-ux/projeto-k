@@ -355,7 +355,9 @@ function showSummary(date, session) {
   s.el.querySelector('[data-health]').onclick = () => openHealthShortcut(date);
 }
 
+/** Runs the iOS Shortcut with "date|minutes" so it can average the heart rate of the workout. */
 export function openHealthShortcut(date) {
   const name = settings().shortcutName || 'Projeto K Saúde';
-  location.href = `shortcuts://run-shortcut?name=${encodeURIComponent(name)}&input=text&text=${encodeURIComponent(date)}`;
+  const minutes = db.get('sessions', date)?.duration_min || '';
+  location.href = `shortcuts://run-shortcut?name=${encodeURIComponent(name)}&input=text&text=${encodeURIComponent(`${date}|${minutes}`)}`;
 }

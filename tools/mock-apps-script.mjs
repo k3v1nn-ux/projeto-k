@@ -42,7 +42,15 @@ function handle(body) {
       for (const t of ['sessions', 'set_logs', 'cardio_logs', 'achievements', 'suggestions', 'health_imports', 'overrides']) out[t] = tables[t].filter((r) => !body.since || r.synced_at > body.since);
       return { ok: true, server_time: now, tables: out };
     }
-    case 'health': { const d = body.data || body; const date = String(d.date || now).slice(0, 10); upsert('health_imports', [{ ...d, id: date, date, updated_at: now, deleted: false }], now); return { ok: true }; }
+    case 'health': {
+      const d = body.data || body;
+      const date = String(d.date || now).slice(0, 10);
+      const num = (v) => { const n = Number(String(v ?? '').replace(',', '.')); return v === '' || v == null || Number.isNaN(n) ? '' : Math.round(n * 10) / 10; };
+      const row = { id: date, date, source: d.source || 'Atalho iOS / Saúde', updated_at: now, deleted: false };
+      for (const k of ['resting_hr', 'avg_hr', 'active_kcal', 'steps', 'sleep_h', 'workout_avg_hr', 'workout_min']) row[k] = num(d[k]);
+      upsert('health_imports', [row], now);
+      return { ok: true, saved: row };
+    }
     case 'seed': Object.assign(tables, { exercises: body.tables.exercises || [], plans: body.tables.plans || [] }); return { ok: true };
     case 'set_suggest_token': suggestToken = String(body.suggest_token || ''); return { ok: true };
     case 'debug_dump': return { ok: true, tables };

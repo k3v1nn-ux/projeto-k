@@ -19,9 +19,15 @@ export function coerce(table, row) {
   const out = {};
   for (const col of TABLES[table]) {
     let v = row[col];
-    if (NUMERIC.has(col)) v = v === '' || v === null || v === undefined ? null : Number(v);
-    else if (BOOLEAN.has(col)) v = v === true || v === 'TRUE' || v === 'true' || v === 1;
-    else v = v === null || v === undefined ? '' : String(v);
+    if (NUMERIC.has(col)) {
+      // Shortcuts on a pt-BR iPhone may send "512,4".
+      const n = v === '' || v === null || v === undefined ? NaN : Number(String(v).replace(',', '.'));
+      v = Number.isFinite(n) ? n : null;
+    } else if (BOOLEAN.has(col)) {
+      v = v === true || v === 'TRUE' || v === 'true' || v === 1;
+    } else {
+      v = v === null || v === undefined ? '' : String(v);
+    }
     out[col] = v;
   }
   return out;
