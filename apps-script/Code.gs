@@ -14,11 +14,11 @@
  * (keeps the same /exec URL).
  */
 
-var VERSION = '2.1';
+var VERSION = '2.2';
 
 // New columns are only appended at the end so existing rows stay aligned.
 var SCHEMA = {
-  sessions: ['id', 'date', 'planned_session', 'level', 'start_time', 'end_time', 'duration_min', 'status', 'notes', 'swaps_json', 'updated_at', 'deleted', 'synced_at', 'slot'],
+  sessions: ['id', 'date', 'planned_session', 'level', 'start_time', 'end_time', 'duration_min', 'status', 'notes', 'swaps_json', 'updated_at', 'deleted', 'synced_at', 'slot', 'rating'],
   set_logs: ['id', 'session_id', 'exercise_id', 'set_number', 'load_kg', 'reps', 'rpe', 'timestamp', 'is_pr', 'updated_at', 'deleted', 'synced_at'],
   cardio_logs: ['id', 'session_id', 'type', 'duration_min', 'avg_hr', 'notes', 'updated_at', 'deleted', 'synced_at', 'phase'],
   achievements: ['id', 'unlocked_at', 'updated_at', 'deleted', 'synced_at'],
@@ -201,13 +201,14 @@ function buildSummary_() {
     var p = String(d).split('-');
     return ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado'][new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2])).getDay()];
   };
+  var RATING_PT = { 1: '😫 Péssimo', 2: '😕 Ruim', 3: '🙂 Ok', 4: '😀 Bom', 5: '🤩 Excelente' };
   var sessionRows = sessions.sort(function (a, b) { return String(b.date).localeCompare(String(a.date)); }).map(function (s) {
     var ls = bySession[s.id] || [];
     var vol = ls.reduce(function (a, l) { return a + (Number(l.load_kg) || 0) * (Number(l.reps) || 0); }, 0);
     var prs = ls.filter(function (l) { return l.is_pr === true || String(l.is_pr).toUpperCase() === 'TRUE'; }).length;
-    return [br(s.date), weekday(s.date), s.planned_session || '', STATUS_PT[s.status] || s.status, s.duration_min || '', ls.length, Math.round(vol), cardioBy[s.id] || '', prs || ''];
+    return [br(s.date), weekday(s.date), s.planned_session || '', STATUS_PT[s.status] || s.status, s.duration_min || '', ls.length, Math.round(vol), cardioBy[s.id] || '', prs || '', RATING_PT[s.rating] || ''];
   });
-  writeTable_(ss, '📊 Resumo', ['Data', 'Dia', 'Treino', 'Status', 'Duração (min)', 'Séries', 'Volume (kg)', 'Cardio (min)', 'Recordes'], sessionRows);
+  writeTable_(ss, '📊 Resumo', ['Data', 'Dia', 'Treino', 'Status', 'Duração (min)', 'Séries', 'Volume (kg)', 'Cardio (min)', 'Recordes', 'Avaliação'], sessionRows);
 
   var sessionName = {};
   sessions.forEach(function (s) { sessionName[s.id] = s.planned_session; });

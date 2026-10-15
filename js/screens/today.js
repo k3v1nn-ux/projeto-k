@@ -13,8 +13,9 @@ import { startRest, stopRest, unlockAudio, requestWakeLock, releaseWakeLock } fr
 import { toast, sheet, confirmSheet } from '../ui.js';
 import {
   ensureSession, finishSession, logSet, updateSet, deleteSet, setsFor, setSwap, logCardio, cardioFor,
-  reopenSession, loggedSetCount, plannedSetCount, markRest, unmarkRest, chooseWorkout,
+  reopenSession, loggedSetCount, plannedSetCount, markRest, unmarkRest, chooseWorkout, RATINGS, rateSession, ratingEmoji,
 } from '../workout.js';
+import { notify, clearNotifications } from '../notify.js';
 import { unpackJson, setsLabel, dateKey, fmtDay, fmtKg, esc, $, fmtInt, addDays, weekStart, parseKey, fmtShortWeekday, daysBetween, fmtDuration } from '../util.js';
 import { afterDataChange } from '../achievements.js';
 import { pendingSuggestions } from '../friend.js';
@@ -176,7 +177,7 @@ function liftView(date, session, future) {
   } else if (active) {
     actions = `<div class="hero-actions"><button class="btn lime big" data-action="finish">Finalizar treino</button></div>`;
   } else if (finished) {
-    actions = `<div class="hero-actions"><button class="btn glass big" data-action="health">Importar do Saúde</button><button class="btn glass big" data-action="reopen">Reabrir</button></div>`;
+    actions = `<div class="hero-actions"><button class="btn glass big" data-action="health">Importar do Saúde</button><button class="btn glass big" data-action="reopen">Reabrir</button></div>${session.rating ? '' : '<div class="hero-links"><button class="btn glass small" data-action="rate">Avaliar treino</button></div>'}`;
   } else {
     actions = `<div class="hero-actions"><button class="btn lime big" data-action="start">${cardioOnly ? 'Treinar mesmo assim' : 'Iniciar treino'}</button></div>`;
   }
@@ -203,8 +204,9 @@ function liftView(date, session, future) {
       <div class="meta">
         ${active && date === today ? '<div><b id="hero-clock">0:00</b>no treino</div>' : `<div><b>~${estimateMinutes(plan)} min</b>duração</div>`}
         <div><b>${plan.exercises.length}</b>exercícios</div>
-        <div><b>RIR ${rir}</b>intensidade</div>
+        <div><b>${rir}</b>reps na reserva</div>
         ${finished && session.duration_min ? `<div><b>${session.duration_min} min</b>feito</div>` : ''}
+        ${finished && session.rating ? `<div><b>${ratingEmoji(session.rating)}</b>avaliação</div>` : ''}
       </div>
       <div class="row gap wrap" style="margin-top:10px">
         ${plan.reentry ? '<span class="pill lime">Semana de reentrada</span>' : ''}
@@ -221,7 +223,7 @@ function liftView(date, session, future) {
   if (!future) html += '<div id="spotify-slot" class="mt"></div>';
 
   if (!future && !cardioOnly) {
-    html += `<div class="section"><div class="section-title"><span>1 · Cardio de aquecimento</span></div>${cardioCard(date, { phase: 'pre', minutes: getProgram().rules.cardio_pre?.minutes || 10, open: !pre.length && !logged })}</div>`;
+    html += `<div class="section"><div class="section-title"><span>1 · Cardio de aquecimento</span></div>${cardioCard(date, { phase: 'pre', minutes: settings().cardioMinutes || getProgram().rules.cardio_pre?.minutes || 10, open: !pre.length && !logged })}</div>`;
   }
 
   const firstOpen = plan.exercises.findIndex((it) => setsFor(date, it.exercise_id).length < it.sets);
@@ -239,6 +241,7 @@ function liftView(date, session, future) {
 function cardioCard(date, { title, phase, minutes, open: isOpen }) {
   const logs = cardioFor(date).filter((c) => (phase === 'pre' ? c.phase !== 'only' : true));
   const types = getProgram().cardio_types;
+  const pref = types.some((t) => t.id === settings().cardioType) ? settings().cardioType : types[0].id;
   const total = logs.reduce((a, c) => a + (c.duration_min || 0), 0);
   const list = logs.map((c) => `<li class="row between" style="padding:8px 0"><span>✓ ${esc(types.find((t) => t.id === c.type)?.name_pt || c.type)} · <strong>${c.duration_min} min</strong>${c.avg_hr ? ` · FC ${c.avg_hr}` : ''}</span><button class="link-btn" data-action="del-cardio" data-id="${c.id}">apagar</button></li>`).join('');
   const done = logs.length > 0;
@@ -248,7 +251,7 @@ function cardioCard(date, { title, phase, minutes, open: isOpen }) {
       ${phase === 'pre' && !done ? `<p class="muted small" style="margin-top:8px">${esc(getProgram().rules.cardio_pre?.note || '')}</p>` : ''}
       ${list ? `<ul class="list" style="margin-top:6px">${list}</ul>` : ''}
       <form data-form="cardio" data-phase="${phase}" style="margin-top:10px">
-        <div class="chips" role="group" aria-label="Tipo de cardio">${types.map((t, i) => `<button type="button" class="chip" data-cardio-type="${t.id}" aria-pressed="${i === 0}">${esc(t.name_pt.split(' (')[0])}</button>`).join('')}</div>
+        <div class="chips" role="group" aria-label="Tipo de cardio">${types.map((t) => `<button type="button" class="chip" data-cardio-type="${t.id}" aria-pressed="${t.id === pref}">${esc(t.name_pt.split(' (')[0])}</button>`).join('')}</div>
         <div class="grid2" style="margin-top:10px">
           <label class="field"><span>Minutos</span><input type="number" inputmode="numeric" name="duration" value="${minutes}" min="1"></label>
           <label class="field"><span>FC média (opcional)</span><input type="number" inputmode="numeric" name="hr" placeholder="bpm"></label>
@@ -362,6 +365,7 @@ function bind(view, date) {
         open.date = date;
         open.idx = p.exercises.findIndex((it) => setsFor(date, it.exercise_id).length < it.sets);
         toast('Treino iniciado. Bom treino!');
+        notify('Treino em andamento', `${p.session_name} · começou às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`, 'session');
         rerender();
         break;
       case 'log': {
@@ -448,13 +452,15 @@ function bind(view, date) {
         if (!ok) return;
         const s = await finishSession(date, p);
         stopRest();
+        clearNotifications();
         releaseWakeLock();
         rerender();
         afterDataChange();
-        if (s && s.status !== 'cardio') showSummary(date, s);
+        if (s && s.status !== 'cardio') showSummary(date, s, rerender);
         break;
       }
       case 'reopen': await reopenSession(date); rerender(); break;
+      case 'rate': showSummary(date, db.get('sessions', date), rerender); break;
       case 'health': openHealthShortcut(date); break;
       case 'del-cardio': await db.remove('cardio_logs', btn.dataset.id); rerender(); break;
       default:
@@ -629,10 +635,11 @@ function openSwap(date, item, rerender) {
   });
 }
 
-function showSummary(date, session) {
+function showSummary(date, session, onRated) {
   const logs = db.index('set_logs', 'session_id').get(date) || [];
   const volume = logs.reduce((a, l) => a + (l.load_kg || 0) * (l.reps || 0), 0);
   const prs = logs.filter((l) => l.is_pr).length;
+  let rated = false;
   const s = sheet(`
     <div class="center"><div style="font-size:2.6rem">${session.status === 'done' ? '💪' : '👍'}</div>
     <h2>${session.status === 'done' ? 'Treino concluído!' : 'Treino parcial registrado'}</h2>
@@ -643,10 +650,22 @@ function showSummary(date, session) {
       <div class="tile"><div class="v">${fmtInt(volume)}<small> kg</small></div><div class="l">volume</div></div>
       <div class="tile"><div class="v">${prs}</div><div class="l">recordes</div></div>
     </div>
+    <div class="rate">
+      <div class="section-title" style="margin:0 0 8px">Como foi o treino?</div>
+      <div class="rate-row" role="group" aria-label="Avaliação do treino">${RATINGS.map(([v, emo, label]) => `<button type="button" data-rate="${v}" aria-pressed="${Number(session.rating) === v}" aria-label="${label}"><span>${emo}</span><small>${label}</small></button>`).join('')}</div>
+    </div>
     <p class="muted small">Junte FC e calorias do relógio (Zepp → Saúde) a este treino rodando o Atalho.</p>
     <button class="btn primary block" data-health>Importar dados do Saúde</button>
-    <button class="btn ghost block mt" data-close>Fechar</button>`);
+    <button class="btn ghost block mt" data-close>Fechar</button>`, { onClose: () => { if (rated) onRated?.(); } });
   s.el.querySelector('[data-health]').onclick = () => openHealthShortcut(date);
+  s.el.querySelector('.rate-row').onclick = async (e) => {
+    const b = e.target.closest('[data-rate]');
+    if (!b) return;
+    s.el.querySelectorAll('[data-rate]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    await rateSession(date, Number(b.dataset.rate));
+    rated = true;
+    toast('Avaliação salva');
+  };
 }
 
 /** Runs the iOS Shortcut with "date|minutes" so it can average the heart rate of the workout. */

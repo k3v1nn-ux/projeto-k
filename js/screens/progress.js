@@ -12,10 +12,10 @@ import { loadChart, chartColors } from '../charts.js';
 import { settings, updateSettings } from '../settings.js';
 import { analyze, renderMarkdown, AI_MODEL } from '../ai.js';
 import { sheet, toast } from '../ui.js';
-import { dateKey, addDays, weekStart, fmtDay, fmtKg, fmtInt, esc, daysBetween } from '../util.js';
+import { dateKey, addDays, weekStart, fmtDay, fmtKg, fmtInt, esc, daysBetween, fmtVolume } from '../util.js';
 import { afterDataChange } from '../achievements.js';
 
-const TABS = [['geral', 'Visão geral'], ['treinos', 'Treinos'], ['forca', 'Força'], ['corpo', 'Corpo'], ['relogio', 'Relógio'], ['ia', 'IA']];
+const TABS = [['geral', 'Visão geral'], ['treinos', 'Treinos'], ['forca', 'Força'], ['corpo', 'Corpo'], ['relogio', 'Relógio']];
 const HEAT_WEEKS = 18;
 const TREND_WEEKS = 8;
 let charts = [];
@@ -35,7 +35,7 @@ export function render(view, query) {
     charts.forEach((c) => c.destroy());
     charts = [];
     el.onclick = el.onchange = el.onsubmit = null;
-    ({ geral, treinos, forca, corpo, relogio, ia })[k](el, view);
+    ({ geral, treinos, forca, corpo, relogio })[k](el, view);
   };
   show(tab);
   // Switching sub-tabs re-renders only the content: no route change, no jump to the top.
@@ -130,7 +130,7 @@ function geral(el) {
       <div class="meter"><i style="width:${Math.min(100, (wk.lifts / wk.target) * 100)}%"></i></div>
       <div class="kv">
         <div><b>${wk.sets}</b><span>séries</span><br>${delta(wk.sets, prev.sets)}</div>
-        <div><b>${fmtKg(wk.volume / 1000)}t</b><span>volume</span><br>${delta(wk.volume, prev.volume)}</div>
+        <div><b>${fmtVolume(wk.volume)}</b><span>volume</span><br>${delta(wk.volume, prev.volume)}</div>
         <div><b>${wk.minutes}</b><span>min treino</span><br>${delta(wk.minutes, prev.minutes)}</div>
         <div><b>${wk.cardio}</b><span>min cardio</span><br>${delta(wk.cardio, prev.cardio)}</div>
       </div>
@@ -158,7 +158,7 @@ function geral(el) {
     <div class="section"><div class="section-title"><span>Este mês × mês passado</span></div>
       <div class="card"><div class="kv" style="grid-template-columns:repeat(3,1fr);margin-top:0">
         <div><b>${m.workouts}</b><span>treinos (antes ${pm.workouts})</span></div>
-        <div><b>${fmtKg(m.volume / 1000)}t</b><span>volume (antes ${fmtKg(pm.volume / 1000)}t)</span></div>
+        <div><b>${fmtVolume(m.volume)}</b><span>volume (antes ${fmtVolume(pm.volume)})</span></div>
         <div><b>${m.cardio}</b><span>min cardio (antes ${pm.cardio})</span></div>
       </div></div></div>
     ${top.length ? `<div class="section"><div class="section-title"><span>Maiores evoluções</span><a href="#/progresso?s=forca">ver força ›</a></div>
@@ -419,7 +419,12 @@ function relogio(el) {
   }
 }
 
-/* ---------- IA ---------- */
+/* ---------- IA (opened from the Perfil tab) ---------- */
+export function renderAI(view) {
+  view.innerHTML = '<div class="page-head"><h1>Análise com IA</h1><p>Uma leitura dos seus treinos, corpo e relógio, com recomendações.</p></div><div id="tab"></div>';
+  ia(view.querySelector('#tab'));
+}
+
 function ia(el) {
   const s = settings();
   const reports = db.all('ai_reports').slice().sort((a, b) => b.created_at.localeCompare(a.created_at));

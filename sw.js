@@ -1,6 +1,6 @@
 // Service worker: precaches the app shell, the program and all exercise images so the
 // app opens and works with no signal. Bump VERSION on every deploy.
-const VERSION = 'pk-v15';
+const VERSION = 'pk-v16';
 
 const SHELL = [
   './',
@@ -56,6 +56,7 @@ const SHELL = [
   'js/ui.js',
   'js/util.js',
   'js/workout.js',
+  'js/notify.js',
   'js/screens/exercise.js',
   'js/screens/friend-pages.js',
   'js/screens/home.js',
@@ -66,6 +67,7 @@ const SHELL = [
   'js/screens/progress.js',
   'js/screens/settings.js',
   'js/screens/today.js',
+  'js/screens/training-settings.js',
   'js/screens/trophies.js',
   'js/screens/week.js',
 ];
@@ -122,5 +124,20 @@ self.addEventListener('fetch', (event) => {
     const res = await fetch(req);
     if (res.ok) cache.put(req, res.clone());
     return res;
+  })());
+});
+
+// Tapping a lock-screen notice opens the app on the workout.
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil((async () => {
+    const all = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    const client = all[0];
+    if (client) {
+      await client.focus();
+      client.navigate?.(new URL('./#/hoje', self.registration.scope).href).catch(() => {});
+    } else {
+      await self.clients.openWindow('./#/hoje');
+    }
   })());
 });

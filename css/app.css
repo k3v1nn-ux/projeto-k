@@ -110,42 +110,55 @@
   --pa-bg-light: #e5e9f4; --pa-surface-light: rgba(255, 255, 255, .64); --pa-solid-light: #f2f4fb;
   --pa-bg-dark: #04071a; --pa-surface-dark: rgba(140, 160, 255, .075); --pa-solid-dark: #0d1330;
 }
-:root[data-palette="cyan"] {
-  --pa-light: #0a7a9c; --pa-light-soft: rgba(10, 122, 156, .12); --pa-on-light: #ffffff;
-  --pa-dark: #4fd8f5; --pa-dark-soft: rgba(79, 216, 245, .15); --pa-on: #02161c;
-  --pa-hero-1: #0f5068; --pa-hero-2: #0a3244; --pa-hero-3: #051923; --pa-glow: rgba(79, 216, 245, .32);
-  --pa-bg-light: #e4f0f4; --pa-surface-light: rgba(255, 255, 255, .64); --pa-solid-light: #f1f8fa;
-  --pa-bg-dark: #031015; --pa-surface-dark: rgba(110, 210, 255, .07); --pa-solid-dark: #0b1d25;
-}
-:root[data-palette="volt"] {
-  --pa-light: #4c7a00; --pa-light-soft: rgba(110, 160, 0, .14); --pa-on-light: #ffffff;
-  --pa-dark: #c6f432; --pa-dark-soft: rgba(198, 244, 50, .15); --pa-on: #0b0d06;
-  --pa-hero-1: #2a3315; --pa-hero-2: #151a0c; --pa-hero-3: #0b0d07; --pa-glow: rgba(198, 244, 50, .28);
-}
-:root[data-palette="ocean"] {
-  --pa-light: #0a63c7; --pa-light-soft: rgba(10, 99, 199, .12); --pa-on-light: #ffffff;
-  --pa-dark: #4db2ff; --pa-dark-soft: rgba(77, 178, 255, .16); --pa-on: #04121f;
-  --pa-hero-1: #123a66; --pa-hero-2: #0b2342; --pa-hero-3: #06111f; --pa-glow: rgba(77, 178, 255, .32);
-}
 :root[data-palette="emerald"] {
   --pa-light: #0b7a52; --pa-light-soft: rgba(11, 122, 82, .12); --pa-on-light: #ffffff;
   --pa-dark: #3ee0a1; --pa-dark-soft: rgba(62, 224, 161, .15); --pa-on: #04140d;
   --pa-hero-1: #0f4a37; --pa-hero-2: #0a2e22; --pa-hero-3: #051710; --pa-glow: rgba(62, 224, 161, .28);
+  --pa-bg-light: #e5f1ec; --pa-surface-light: rgba(255, 255, 255, .64); --pa-solid-light: #f2f8f5;
+  --pa-bg-dark: #020d09; --pa-surface-dark: rgba(110, 255, 190, .06); --pa-solid-dark: #0b1d16;
 }
-:root[data-palette="sunset"] {
-  --pa-light: #c9461a; --pa-light-soft: rgba(201, 70, 26, .12); --pa-on-light: #ffffff;
-  --pa-dark: #ff8a50; --pa-dark-soft: rgba(255, 138, 80, .16); --pa-on: #1f0b03;
-  --pa-hero-1: #4a1f33; --pa-hero-2: #2b1224; --pa-hero-3: #140810; --pa-glow: rgba(255, 138, 80, .34);
+/* "Preto +": true-black background, grey cards, one accent (OLED-friendly) */
+:root[data-palette="black-lime"] {
+  --pa-light: #4d7c0f; --pa-light-soft: color-mix(in srgb, #4d7c0f 13%, transparent); --pa-on-light: #ffffff;
+  --pa-dark: #c8f53c; --pa-dark-soft: color-mix(in srgb, #c8f53c 15%, transparent); --pa-on: #0b0d06;
+  --pa-hero-1: color-mix(in srgb, #c8f53c 14%, #1c1c1e); --pa-hero-2: #121214; --pa-hero-3: #050505; --pa-glow: rgba(200, 245, 60, .26);
+  --pa-bg-light: #ececee; --pa-surface-light: rgba(255, 255, 255, .7); --pa-solid-light: #f7f7f8;
+  --pa-bg-dark: #000000; --pa-surface-dark: rgba(255, 255, 255, .07); --pa-solid-dark: #141416;
 }
-:root[data-palette="violet"] {
-  --pa-light: #6a45d9; --pa-light-soft: rgba(106, 69, 217, .12); --pa-on-light: #ffffff;
-  --pa-dark: #b49cff; --pa-dark-soft: rgba(180, 156, 255, .16); --pa-on: #120a26;
-  --pa-hero-1: #33255e; --pa-hero-2: #1e1640; --pa-hero-3: #0e0a20; --pa-glow: rgba(180, 156, 255, .32);
+:root[data-palette="black-cyan"] {
+  --pa-light: #0e7490; --pa-light-soft: color-mix(in srgb, #0e7490 13%, transparent); --pa-on-light: #ffffff;
+  --pa-dark: #22d3ee; --pa-dark-soft: color-mix(in srgb, #22d3ee 15%, transparent); --pa-on: #021418;
+  --pa-hero-1: color-mix(in srgb, #22d3ee 14%, #1c1c1e); --pa-hero-2: #121214; --pa-hero-3: #050505; --pa-glow: rgba(34, 211, 238, .28);
+  --pa-bg-light: #ececee; --pa-surface-light: rgba(255, 255, 255, .7); --pa-solid-light: #f7f7f8;
+  --pa-bg-dark: #000000; --pa-surface-dark: rgba(255, 255, 255, .07); --pa-solid-dark: #141416;
 }
-:root[data-palette="graphite"] {
-  --pa-light: #1c1c1f; --pa-light-soft: rgba(28, 28, 31, .08); --pa-on-light: #ffffff;
-  --pa-dark: #f5f5f7; --pa-dark-soft: rgba(255, 255, 255, .12); --pa-on: #0b0b0d;
-  --pa-hero-1: #34343b; --pa-hero-2: #1c1c21; --pa-hero-3: #0e0e11; --pa-glow: rgba(255, 255, 255, .2);
+:root[data-palette="black-amber"] {
+  --pa-light: #b45309; --pa-light-soft: color-mix(in srgb, #b45309 13%, transparent); --pa-on-light: #ffffff;
+  --pa-dark: #ffd60a; --pa-dark-soft: color-mix(in srgb, #ffd60a 15%, transparent); --pa-on: #1a1300;
+  --pa-hero-1: color-mix(in srgb, #ffd60a 14%, #1c1c1e); --pa-hero-2: #121214; --pa-hero-3: #050505; --pa-glow: rgba(255, 214, 10, .24);
+  --pa-bg-light: #ececee; --pa-surface-light: rgba(255, 255, 255, .7); --pa-solid-light: #f7f7f8;
+  --pa-bg-dark: #000000; --pa-surface-dark: rgba(255, 255, 255, .07); --pa-solid-dark: #141416;
+}
+:root[data-palette="black-red"] {
+  --pa-light: #c81e1e; --pa-light-soft: color-mix(in srgb, #c81e1e 13%, transparent); --pa-on-light: #ffffff;
+  --pa-dark: #ff4d4f; --pa-dark-soft: color-mix(in srgb, #ff4d4f 15%, transparent); --pa-on: #ffffff;
+  --pa-hero-1: color-mix(in srgb, #ff4d4f 14%, #1c1c1e); --pa-hero-2: #121214; --pa-hero-3: #050505; --pa-glow: rgba(255, 77, 79, .3);
+  --pa-bg-light: #ececee; --pa-surface-light: rgba(255, 255, 255, .7); --pa-solid-light: #f7f7f8;
+  --pa-bg-dark: #000000; --pa-surface-dark: rgba(255, 255, 255, .07); --pa-solid-dark: #141416;
+}
+:root[data-palette="black-violet"] {
+  --pa-light: #6d28d9; --pa-light-soft: color-mix(in srgb, #6d28d9 13%, transparent); --pa-on-light: #ffffff;
+  --pa-dark: #a78bfa; --pa-dark-soft: color-mix(in srgb, #a78bfa 15%, transparent); --pa-on: #120a26;
+  --pa-hero-1: color-mix(in srgb, #a78bfa 14%, #1c1c1e); --pa-hero-2: #121214; --pa-hero-3: #050505; --pa-glow: rgba(167, 139, 250, .3);
+  --pa-bg-light: #ececee; --pa-surface-light: rgba(255, 255, 255, .7); --pa-solid-light: #f7f7f8;
+  --pa-bg-dark: #000000; --pa-surface-dark: rgba(255, 255, 255, .07); --pa-solid-dark: #141416;
+}
+:root[data-palette="black-white"] {
+  --pa-light: #1c1c1f; --pa-light-soft: color-mix(in srgb, #1c1c1f 13%, transparent); --pa-on-light: #ffffff;
+  --pa-dark: #f2f2f4; --pa-dark-soft: color-mix(in srgb, #f2f2f4 15%, transparent); --pa-on: #0b0b0d;
+  --pa-hero-1: color-mix(in srgb, #f2f2f4 14%, #1c1c1e); --pa-hero-2: #121214; --pa-hero-3: #050505; --pa-glow: rgba(255, 255, 255, .16);
+  --pa-bg-light: #ececee; --pa-surface-light: rgba(255, 255, 255, .7); --pa-solid-light: #f7f7f8;
+  --pa-bg-dark: #000000; --pa-surface-dark: rgba(255, 255, 255, .07); --pa-solid-dark: #141416;
 }
 .palettes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 .palette-opt { border: 0; border-radius: 16px; padding: 10px; background: var(--fill); color: var(--text); font: inherit; font-size: .82rem; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; }
@@ -570,3 +583,30 @@ body.no-tabbar .help { display: none; }
 .app-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 .app-tile { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 14px 6px; border-radius: 18px; background: var(--surface); border: 1px solid var(--card-border); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); color: var(--text); font-size: .8rem; font-weight: 600; text-align: center; }
 .app-dot { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 1.1rem; }
+
+/* Configurar treino: equipment picker by photo */
+.equip-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.equip { position: relative; display: flex; flex-direction: column; align-items: stretch; gap: 6px; padding: 6px 6px 10px; border-radius: 16px; border: 1px solid var(--line); background: var(--surface); color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.equip img, .equip .equip-ph { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 11px; background: #fff; }
+.equip .equip-ph { display: grid; place-items: center; font-size: 12px; color: var(--muted); background: var(--surface-2); }
+.equip-name { font-size: 13px; font-weight: 600; line-height: 1.25; padding: 0 4px; }
+.equip.off img { filter: grayscale(1); opacity: .45; }
+.equip.off .equip-name { text-decoration: line-through; color: var(--muted); }
+.equip-badge { position: absolute; top: 12px; left: 12px; padding: 3px 8px; border-radius: 999px; background: var(--danger, #e5484d); color: #fff; font-size: 11px; font-weight: 700; }
+.chips.scroll { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 -2px; padding: 2px; }
+.chips.scroll::-webkit-scrollbar { display: none; }
+.chips.scroll .chip { flex: none; }
+
+/* Workout rating (end of workout) */
+.rate { margin: 4px 0 14px; }
+.rate-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.rate-row button { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 2px 8px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); font: inherit; cursor: pointer; transition: transform .15s, background .15s; }
+.rate-row button span { font-size: 28px; line-height: 1; filter: grayscale(.6); opacity: .75; transition: filter .15s, opacity .15s; }
+.rate-row button small { font-size: 11px; font-weight: 600; }
+.rate-row button[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--text); transform: scale(1.04); }
+.rate-row button[aria-pressed="true"] span { filter: none; opacity: 1; }
+.session-clock { text-decoration: none; font-variant-numeric: tabular-nums; }
+.opt-row { display: flex; flex-direction: column; gap: 8px; }
+.opt-row > .seg { display: flex; width: 100%; }
+.opt-row > .seg button { flex: 1; }
+.opt-row > .btn, .opt-row > .pill { align-self: flex-start; }

@@ -1,23 +1,17 @@
-// "Ajustes": cloud sync (+ diagnostics), theme, training options, unavailable equipment,
-// Spotify, Apple Health shortcut and data export.
+// "Ajustes": cloud sync (+ diagnostics), appearance, reinstall restore, Apple Health shortcut
+// and data export. Training options live in "Configurar treino", Spotify in "Música".
 import * as db from '../db.js';
 import { settings, updateSettings, restorePayload, applyRestore, PALETTES } from '../settings.js';
 import { api, sync, syncState } from '../sync.js';
-import { allExercises, seedTables } from '../program.js';
+import { seedTables } from '../program.js';
 import { TABLES } from '../schema.js';
 import { exportCsv, exportAllCsvZip, exportJson, importJson } from '../export.js';
 import { toast, confirmSheet } from '../ui.js';
 import { esc, packJson, unpackJson } from '../util.js';
-import { isUnlocked } from '../achievements.js';
-import { spotifySettingsHtml, bindSpotifySettings } from '../spotify.js';
-
-const GROUP_ORDER = ['peito', 'costas', 'ombros', 'bíceps', 'tríceps', 'quadríceps', 'posteriores', 'glúteos', 'adutores', 'panturrilhas', 'abdômen'];
 
 export function render(view) {
   const s = settings();
   const st = syncState();
-  const intermediateOk = isUnlocked('intermediate_unlocked');
-  const byGroup = GROUP_ORDER.map((g) => [g, allExercises().filter((e) => e.muscle_group === g)]);
 
   view.innerHTML = `
     <div class="page-head"><h1>Ajustes</h1></div>
@@ -63,35 +57,16 @@ export function render(view) {
           </div>
         </div>
         <div class="section-title" style="margin:0 0 8px">Cores do app</div>
-        <div class="palettes">${PALETTES.map(([id, name, accent, hero]) => `<button class="palette-opt" data-palette-set="${id}" aria-pressed="${(s.palette || 'blue') === id}"><span class="sw" style="background:linear-gradient(150deg, ${hero}, #0b0b0d)"><i style="background:${accent}"></i></span>${name}</button>`).join('')}</div>
-        <p class="muted tiny" style="margin:10px 0 0">Muda na hora: experimente na academia e fique com a que preferir.</p>
+        ${[['Cores', PALETTES.filter((p) => !p[4])], ['Preto +', PALETTES.filter((p) => p[4])]].map(([title, list]) => `
+        <div class="tiny muted" style="margin:4px 0 6px">${title}</div>
+        <div class="palettes">${list.map(([id, name, accent, hero, black]) => `<button class="palette-opt" data-palette-set="${id}" aria-pressed="${(s.palette || 'blue') === id}"><span class="sw" style="background:${black ? `radial-gradient(90% 90% at 100% 0%, ${accent}55, transparent 60%), #000` : `linear-gradient(150deg, ${hero}, #0b0b0d)`}"><i style="background:${accent}"></i></span>${name.replace('Preto + ', '')}</button>`).join('')}</div>`).join('')}
+        <p class="muted tiny" style="margin:10px 0 0">Os temas "Preto +" usam fundo preto de verdade (economiza bateria na tela OLED do iPhone) com uma única cor de destaque.</p>
       </div>
     </div>
 
     <div class="section"><div class="section-title">Treino</div>
-      <div class="card">
-        <div class="row between" style="margin-bottom:12px"><span>Nível ativo</span>
-          <div class="seg" role="group" aria-label="Nível">
-            <button data-level="base" aria-pressed="${s.level === 'base'}">Base (3×12)</button>
-            <button data-level="intermediate" aria-pressed="${s.level === 'intermediate'}" ${intermediateOk ? '' : 'disabled title="Bloqueado"'}>${intermediateOk ? '' : '🔒 '}Avançado (4×12)</button>
-          </div>
-        </div>
-        ${intermediateOk ? '' : '<p class="muted small">O Avançado (4×12) desbloqueia com 8 semanas com pelo menos 3 de 4 treinos (veja Troféus).</p>'}
-        <div class="row between" style="margin-bottom:12px"><span>Meta de treinos por semana</span>
-          <div class="seg" role="group" aria-label="Meta semanal">${[3, 4, 5].map((n) => `<button data-target="${n}" aria-pressed="${Number(s.weeklyTarget) === n}">${n}</button>`).join('')}</div>
-        </div>
-        <label class="field"><span>Início do programa (a 1ª semana é de reentrada)</span><input type="date" name="startDate" value="${esc(s.startDate)}"></label>
-        <label class="check"><input type="checkbox" name="restSound" ${s.restSound ? 'checked' : ''}> <span>Som ao fim do descanso</span></label>
-        <label class="check"><input type="checkbox" name="allowSquatVariants" ${s.allowSquatVariants ? 'checked' : ''}> <span>Permitir afundo/búlgaro como alternativa</span></label>
-      </div>
-      <details class="card" style="margin-top:12px">
-        <summary>Aparelhos indisponíveis na minha unidade (${s.unavailable.length})</summary>
-        <p class="muted small" style="margin-top:8px">Marcados aqui são trocados automaticamente pela 1ª alternativa disponível.</p>
-        ${byGroup.map(([g, list]) => `<div class="section-title" style="margin-top:12px">${esc(g)}</div>${list.map((e) => `<label class="check"><input type="checkbox" data-unavail="${e.id}" ${s.unavailable.includes(e.id) ? 'checked' : ''}> <span>${esc(e.name_pt)}${e.is_squat_variant ? ' <span class="pill warn">agachamento</span>' : ''}</span></label>`).join('')}`).join('')}
-      </details>
+      <a class="card row between" href="#/treino-config" style="text-decoration:none;color:inherit"><span><strong>Configurar treino</strong><br><span class="tiny muted">Nível, meta, descanso, cardio, horários e aparelhos</span></span><span class="muted">›</span></a>
     </div>
-
-    <div class="section"><div class="section-title">Spotify</div>${spotifySettingsHtml()}</div>
 
     <div class="section"><div class="section-title">Apple Saúde (Zepp)</div>
       <div class="card">
@@ -109,11 +84,10 @@ export function render(view) {
       </div>
     </div>
 
-    <p class="muted tiny center" style="margin-top:24px">Antares V3 · dados locais em IndexedDB + planilha · imagens: free-exercise-db (domínio público)</p>`;
+    <p class="muted tiny center" style="margin-top:24px">Antares V3</p>`;
 
   bind(view);
   bindKeychain(view);
-  bindSpotifySettings(view, () => render(view));
 }
 
 /**
@@ -158,12 +132,6 @@ function bind(view) {
 
   view.onchange = async (e) => {
     const t = e.target;
-    if (t.dataset.unavail) {
-      const set = new Set(settings().unavailable);
-      if (t.checked) set.add(t.dataset.unavail); else set.delete(t.dataset.unavail);
-      updateSettings({ unavailable: Array.from(set) });
-      return;
-    }
     if (t.matches('[data-import]') && t.files[0]) {
       try {
         const n = await importJson(t.files[0]);
@@ -173,35 +141,20 @@ function bind(view) {
       }
       return;
     }
-    if (t.name === 'startDate' && t.value) updateSettings({ startDate: t.value });
-    if (t.name === 'restSound') updateSettings({ restSound: t.checked });
-    if (t.name === 'allowSquatVariants') updateSettings({ allowSquatVariants: t.checked });
     if (t.name === 'shortcutName') updateSettings({ shortcutName: t.value.trim() || 'Projeto K Saúde' });
   };
 
   view.onclick = async (e) => {
     const pal = e.target.closest('[data-palette-set]');
     if (pal) {
-      updateSettings({ palette: pal.dataset.paletteSet });
+      const black = PALETTES.find(([id]) => id === pal.dataset.paletteSet)?.[4];
+      updateSettings(black ? { palette: pal.dataset.paletteSet, theme: 'dark' } : { palette: pal.dataset.paletteSet });
       render(view);
       return;
     }
     const theme = e.target.closest('[data-theme-set]');
     if (theme) {
       updateSettings({ theme: theme.dataset.themeSet });
-      render(view);
-      return;
-    }
-    const target = e.target.closest('[data-target]');
-    if (target) {
-      updateSettings({ weeklyTarget: Number(target.dataset.target) });
-      render(view);
-      return;
-    }
-    const level = e.target.closest('[data-level]');
-    if (level && !level.disabled) {
-      updateSettings({ level: level.dataset.level });
-      toast(`Nível ${level.dataset.level === 'base' ? 'Base (3×12)' : 'Avançado (4×12)'} ativo`);
       render(view);
       return;
     }

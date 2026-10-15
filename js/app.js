@@ -23,6 +23,7 @@ import * as inbox from './screens/inbox.js';
 import * as friendPages from './screens/friend-pages.js';
 import * as trophies from './screens/trophies.js';
 import * as home from './screens/home.js';
+import * as trainingSettings from './screens/training-settings.js';
 import { profile } from './stats.js';
 import { pendingSuggestions } from './friend.js';
 
@@ -31,16 +32,18 @@ const ROUTES = {
   hoje: { tab: 'hoje', render: (v) => today.render(v), live: true },
   dia: { back: ['#/semana', 'Semana'], tab: 'semana', render: (v, [date]) => today.render(v, { date }), live: true },
   semana: { tab: 'semana', render: (v) => week.render(v), live: true },
-  musica: { back: ['#/mais', 'Mais'], tab: 'mais', render: (v) => music.render(v) },
+  musica: { back: ['#/mais', 'Perfil'], tab: 'mais', render: (v) => music.render(v) },
   progresso: { tab: 'progresso', render: (v, _a, q) => progress.render(v, q), live: true },
   analytics: { tab: 'progresso', render: (v, _a, q) => progress.render(v, q), live: true },
-  conquistas: { back: ['#/mais', 'Mais'], tab: 'mais', render: (v) => trophies.render(v), live: true },
+  conquistas: { back: ['#/mais', 'Perfil'], tab: 'mais', render: (v) => trophies.render(v), live: true },
   ex: { back: ['#/hoje', 'Treino'], tab: 'hoje', render: (v, [id]) => exercisePage.render(v, { id }) },
   mais: { tab: 'mais', render: (v) => more.render(v), live: true },
-  perfil: { back: ['#/mais', 'Mais'], tab: 'mais', render: (v) => profilePage.render(v) },
-  recebidos: { back: ['#/mais', 'Mais'], tab: 'mais', render: (v) => inbox.render(v), live: true },
-  programa: { back: ['#/mais', 'Mais'], tab: 'mais', render: (v) => more.renderProgram(v) },
-  config: { back: ['#/mais', 'Mais'], tab: 'mais', render: (v) => settingsPage.render(v) },
+  ia: { back: ['#/mais', 'Perfil'], tab: 'mais', render: (v) => progress.renderAI(v) },
+  'treino-config': { back: ['#/mais', 'Perfil'], tab: 'mais', render: (v) => trainingSettings.render(v) },
+  perfil: { back: ['#/mais', 'Perfil'], tab: 'mais', render: (v) => profilePage.render(v) },
+  recebidos: { back: ['#/mais', 'Perfil'], tab: 'mais', render: (v) => inbox.render(v), live: true },
+  programa: { back: ['#/mais', 'Perfil'], tab: 'mais', render: (v) => more.renderProgram(v) },
+  config: { back: ['#/mais', 'Perfil'], tab: 'mais', render: (v) => settingsPage.render(v) },
   amigo: { tab: null, bare: true, render: (v, _a, q) => friendPages.renderBuilder(v, q) },
   importar: { back: ['#/inicio', 'Início'], tab: null, render: (v, _a, q) => friendPages.renderImport(v, q) },
 };
@@ -150,7 +153,7 @@ function tickSessionClock() {
   const s = db.get('sessions', dateKey());
   if (s?.status === 'in_progress' && s.start_time) {
     el.hidden = false;
-    el.textContent = `⏱ ${fmtDuration(Date.now() - new Date(s.start_time))}`;
+    el.textContent = `Treino ${fmtDuration(Date.now() - new Date(s.start_time))}`;
   } else {
     el.hidden = true;
   }

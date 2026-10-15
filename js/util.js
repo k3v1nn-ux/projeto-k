@@ -158,3 +158,6 @@ export function download(filename, content, type = 'text/plain') {
 export function setsLabel(it) {
   return it.rep_max - it.rep_min <= 2 ? `${it.sets} × ${it.rep_max}` : `${it.sets} × ${it.rep_min}–${it.rep_max}`;
 }
+
+/** Volume lifted, Brazilian style: "11.340 kg" (no tonnes). */
+export const fmtVolume = (kg) => `${fmtInt(Math.round(kg || 0))} kg`;

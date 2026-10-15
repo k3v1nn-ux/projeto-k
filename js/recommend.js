@@ -26,7 +26,7 @@ export function recommendations(today = dateKey()) {
   }
 
   const gap = daysSinceLastLift(today);
-  if (gap !== null && gap >= 4) out.push({ level: 'warn', icon: '⏱️', title: `${gap} dias sem musculação`, text: 'Volte com cargas um pouco mais leves no primeiro treino (RIR 3) e retome a progressão no seguinte.' });
+  if (gap !== null && gap >= 4) out.push({ level: 'warn', icon: '⏱️', title: `${gap} dias sem musculação`, text: 'Volte com cargas um pouco mais leves no primeiro treino (parando umas 3 repetições antes da falha) e retome a progressão no seguinte.' });
 
   for (const row of strengthTable().filter((r) => r.trend === 'stalled').slice(0, 2)) {
     const alt = row.ex.alternatives.map(exercise).find(Boolean);

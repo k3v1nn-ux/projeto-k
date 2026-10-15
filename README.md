@@ -4,7 +4,7 @@ PWA pessoal de treino (mobile-first, offline-first) para a Smart Fit: rodízio S
 
 **App:** https://k3v1nn-ux.github.io/projeto-k/
 
-> Antares é a supergigante vermelha do coração de Escorpião: daí o logo (estrela de quatro pontas prateada com núcleo levemente quente). O visual usa superfícies de vidro translúcido com desfoque (como o Liquid Glass do iOS) tons de **azul** por padrão (temas Azul, Marinho e Ciano, com fundo e vidro azulados), além de Volt, Esmeralda, Pôr do sol, Violeta e Grafite em Ajustes → Aparência, cada um com versão clara e escura.
+> Antares é a supergigante vermelha do coração de Escorpião: daí o logo (estrela de quatro pontas prateada com núcleo levemente quente). O visual usa superfícies de vidro translúcido com desfoque (como o Liquid Glass do iOS) tons de **azul** por padrão (Azul, Marinho e Esmeralda, com fundo e vidro tingidos) e os temas **Preto +** (Lima, Ciano, Amarelo, Vermelho, Roxo e Preto total): fundo preto de verdade (bom para a tela OLED do iPhone), cartões em cinza escuro para dar profundidade e uma única cor de destaque, como recomendam as diretrizes de tema escuro do Material Design. Escolha em Perfil → Ajustes → Aparência.
 
 ---
 
@@ -131,7 +131,7 @@ Controle remoto do app oficial do Spotify via Web API (OAuth Authorization Code 
 1. Acesse https://developer.spotify.com/dashboard → **Create app**.
 2. **Redirect URI:** `https://k3v1nn-ux.github.io/projeto-k/` (exatamente assim, com a barra final). Marque **Web API**.
 3. Em **User Management**, adicione o e-mail da sua conta Spotify (apps em modo de desenvolvimento só aceitam usuários cadastrados).
-4. Copie o **Client ID** → no app, aba **Música** (ou Ajustes → Spotify) → cole → **Conectar Spotify**.
+4. Copie o **Client ID** → no app, aba **Música** → **Controle do Spotify dentro do app** → cole → **Conectar Spotify**.
 5. Opcional: cole o link de uma playlist (plano B: player embutido + botão "Abrir no Spotify").
 
 Limitações: exige **Spotify Premium**; o app do Spotify precisa estar aberto/ativo no iPhone (se não houver aparelho ativo, o app tenta acordar o último aparelho e, se não houver nenhum, abre o Spotify). O Web Playback SDK (tocar no navegador) não funciona no Safari do iOS, por isso não é usado.
@@ -140,7 +140,7 @@ Limitações: exige **Spotify Premium**; o app do Spotify precisa estar aberto/a
 
 O Zepp já envia os dados ao app Saúde. Não existe API pública do Zepp, então o caminho é **Saúde → Atalho → Apps Script** (aba `health_imports`). Nada de scraping ou API não oficial.
 
-**Jeito rápido (arquivo pronto, v2):** no iPhone, abra https://k3v1nn-ux.github.io/projeto-k/shortcuts/ e toque em **Baixar o Atalho** (ou Mais → Atalho do Saúde), toque em **Adicionar Atalho** e cole a URL `/exec` e o token quando ele pedir. Ele envia passos, kcal ativas, FC média e FC de repouso do dia e **mostra na notificação a resposta da planilha** (`{"ok":true,...}` ou o erro, como `unauthorized (token errado)`). O arquivo é gerado e assinado por `python3 tools/make_shortcut.py` e não contém URL nem token. Se você instalou a v1, apague-a no app Atalhos antes.
+**Jeito rápido (arquivo pronto, v2):** no iPhone, abra https://k3v1nn-ux.github.io/projeto-k/shortcuts/ e toque em **Baixar o Atalho** (ou Perfil → Atalho do Saúde), toque em **Adicionar Atalho** e cole a URL `/exec` e o token quando ele pedir. Ele envia passos, kcal ativas, FC média e FC de repouso do dia e **mostra na notificação a resposta da planilha** (`{"ok":true,...}` ou o erro, como `unauthorized (token errado)`). O arquivo é gerado e assinado por `python3 tools/make_shortcut.py` e não contém URL nem token. Se você instalou a v1, apague-a no app Atalhos antes.
 
 **Jeito manual:** crie no app **Atalhos** um atalho chamado **`Projeto K Saúde`** (o nome pode ser trocado em Ajustes). Os nomes das ações podem variar um pouco conforme a versão do iOS:
 
@@ -169,8 +169,8 @@ Os dados aparecem em **Progresso → Relógio**, cruzados com a sessão do dia (
 
 ## 8. Treino montado por um amigo
 
-- **Mais → Treinos recebidos → Gerar link de convite.** O link abre uma tela simples (sem login) onde o amigo monta **um ou vários dias** (exercícios da base, séries, repetições, descanso e observações).
-- Com a planilha configurada, o link leva a URL do Apps Script e um **token de sugestão** (diferente do seu token; só permite gravar na aba `suggestions`). O treino aparece no app ("Novo treino de [nome]" + selo na aba Mais). Em **Treinos recebidos** você marca quais dias quer e escolhe a data de cada um: aceitar tudo, só alguns dias (status `partial`) ou recusar. Cada dia aceito vira o treino daquela data; o rodízio se reorganiza em volta.
+- **Perfil → Treinos recebidos → Gerar link de convite.** O link abre uma tela simples (sem login) onde o amigo monta **um ou vários dias** (exercícios da base, séries, repetições, descanso e observações).
+- Com a planilha configurada, o link leva a URL do Apps Script e um **token de sugestão** (diferente do seu token; só permite gravar na aba `suggestions`). O treino aparece no app ("Novo treino de [nome]" + selo na aba Perfil). Em **Treinos recebidos** você marca quais dias quer e escolhe a data de cada um: aceitar tudo, só alguns dias (status `partial`) ou recusar. Cada dia aceito vira o treino daquela data; o rodízio se reorganiza em volta.
 - **Plano B sem backend:** ao enviar, o amigo recebe também um link `#/importar?w=...` com o treino comprimido (deflate + base64url) na própria URL, para mandar pelo WhatsApp. Ao abrir no seu aparelho, ele vira uma sugestão.
 
 ## 9. Programa de treino e fontes
@@ -241,8 +241,10 @@ Cada exercício tem 1–2 alternativas com equipamento padrão de academia (máq
 | **Treino** | Treino sugerido com anel de progresso, cronômetro do treino, faixa da semana, etapa 1 (cardio de aquecimento), etapa 2 (exercícios em acordeão, séries pré-preenchidas, 1 toque para registrar, descanso automático), trocar treino/aparelho, descansar hoje, só cardio, minicontrole de música. Dias passados podem ser editados. |
 | **Semana** | Resumo (treinos/meta, séries, volume, minutos, cardio, séries por grupo, recordes) e seg–dom com detalhes de cada dia (exercícios, séries, volume, duração, cardio, recordes, horário da Smart Fit); tocar num dia mostra o treino e permite marcar/tirar descanso. |
 | **Música** | Player do Spotify, playlists e aparelhos (ou o player embutido da playlist sem login). |
-| **Progresso** | *Visão geral* (semana, sequência, recomendações, mapa de frequência, treinos por semana) · *Treinos* (equilíbrio do rodízio, séries por grupo vs referência, cardio, histórico) · *Força* (exercícios diferentes e realizados, dias em que as séries aumentaram, aumentos de carga, linha do tempo da evolução, gráfico por exercício, tabela com 1RM e tendência, recordes) · *Corpo* (peso, IMC, força relativa, medidas) · *Relógio* (dados do Saúde) · *IA*. (Troféus ficam em Mais.) |
-| **Mais** | Perfil, Treinos recebidos (com selo de pendentes), Troféus, Música, Atalho do Saúde, Programa e fontes, Ajustes. |
+| **Progresso** | *Visão geral* (semana, sequência, recomendações, mapa de frequência, treinos por semana) · *Treinos* (equilíbrio do rodízio, séries por grupo vs referência, cardio, histórico) · *Força* (exercícios diferentes e realizados, dias em que as séries aumentaram, aumentos de carga, linha do tempo da evolução, gráfico por exercício, tabela com 1RM e tendência, recordes) · *Corpo* (peso, IMC, força relativa, medidas) · *Relógio* (dados do Saúde). (Troféus e IA ficam em Perfil.) |
+| **Perfil** | *Você*: Meus dados e medidas, Conquistas, Análise com IA · *Social*: Treinos de amigos · *App*: Música, **Configurar treino** (nível 3×12/4×12, meta semanal, dias de descanso, descanso entre séries, cardio de aquecimento, som, avisos na tela bloqueada, horário da academia, afundo/búlgaro e aparelhos que a unidade não tem, escolhidos por foto), Ajustes, Atalho do Saúde, Programa e fontes. |
+| **Fim do treino** | Resumo + **avaliação por emoji** (😫 😕 🙂 😀 🤩), salva no treino (coluna `rating` em `sessions` e "Avaliação" no 📊 Resumo). |
+| **Tela bloqueada** | iPhone com o app na Tela de Início (iOS 16.4+): com os avisos ligados, chega "Treino em andamento" ao iniciar e "Descanso até 18:42 · próximo: …" a cada série. Um app da web não tem Live Activity; o aviso é o equivalente possível. O relógio "Treino 0:45" no topo é o tempo desde o início do treino. |
 
 **Recomendações (sem IA):** regras locais apontam treinos que faltam na semana, exercícios parados há 3 treinos (com alternativas), grupos com pouco volume, rodízio desequilibrado, muitos dias sem treinar, hora de deload, peso sem registro ou caindo demais para o objetivo, pouco cardio e sono curto.
 

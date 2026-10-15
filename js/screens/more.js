@@ -1,5 +1,5 @@
-// "Mais": profile card and links to received workouts, trophies, settings, the Health
-// shortcut and program info.
+// "Perfil" tab (route #/mais): the user's card plus "Você" (data, trophies, AI), "Social"
+// (friends' workouts) and "App" (music, training setup, settings, Health shortcut, program).
 import { profile, currentWeight } from '../stats.js';
 import { pendingSuggestions } from '../friend.js';
 import { trophyList } from '../achievements.js';
@@ -14,6 +14,8 @@ const ICONS = {
   heart: '<svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>',
   book: '<svg viewBox="0 0 24 24"><path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h10"/></svg>',
   music: '<svg viewBox="0 0 24 24"><path d="M9 18V6l11-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg>',
+  ai: '<svg viewBox="0 0 24 24"><path d="M12 3l1.8 4.7L18.5 9l-4.7 1.8L12 15.5l-1.8-4.7L5.5 9l4.7-1.3z"/><path d="M18 15l.8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8z"/></svg>',
+  dumbbell: '<svg viewBox="0 0 24 24"><path d="M6 8v8M18 8v8M3 10.5v3M21 10.5v3M6 12h12"/></svg>',
   user: '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>',
 };
 
@@ -31,17 +33,22 @@ export function render(view) {
       <div class="grow"><h2 style="margin:0">${esc(p.name || 'Complete seu perfil')}</h2><div class="muted small">${[p.goal, w ? `${fmtKg(w)} kg` : ''].filter(Boolean).join(' · ') || 'nome, foto, altura e peso'}</div></div>
       <span class="li-chev">›</span>
     </a>
-    <div class="group mt"><ul class="list">
-      ${item('#/recebidos', 'inbox', 'var(--series-1)', 'Treinos recebidos', 'convide amigos, aceite ou recuse', pending ? `<span class="pill danger">${pending}</span>` : '')}
-      ${item('#/conquistas', 'trophy', 'var(--gold)', 'Troféus', `${got} de ${trophies.length} desbloqueados`)}
-      ${item('#/musica', 'music', 'var(--danger)', 'Música', 'controle do Spotify e playlists')}
-      ${item('#/perfil', 'user', 'var(--series-3)', 'Perfil e medidas', 'dados usados na análise com IA')}
-    </ul></div>
-    <div class="group mt"><ul class="list">
-      ${item('shortcuts/', 'heart', 'var(--danger)', 'Atalho do Saúde (iPhone)', 'importa dados do relógio Zepp')}
-      ${item('#/programa', 'book', 'var(--series-2)', 'Programa e fontes', esc(getProgram().name))}
-      ${item('#/config', 'gear', 'var(--faint)', 'Ajustes', 'planilha, tema, nível, aparelhos, dados')}
-    </ul></div>`;
+    <div class="section"><div class="section-title"><span>Você</span></div><div class="group"><ul class="list">
+      ${item('#/perfil', 'user', 'var(--series-3)', 'Meus dados e medidas', 'nome, avatar, altura, peso e objetivo')}
+      ${item('#/conquistas', 'trophy', 'var(--gold)', 'Conquistas', `${got} de ${trophies.length} troféus`)}
+      ${item('#/ia', 'ai', '#7c5cff', 'Análise com IA', 'leitura dos seus avanços com recomendações')}
+    </ul></div></div>
+    <div class="section"><div class="section-title"><span>Social</span></div><div class="group"><ul class="list">
+      ${item('#/recebidos', 'inbox', 'var(--series-1)', 'Treinos de amigos', 'convide, aceite ou recuse treinos', pending ? `<span class="pill danger">${pending}</span>` : '')}
+    </ul></div></div>
+    <div class="section"><div class="section-title"><span>App</span></div><div class="group"><ul class="list">
+      ${item('#/musica', 'music', 'var(--danger)', 'Música', 'Spotify e outros apps')}
+      ${item('#/treino-config', 'dumbbell', 'var(--accent)', 'Configurar treino', 'nível, meta, descanso, cardio, aparelhos')}
+      ${item('#/config', 'gear', 'var(--faint)', 'Ajustes', 'aparência, planilha, backup')}
+      ${item('shortcuts/', 'heart', 'var(--danger)', 'Atalho do Saúde (iPhone)', 'dados do relógio Zepp')}
+      ${item('#/programa', 'book', 'var(--series-2)', 'Programa e fontes', 'como o treino foi montado')}
+    </ul></div></div>
+    <p class="muted tiny center" style="margin-top:20px">Antares V3</p>`;
 }
 
 export function renderProgram(view) {
@@ -50,7 +57,7 @@ export function renderProgram(view) {
   view.innerHTML = `
     <div class="page-head"><h1>Programa</h1><p>${esc(prog.name)}</p></div>
     <div class="card"><h3>Como funciona</h3><p class="small">${esc(r.split_rationale)}</p><p class="small">${esc(r.rotation_rule)}</p><p class="small">${esc(r.adherence_rule)}</p><p class="small">${esc(r.cardio)}</p></div>
-    <div class="card mt"><h3>Progressão</h3><p class="small">${esc(r.double_progression.rule)} ${esc(r.double_progression.stall_rule)}</p><p class="small">RIR: ${esc(r.rir.base)}</p><p class="small">${esc(r.reentry_week.note)}</p><p class="small">${esc(r.intermediate_unlock.description)}</p><p class="small">${esc(r.no_squat_policy)}</p></div>
+    <div class="card mt"><h3>Progressão</h3><p class="small">${esc(r.double_progression.rule)} ${esc(r.double_progression.stall_rule)}</p><p class="small">Repetições na reserva (quantas ainda daria para fazer): ${esc(r.rir.base)}</p><p class="small">${esc(r.reentry_week.note)}</p><p class="small">${esc(r.intermediate_unlock.description)}</p><p class="small">${esc(r.no_squat_policy)}</p></div>
     <div class="section"><div class="section-title"><span>Fontes científicas</span></div>
       <div class="card"><ol class="tips small">${prog.sources.map((s) => `<li>${esc(s.ref)}${s.doi ? ` <a href="https://doi.org/${esc(s.doi)}" target="_blank" rel="noopener">doi</a>` : ''}<br><span class="muted">${esc(s.used_for)}</span></li>`).join('')}</ol></div></div>`;
 }

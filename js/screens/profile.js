@@ -65,7 +65,7 @@ export function render(view) {
   const p = profile();
   const w = currentWeight();
   view.innerHTML = `
-    <div class="page-head"><h1>Perfil</h1><p>Usado na saudação, nas métricas de corpo e na análise com IA.</p></div>
+    <div class="page-head"><h1>Meus dados</h1><p>Usados na saudação, nas medidas e na análise com IA.</p></div>
     <div class="card">
       <div class="profile-head">
         ${avatarHtml('lg')}

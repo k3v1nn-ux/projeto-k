@@ -22,8 +22,12 @@ const DEFAULTS = {
   weeklyTarget: 4, // lifting sessions per week
   restDays: [3, 6, 7], // preferred rest weekdays (1 = Monday), used only to project the week
   anthropicKey: '', // Claude API key for the AI analysis (stays on this device)
+  restOffset: 0, // seconds added to every rest interval (-30..+60)
+  cardioMinutes: 10, // warm-up cardio default minutes
+  cardioType: 'esteira', // preferred cardio machine
+  lockNotify: false, // lock-screen notifications for rest and workout
   homeWidgets: null, // [{ id, on }] order and visibility of the Início cards
-  palette: 'blue', // color theme: blue | navy | cyan | volt | ocean | emerald | sunset | violet | graphite
+  palette: 'blue', // color theme: see PALETTES
   gymClose: { 6: '19:00', 7: '15:00' }, // Smart Fit closing time by weekday (Saturday 19h, Sunday 15h)
 };
 
@@ -39,6 +43,10 @@ export function settings() {
     if (!cache.paletteV) {
       cache.palette = 'blue'; // the app moved to blue tones (Oct 2026)
       cache.paletteV = 2;
+      persist();
+    }
+    if (OLD_PALETTES[cache.palette]) {
+      cache.palette = OLD_PALETTES[cache.palette]; // palette set redone (Oct 2026)
       persist();
     }
     if (!cache.startDate) {
@@ -69,7 +77,8 @@ export function applyTheme() {
   else root.setAttribute('data-theme', t);
   root.setAttribute('data-palette', settings().palette || 'blue');
   const dark = t === 'dark' || (t === 'auto' && matchMedia('(prefers-color-scheme: dark)').matches);
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#050a15' : '#e6edf8');
+  const bg = getComputedStyle(root).getPropertyValue(dark ? '--pa-bg-dark' : '--pa-bg-light').trim();
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', bg || (dark ? '#050a15' : '#e6edf8'));
 }
 
 export function isConfigured() {
@@ -79,7 +88,7 @@ export function isConfigured() {
 
 /* ---------- restore code (reinstalling the home-screen app starts with empty storage) ---------- */
 const RESTORE_KEYS = ['apiUrl', 'token', 'suggestToken', 'ownerName', 'theme', 'level', 'startDate', 'unavailable', 'allowSquatVariants',
-  'restSound', 'spotifyClientId', 'playlistUrl', 'shortcutName', 'weeklyTarget', 'restDays', 'anthropicKey', 'gymClose', 'palette', 'homeWidgets'];
+  'restSound', 'spotifyClientId', 'playlistUrl', 'shortcutName', 'weeklyTarget', 'restDays', 'anthropicKey', 'gymClose', 'palette', 'homeWidgets', 'restOffset', 'cardioMinutes', 'cardioType', 'lockNotify'];
 
 export function restorePayload() {
   const s = settings();
@@ -102,8 +111,11 @@ export function gymCloseFor(dateKeyStr) {
   return (settings().gymClose || {})[wd] || '';
 }
 
+/** [id, name, accent, hero, black?] — "Preto +" themes switch the app to dark mode when picked. */
 export const PALETTES = [
-  ['blue', 'Azul', '#4da3ff', '#1b4a8a'], ['navy', 'Marinho', '#8fc4ff', '#22346e'], ['cyan', 'Ciano', '#4fd8f5', '#0f5068'],
-  ['volt', 'Volt', '#c6f432', '#2a3315'], ['emerald', 'Esmeralda', '#3ee0a1', '#0f4a37'],
-  ['sunset', 'Pôr do sol', '#ff8a50', '#4a1f33'], ['violet', 'Violeta', '#b49cff', '#33255e'], ['graphite', 'Grafite', '#f5f5f7', '#34343b'],
+  ['blue', 'Azul', '#4da3ff', '#1b4a8a'], ['navy', 'Marinho', '#8fc4ff', '#22346e'], ['emerald', 'Esmeralda', '#3ee0a1', '#0f4a37'],
+  ['black-lime', 'Preto + Lima', '#c8f53c', '#000000', true], ['black-cyan', 'Preto + Ciano', '#22d3ee', '#000000', true],
+  ['black-amber', 'Preto + Amarelo', '#ffd60a', '#000000', true], ['black-red', 'Preto + Vermelho', '#ff4d4f', '#000000', true],
+  ['black-violet', 'Preto + Roxo', '#a78bfa', '#000000', true], ['black-white', 'Preto total', '#f2f2f4', '#000000', true],
 ];
+const OLD_PALETTES = { cyan: 'black-cyan', volt: 'black-lime', ocean: 'blue', sunset: 'black-red', violet: 'black-violet', graphite: 'black-white' };

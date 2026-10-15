@@ -1,7 +1,7 @@
 // Synced tables. Must match SCHEMA in apps-script/Code.gs (minus synced_at, which the server sets).
 // New columns are only ever appended at the end so existing spreadsheet rows stay aligned.
 export const TABLES = {
-  sessions: ['id', 'date', 'planned_session', 'level', 'start_time', 'end_time', 'duration_min', 'status', 'notes', 'swaps_json', 'updated_at', 'deleted', 'slot'],
+  sessions: ['id', 'date', 'planned_session', 'level', 'start_time', 'end_time', 'duration_min', 'status', 'notes', 'swaps_json', 'updated_at', 'deleted', 'slot', 'rating'],
   set_logs: ['id', 'session_id', 'exercise_id', 'set_number', 'load_kg', 'reps', 'rpe', 'timestamp', 'is_pr', 'updated_at', 'deleted'],
   cardio_logs: ['id', 'session_id', 'type', 'duration_min', 'avg_hr', 'notes', 'updated_at', 'deleted', 'phase'],
   achievements: ['id', 'unlocked_at', 'updated_at', 'deleted'],

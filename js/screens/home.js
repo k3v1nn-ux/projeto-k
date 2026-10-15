@@ -12,7 +12,7 @@ import { loggedSetCount, plannedSetCount } from '../workout.js';
 import { mountSpotify, isConnected, playlistId } from '../spotify.js';
 import { weekStrip } from './today.js';
 import { sheet } from '../ui.js';
-import { dateKey, addDays, weekStart, fmtDay, fmtKg, fmtInt, esc } from '../util.js';
+import { dateKey, addDays, weekStart, fmtDay, fmtKg, fmtInt, esc, fmtVolume } from '../util.js';
 
 export const WIDGETS = [
   ['treino', 'Treino de hoje'], ['semana', 'Semana'], ['musica', 'Música'], ['progresso', 'Esta semana em números'],
@@ -72,7 +72,7 @@ const RENDER = {
     const min = liftSessions().filter((s) => s.date >= start).reduce((a, s) => a + (s.duration_min || 0), 0);
     return card('#/progresso', 'Esta semana em números', `
       <div class="kv"><div><b>${wk.lifts}/${wk.target}</b><span>treinos</span></div><div><b>${sets.length}</b><span>séries</span></div>
-      <div><b>${fmtKg(vol / 1000)}t</b><span>volume</span></div><div><b>${min + weekCardioMinutes(start)}</b><span>min ativos</span></div></div>`);
+      <div><b>${fmtVolume(vol)}</b><span>volume</span></div><div><b>${min + weekCardioMinutes(start)}</b><span>min ativos</span></div></div>`);
   },
   dicas(today) {
     const r = recommendations(today).slice(0, 2);

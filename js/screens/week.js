@@ -2,10 +2,10 @@
 // mark it as rest, or open it to log/edit.
 import * as db from '../db.js';
 import { dayPlan, exercise, weekProjection, slotDef, weeklyTarget, estimateMinutes } from '../program.js';
-import { markRest, unmarkRest, cardioFor, setsFor } from '../workout.js';
+import { markRest, unmarkRest, cardioFor, setsFor, ratingEmoji } from '../workout.js';
 import { settings, updateSettings, gymCloseFor } from '../settings.js';
 import { sheet, toast } from '../ui.js';
-import { setsLabel, dateKey, addDays, weekStart, parseKey, fmtShortWeekday, fmtDay, esc, fmtKg } from '../util.js';
+import { setsLabel, dateKey, addDays, weekStart, parseKey, fmtShortWeekday, fmtDay, esc, fmtKg, fmtVolume } from '../util.js';
 
 let offset = 0;
 const WD = ['seg', 'ter', 'qua', 'qui', 'sex', 'sáb', 'dom'];
@@ -25,7 +25,7 @@ function describe(d, p, today) {
   const s = db.get('sessions', d);
   const n = dayNumbers(d);
   const close = gymCloseFor(d) ? `Smart Fit fecha ${gymCloseFor(d).replace(':00', 'h')}` : '';
-  const doneSub = [`${n.exercises} exercícios · ${n.sets} séries`, n.volume ? `${fmtKg(n.volume / 1000)} t` : '', s?.duration_min ? `${s.duration_min} min` : '', n.cardio ? `♥ ${n.cardio} min` : '', n.prs ? `🏆 ${n.prs}` : ''].filter(Boolean).join(' · ');
+  const doneSub = [`${n.exercises} exercícios · ${n.sets} séries`, n.volume ? fmtVolume(n.volume) : '', s?.duration_min ? `${s.duration_min} min` : '', n.cardio ? `♥ ${n.cardio} min` : '', n.prs ? `🏆 ${n.prs}` : '', s?.rating ? ratingEmoji(s.rating) : ''].filter(Boolean).join(' · ');
   const planName = p.slot === 'friend' ? (db.get('overrides', d)?.session_name || 'Treino do amigo') : slotDef(p.slot)?.session_name;
   const planSub = () => {
     const plan = dayPlan(d, p.slot === 'friend' ? undefined : p.slot);
@@ -85,7 +85,7 @@ export function render(view) {
       <div class="meter"><i style="width:${Math.min(100, (done / weeklyTarget()) * 100)}%"></i></div>
       <div class="kv">
         <div><b>${sum('sets')}</b><span>séries</span></div>
-        <div><b>${fmtKg(sum('volume') / 1000)}t</b><span>volume</span></div>
+        <div><b>${fmtVolume(sum('volume'))}</b><span>volume</span></div>
         <div><b>${minutes}</b><span>min treino</span></div>
         <div><b>${sum('cardio')}</b><span>min cardio</span></div>
       </div>

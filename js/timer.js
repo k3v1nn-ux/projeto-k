@@ -2,6 +2,7 @@
 // supported (not on iOS), and Screen Wake Lock to keep the display on during a workout.
 import { $, fmtDuration } from './util.js';
 import { settings } from './settings.js';
+import { notify, clearNotifications } from './notify.js';
 
 const KEY = 'pk.rest';
 let tick = null;
@@ -46,14 +47,27 @@ function write(v) {
   } catch { /* ignore */ }
 }
 
+const hhmm = (t) => new Date(t).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+/** Lock-screen notice (when enabled): the page cannot run while the phone is locked, so it says
+ * until when to rest instead of counting down. */
+function notifyRest(r) {
+  notify(`Descanso até ${hhmm(r.endAt)}`, r.label ? r.label.charAt(0).toUpperCase() + r.label.slice(1) : 'Próxima série', 'rest');
+}
+
+/** `seconds` is the exercise's rest; the "Descanso entre séries" setting adds or removes time. */
 export function startRest(seconds, label = '') {
-  write({ endAt: Date.now() + seconds * 1000, total: seconds, label });
+  const total = Math.max(15, seconds + (Number(settings().restOffset) || 0));
+  const r = { endAt: Date.now() + total * 1000, total, label };
+  write(r);
+  notifyRest(r);
   run();
 }
 
 export function stopRest() {
   write(null);
   render(null);
+  clearNotifications('rest');
 }
 
 function adjust(delta) {
@@ -62,6 +76,7 @@ function adjust(delta) {
   r.endAt += delta * 1000;
   r.total = Math.max(1, r.total + delta);
   write(r);
+  notifyRest(r);
   run();
 }
 

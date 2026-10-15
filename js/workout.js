@@ -120,6 +120,15 @@ export async function finishSession(date, plan) {
   return db.save('sessions', { ...s, status, end_time: end.toISOString(), duration_min: duration });
 }
 
+/** How the workout felt, 1–5, picked with an emoji when finishing. */
+export const RATINGS = [[1, '😫', 'Péssimo'], [2, '😕', 'Ruim'], [3, '🙂', 'Ok'], [4, '😀', 'Bom'], [5, '🤩', 'Excelente']];
+export const ratingEmoji = (n) => RATINGS.find(([v]) => v === Number(n))?.[1] || '';
+
+export async function rateSession(date, rating) {
+  const s = db.get('sessions', date);
+  if (s) await db.save('sessions', { ...s, rating });
+}
+
 /**
  * Logs cardio. phase "pre" = warm-up before lifting (the session stays a lifting session);
  * phase "only" = the day was just cardio: the workout stays pending in the rotation.
